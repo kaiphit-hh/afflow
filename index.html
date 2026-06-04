@@ -273,6 +273,25 @@
     .topbar-sync .sync-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .topbar-sync .sync-gear { font-size: 0.85rem; }
     @media (max-width: 720px) { .topbar-sync .sync-label { display: none; } }
+    .topbar-sync.no-click { cursor: default; }
+    .topbar-sync.no-click:hover { border-color: var(--border); }
+    .topbar-clock {
+      display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15;
+      font-size: 0.72rem; color: var(--text-muted); user-select: none; white-space: nowrap;
+    }
+    .topbar-clock-time { font-weight: 700; color: var(--text); font-size: 0.82rem; }
+    @media (max-width: 900px) { .topbar-clock-date { display: none; } }
+    @media (max-width: 600px) { .topbar-clock { display: none; } }
+    .topbar-privacy {
+      display: flex; align-items: center; gap: 5px; font-size: 0.74rem; font-weight: 600;
+      padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--card); color: var(--text-muted); cursor: pointer; user-select: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .topbar-privacy:hover { border-color: var(--primary); }
+    .topbar-privacy.on { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+    [data-theme="dark"] .topbar-privacy.on { background: rgba(220,38,38,0.18); border-color: rgba(220,38,38,0.5); color: #fca5a5; }
+    @media (max-width: 820px) { .topbar-privacy .privacy-label { display: none; } }
     .toggle-switch {
       width: 36px;
       height: 20px;
@@ -1093,7 +1112,7 @@ const I18N = {
     welcome_sub1:'ระบบจัดการงาน Accounting & Finance', welcome_sub2:'กรุณาเลือกชื่อของคุณเพื่อเข้าใช้งาน',
     welcome_label:'คุณคือ:', welcome_select:'— กรุณาเลือกชื่อของคุณ —', welcome_enter:'เข้าสู่ระบบ →',
     sync_local:'ออฟไลน์ (เครื่องนี้)', sync_online:'เชื่อมต่อแล้ว', sync_offline:'เชื่อมต่อไม่ได้', sync_syncing:'กำลังซิงค์...',
-    settings:'ตั้งค่า', settings_title:'⚙️ ตั้งค่าการเชื่อมต่อ Supabase',
+    settings:'ตั้งค่า', privacy_mode:'โหมดส่วนตัว — ซ่อนงานของฉันไว้โชว์ลูกน้อง', privacy_on:'ซ่อนงานฉันอยู่', privacy_off:'ซ่อนงานฉัน', settings_title:'⚙️ ตั้งค่าการเชื่อมต่อ Supabase',
     settings_intro:'เชื่อมแอปกับ Supabase เพื่อให้ทั้งทีมเห็นข้อมูลชุดเดียวกัน + ล็อกอินรายคน (ดูวิธีตั้งค่าในไฟล์ supabase/schema.sql)',
     settings_url:'Project URL', settings_url_ph:'https://xxxxxxxx.supabase.co',
     settings_key:'Anon public key', settings_key_ph:'eyJhbGci... (anon / public key)',
@@ -1148,7 +1167,7 @@ const I18N = {
     welcome_sub1:'Accounting & Finance task system', welcome_sub2:'Please select your name to continue',
     welcome_label:'You are:', welcome_select:'— Select your name —', welcome_enter:'Enter →',
     sync_local:'Offline (this device)', sync_online:'Connected', sync_offline:'Cannot connect', sync_syncing:'Syncing...',
-    settings:'Settings', settings_title:'⚙️ Supabase Connection',
+    settings:'Settings', privacy_mode:'Privacy mode — hide my tasks for demos', privacy_on:'My tasks hidden', privacy_off:'Hide my tasks', settings_title:'⚙️ Supabase Connection',
     settings_intro:'Connect the app to Supabase so the whole team shares one dataset with per-user login (see setup steps in supabase/schema.sql).',
     settings_url:'Project URL', settings_url_ph:'https://xxxxxxxx.supabase.co',
     settings_key:'Anon public key', settings_key_ph:'eyJhbGci... (anon / public key)',
@@ -1807,18 +1826,16 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
           )}
 
           <div className="form-grid-2">
-            {(editing || selfOnly) && (
-              <div className="form-group">
-                <label className="form-label">{t('f_assignee')}</label>
-                {selfOnly ? (
-                  <input className="form-input" value={currentUser} disabled readOnly title={t('f_assignee_locked')} />
-                ) : (
-                  <select className="form-select" value={form.assignee} onChange={e => set('assignee', e.target.value)}>
-                    {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
-                  </select>
-                )}
-              </div>
-            )}
+            <div className="form-group">
+              <label className="form-label">{t('f_assignee')}</label>
+              {selfOnly ? (
+                <input className="form-input" value={currentUser} disabled readOnly title={t('f_assignee_locked')} />
+              ) : (
+                <select className="form-select" value={form.assignee} onChange={e => set('assignee', e.target.value)}>
+                  {['Big Boss'].concat(ASSIGNEES).map(a => <option key={a} value={a}>{a}</option>)}
+                </select>
+              )}
+            </div>
             <div className="form-group">
               <label className="form-label">{t('f_category')}</label>
               <select className="form-select" value={form.category} onChange={e => set('category', e.target.value)}>
@@ -1966,7 +1983,27 @@ function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal }) {
 
 // ─── Topbar ───────────────────────────────────────────────────────────────────
 
-function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings }) {
+// #4: นาฬิกา วันที่ + เวลา (อัปเดตทุกวินาที)
+function TopbarClock() {
+  const { lang } = useT();
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => { const id = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(id); }, []);
+  const dowTH = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+  const dowEN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const pad = n => String(n).padStart(2, '0');
+  const dow  = (lang === 'en' ? dowEN : dowTH)[now.getDay()];
+  const mo   = (lang === 'en' ? MONTH_EN : MONTH_TH)[now.getMonth()];
+  const yr   = lang === 'en' ? now.getFullYear() : now.getFullYear() + 543;
+  const time = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+  return (
+    <div className="topbar-clock" title={dow + ' ' + now.getDate() + ' ' + mo + ' ' + yr}>
+      <span className="topbar-clock-date">{dow} {now.getDate()} {mo} {yr}</span>
+      <span className="topbar-clock-time">🕐 {time}</span>
+    </div>
+  );
+}
+
+function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy }) {
   const { t, lang, setLang } = useT();
   const [notifOpen, setNotifOpen] = React.useState(false);
 
@@ -2014,12 +2051,30 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
       </div>
 
       <div className="topbar-actions">
-        {/* Sync status chip + settings gear (Phase 2) */}
-        <div className="topbar-sync" onClick={onOpenSettings} title={t('settings')}>
-          <span className="sync-dot" style={{ background: syncMeta.dot }} />
-          <span className="sync-label">{syncMeta.label}</span>
-          <span className="sync-gear">⚙️</span>
-        </div>
+        {/* #4: นาฬิกาวันที่+เวลา */}
+        <TopbarClock />
+
+        {/* #2: โหมดส่วนตัว (เฉพาะหัวหน้า) — ซ่อนงานตัวเองตอนโชว์ลูกน้อง */}
+        {isManager && (
+          <button className={'topbar-privacy' + (privacyMode ? ' on' : '')} onClick={onTogglePrivacy} title={t('privacy_mode')}>
+            <span>{privacyMode ? '🔒' : '🔓'}</span>
+            <span className="privacy-label">{privacyMode ? t('privacy_on') : t('privacy_off')}</span>
+          </button>
+        )}
+
+        {/* #2: หัวหน้าเห็นเฟือง (ตั้งค่า Supabase) — พนักงานเห็นแค่สถานะออนไลน์ */}
+        {isManager ? (
+          <div className="topbar-sync" onClick={onOpenSettings} title={t('settings')}>
+            <span className="sync-dot" style={{ background: syncMeta.dot }} />
+            <span className="sync-label">{syncMeta.label}</span>
+            <span className="sync-gear">⚙️</span>
+          </div>
+        ) : (
+          <div className="topbar-sync no-click">
+            <span className="sync-dot" style={{ background: syncMeta.dot }} />
+            <span className="sync-label">{syncMeta.label}</span>
+          </div>
+        )}
 
         {/* Language toggle TH / EN */}
         <div className="topbar-lang-toggle" onClick={() => setLang(lang === 'th' ? 'en' : 'th')} title="TH / EN">
@@ -2674,9 +2729,9 @@ function TimelineView({ tasks, currentUser, onSelectTask }) {
 
 // ─── ReportView ───────────────────────────────────────────────────────────────
 
-function ReportView({ tasks, currentUser, onSelectTask }) {
+function ReportView({ tasks, currentUser, onSelectTask, showManager }) {
   const { t, lang } = useT();
-  const people = ASSIGNEES.map(name => {
+  const people = (showManager ? ['Big Boss'].concat(ASSIGNEES) : ASSIGNEES).map(name => {
     const u     = USERS.find(x => x.name === name);
     const mine  = tasks.filter(x => x.assignee === name);
     const done  = mine.filter(x => x.status === 'done').length;
@@ -3436,6 +3491,18 @@ function App() {
   }
 
   const isManager = currentUser === 'Big Boss';
+  // #2 โหมดส่วนตัว (เฉพาะหัวหน้า) — กดซ่อนงานตัวเองตอนโชว์ลูกน้อง
+  const [privacyMode, setPrivacyMode] = useState(() => localStorage.getItem('afflow_privacy') === 'true');
+  useEffect(() => { localStorage.setItem('afflow_privacy', privacyMode ? 'true' : 'false'); }, [privacyMode]);
+  // #1: พนักงานไม่เห็นงานหัวหน้า (RLS กันที่ DB อีกชั้น)
+  // #2: เปิดโหมดส่วนตัว → งานหัวหน้ากลายเป็น 🔒 ●●●●●●● (กดดูไม่ได้)
+  const visibleTasks = React.useMemo(() => {
+    if (!isManager) return tasks.filter(t => t.assignee !== 'Big Boss');
+    if (privacyMode) return tasks.map(t => t.assignee === 'Big Boss'
+      ? { ...t, title: '🔒 ●●●●●●●', description: '', _masked: true } : t);
+    return tasks;
+  }, [tasks, isManager, privacyMode]);
+  const handleSelectTask = (task) => { if (task && task._masked) return; setSelectedTask(task); };
 
   // local translator (App is the LangContext provider, so it can't use useT())
   const tApp = (k) => (I18N[lang] && I18N[lang][k] != null) ? I18N[lang][k]
@@ -3555,23 +3622,25 @@ function App() {
             viewLabel={VIEW_LABELS[view] || 'Dashboard'}
             search={search}
             onSearch={handleSearch}
-            tasks={tasks}
+            tasks={visibleTasks}
             onToggleSidebar={() => setSidebarOpen(o => !o)}
-            onSelectTask={setSelectedTask}
+            onSelectTask={handleSelectTask}
             syncStatus={backendStatus}
             onOpenSettings={() => setSettingsOpen(true)}
+            privacyMode={privacyMode}
+            onTogglePrivacy={() => setPrivacyMode(p => !p)}
           />
 
           {/* Page content */}
           <div className="main-content">
             {view === 'dashboard' && (
-              <Dashboard tasks={tasks} currentUser={currentUser} onSelectTask={setSelectedTask} />
+              <Dashboard tasks={visibleTasks} currentUser={currentUser} onSelectTask={handleSelectTask} />
             )}
             {view === 'tasks' && (
               <TaskList
-                tasks={tasks}
+                tasks={visibleTasks}
                 currentUser={currentUser}
-                onSelectTask={setSelectedTask}
+                onSelectTask={handleSelectTask}
                 onEditTask={setEditingTask}
                 onDeleteTask={setDeletingTask}
                 setCreateOpen={setCreateOpen}
@@ -3580,10 +3649,10 @@ function App() {
               />
             )}
             {view === 'timeline' && (
-              <TimelineView tasks={tasks} currentUser={currentUser} onSelectTask={setSelectedTask} />
+              <TimelineView tasks={visibleTasks} currentUser={currentUser} onSelectTask={handleSelectTask} />
             )}
             {view === 'report' && (
-              <ReportView tasks={tasks} currentUser={currentUser} onSelectTask={setSelectedTask} />
+              <ReportView tasks={visibleTasks} currentUser={currentUser} onSelectTask={handleSelectTask} showManager={isManager && !privacyMode} />
             )}
           </div>
         </div>
@@ -3619,7 +3688,7 @@ function App() {
         <ChatWidget
           sbCfg={sbCfg}
           currentUser={currentUser}
-          tasks={tasks}
+          tasks={visibleTasks}
           isManager={currentUser === 'Big Boss'}
           ready={isAuthed}
         />
