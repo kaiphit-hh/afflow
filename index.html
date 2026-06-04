@@ -3280,7 +3280,7 @@ function ResetPasswordScreen({ cfg, onDone }) {
 function cleanDriveQ(x) {
   let q = (x || '').trim()
     .replace(/\s*(ให้(หน่อย|ที|ด้วย)?|หน่อย(ครับ|ค่ะ)?|ที|ด้วย|ครับ|ค่ะ|คะ)\s*$/g, '')
-    .replace(/\s*ใน\s*(ไดร์ฟ|ไดรฟ์|ไดร์ว|ไดร์|ไดรว์|ไดร|drive)\b.*$/i, '')
+    .replace(/\s*ใน\s*(?:ไดร์ฟ|ไดรฟ์|ไดร์ว|ไดร์|ไดรว์|ไดร|drive).*$/i, '')
     .replace(/^(ชื่อ|ไฟล์ชื่อ|ไฟล์)\s*/, '')
     .trim();
   return q.length >= 2 ? q : null;
@@ -3305,6 +3305,10 @@ function detectDriveSearch(text) {
   if (m) return cleanDriveQ(m[1]);
   m = s.match(/^where(?:'s| is| are)\s+(?:the\s+)?(?:file\s+)?(.+)$/i);
   if (m) return cleanDriveQ(m[1]);
+  // กว้างขึ้น: "หา X / ค้น X / ค้นหา X" (ไม่มีคำว่าไฟล์ก็ได้) — เว้นพวกคำถามเชิงอธิบาย
+  const NON_FILE = /(วิธี|ยังไง|อย่างไร|ทำไม|เท่าไหร่|เท่าไร|กี่|อะไร|คือ|แปลว่า|หมายถึง|ไหม|หรือไม่|ขั้นตอน|สูตร|ข้อมูล|ความหมาย|how|why|what|when|explain)/i;
+  m = s.match(/^(?:ช่วย\s*)?(?:ค้นหา|ค้น|หา)\s*(.+)$/i);
+  if (m && !NON_FILE.test(m[1])) return cleanDriveQ(m[1]);
   return null;
 }
 // ─── Phase 4: AI Assistant chat widget ────────────────────────────────────────
