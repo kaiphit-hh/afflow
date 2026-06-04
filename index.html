@@ -162,6 +162,21 @@
       flex-shrink: 0;
     }
     .sidebar-team-label { font-size: 0.65rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 10px; }
+    .team-avatar-wrap { position: relative; flex-shrink: 0; }
+    .online-dot {
+      position: absolute; bottom: -1px; right: -1px; width: 9px; height: 9px; border-radius: 50%;
+      background: #22c55e; border: 2px solid #18202c; box-shadow: 0 0 4px rgba(34,197,94,0.8);
+    }
+    .toast-stack {
+      position: fixed; top: 74px; left: 50%; transform: translateX(-50%); z-index: 4000;
+      display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none;
+    }
+    .toast {
+      background: #16a34a; color: #fff; font-size: 0.85rem; font-weight: 600;
+      padding: 9px 16px; border-radius: 22px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      animation: toastIn 0.3s ease;
+    }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
     .team-member {
       display: flex;
       align-items: center;
@@ -1073,8 +1088,8 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_timeline:'Timeline', nav_report:'รายงาน',
-    menu_main:'เมนูหลัก', team:'ทีม', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_timeline:'Timeline', nav_report:'รายงาน',
+    menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
     search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด',
     overdue_days:'เกินกำหนด {n} วัน', due_today:'ครบกำหนดวันนี้', due_tomorrow:'ครบกำหนดพรุ่งนี้', in_days:'อีก {n} วัน',
@@ -1128,8 +1143,8 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_timeline:'Timeline', nav_report:'Reports',
-    menu_main:'Main Menu', team:'Team', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_timeline:'Timeline', nav_report:'Reports',
+    menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
     search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines',
     overdue_days:'Overdue by {n} days', due_today:'Due today', due_tomorrow:'Due tomorrow', in_days:'{n} days left',
@@ -1468,6 +1483,15 @@ const sb = {
           payload => onInsert(payload.new))
       .subscribe();
     return () => { try { c.removeChannel(ch); } catch (e) {} };
+  },
+  // ชุด B (#3): สถานะออนไลน์ของทีม (Realtime Presence) — เห็นพร้อมกันทุกคน
+  joinPresence(cfg, name, handlers) {
+    const c = getSb(cfg); if (!c) return null;
+    const ch = c.channel('afflow-presence', { config: { presence: { key: name } } });
+    ch.on('presence', { event: 'sync' }, () => handlers.onSync && handlers.onSync(Object.keys(ch.presenceState())))
+      .on('presence', { event: 'join' }, ({ key }) => handlers.onJoin && handlers.onJoin(key))
+      .subscribe((status) => { if (status === 'SUBSCRIBED') ch.track({ name, online_at: nowISO() }); });
+    return () => { try { ch.untrack(); c.removeChannel(ch); } catch (e) {} };
   },
 };
 
@@ -2520,7 +2544,7 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
 
 // ─── TaskList ─────────────────────────────────────────────────────────────────
 
-function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, setCreateOpen, search, setSearch }) {
+function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, setCreateOpen, search, setSearch, mode }) {
   const { t, lang } = useT();
   const isManager = currentUser === 'Big Boss';
   const base      = tasks;   // ทุกคนเห็นงานทั้งหมด (view all)
@@ -2550,10 +2574,12 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
     <div>
       <div className="page-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
         <div>
-          <div className="page-title">{t('tasklist_title')}</div>
+          <div className="page-title">{mode === 'completed' ? t('completed_title') : t('tasklist_title')}</div>
           <div className="page-subtitle">{t('tasklist_sub_mgr', { n: tasks.length })}</div>
         </div>
-        <button className="btn btn-primary" style={{ marginTop:4 }} onClick={() => setCreateOpen(true)}>+ {isManager ? t('create_task') : t('create_my_task')}</button>
+        {mode !== 'completed' && (
+          <button className="btn btn-primary" style={{ marginTop:4 }} onClick={() => setCreateOpen(true)}>+ {isManager ? t('create_task') : t('create_my_task')}</button>
+        )}
       </div>
 
       <div className="filter-bar">
@@ -3458,6 +3484,25 @@ function App() {
     pushUpsert(updated);
   }
 
+  // ── ชุด B (#3): สถานะออนไลน์ทีม (Realtime Presence) + แจ้งเตือนเมื่อมีคนเข้า ──────
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [toasts, setToasts] = useState([]);
+  function pushToast(text) {
+    const id = Date.now() + '-' + Math.random();
+    setToasts(ts => [...ts, { id, text }]);
+    setTimeout(() => setToasts(ts => ts.filter(x => x.id !== id)), 4000);
+  }
+  useEffect(() => {
+    if (!isAuthed || !currentUser) { setOnlineUsers([]); return; }
+    let ready = false;
+    const timer = setTimeout(() => { ready = true; }, 2500);   // กัน toast ตอนเพิ่งเข้า (คนที่ออนไลน์อยู่แล้ว)
+    const unsub = sb.joinPresence(sbCfg, currentUser, {
+      onSync: (names) => setOnlineUsers(names),
+      onJoin: (name) => { if (ready && name && name !== currentUser) pushToast('🟢 ' + name + ' ' + tApp('presence_online')); },
+    });
+    return () => { clearTimeout(timer); if (unsub) unsub(); setOnlineUsers([]); };
+  }, [isAuthed, currentUser, sbCfg.url, sbCfg.key]);
+
   function handleCreate(form) {
     const t = {
       id: uid(), title: form.title, description: form.description,
@@ -3511,6 +3556,7 @@ function App() {
   const NAV = [
     { id: 'dashboard', label: tApp('nav_dashboard'), icon: '📊' },
     { id: 'tasks',     label: tApp('nav_tasks'),     icon: '📋' },
+    { id: 'completed', label: tApp('nav_completed'), icon: '✅' },
     { id: 'timeline',  label: tApp('nav_timeline'),  icon: '📅' },
     { id: 'report',    label: tApp('nav_report'),    icon: '📈' },
   ];
@@ -3518,6 +3564,7 @@ function App() {
   const VIEW_LABELS = {
     dashboard: tApp('nav_dashboard'),
     tasks:     tApp('nav_tasks'),
+    completed: tApp('nav_completed'),
     timeline:  tApp('nav_timeline'),
     report:    tApp('nav_report'),
   };
@@ -3597,7 +3644,10 @@ function App() {
             <div className="sidebar-team-label">{tApp('team')}</div>
             {USERS.map(u => (
               <div key={u.name} className="team-member">
-                <div className="avatar avatar-sm" style={{ background: u.color }}>{initials(u.name)}</div>
+                <div className="team-avatar-wrap">
+                  <div className="avatar avatar-sm" style={{ background: u.color }}>{initials(u.name)}</div>
+                  {onlineUsers.includes(u.name) && <span className="online-dot" title={tApp('presence_label')} />}
+                </div>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ lineHeight: 1.2, display:'flex', alignItems:'center', gap:5 }}>
                     {u.name}
@@ -3638,7 +3688,7 @@ function App() {
             )}
             {view === 'tasks' && (
               <TaskList
-                tasks={visibleTasks}
+                tasks={visibleTasks.filter(t => t.status !== 'done')}
                 currentUser={currentUser}
                 onSelectTask={handleSelectTask}
                 onEditTask={setEditingTask}
@@ -3646,6 +3696,19 @@ function App() {
                 setCreateOpen={setCreateOpen}
                 search={search}
                 setSearch={setSearch}
+              />
+            )}
+            {view === 'completed' && (
+              <TaskList
+                tasks={visibleTasks.filter(t => t.status === 'done')}
+                currentUser={currentUser}
+                onSelectTask={handleSelectTask}
+                onEditTask={setEditingTask}
+                onDeleteTask={setDeletingTask}
+                setCreateOpen={setCreateOpen}
+                search={search}
+                setSearch={setSearch}
+                mode="completed"
               />
             )}
             {view === 'timeline' && (
@@ -3694,6 +3757,12 @@ function App() {
         />
         <TeamChat sbCfg={sbCfg} currentUser={currentUser} ready={isAuthed} />
       </>)}
+      {/* ชุด B: toast แจ้งเตือนเมื่อมีคนออนไลน์ */}
+      {toasts.length > 0 && (
+        <div className="toast-stack">
+          {toasts.map(tt => <div key={tt.id} className="toast">{tt.text}</div>)}
+        </div>
+      )}
       {settingsOpen && (
         <SettingsModal
           cfg={sbCfg}
