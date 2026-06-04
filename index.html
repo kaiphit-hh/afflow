@@ -983,6 +983,20 @@
     }
     .chat-attach-btn:hover:not(:disabled) { border-color: var(--primary); }
     .chat-attach-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    /* แผงเลือกอิโมจิ */
+    .emoji-wrap { position: relative; flex-shrink: 0; display: flex; }
+    .emoji-panel {
+      position: absolute; bottom: 48px; left: 0; z-index: 60;
+      width: 268px; max-height: 196px; overflow-y: auto;
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      box-shadow: var(--shadow-lg); padding: 8px;
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+    }
+    .emoji-cell {
+      border: none; background: transparent; cursor: pointer; font-size: 1.25rem;
+      padding: 5px 0; border-radius: 8px; line-height: 1; transition: background .1s, transform .1s;
+    }
+    .emoji-cell:hover { background: var(--input-bg); transform: scale(1.18); }
     .chat-attach {
       display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 6px 10px;
       background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; font-size: 0.78rem;
@@ -1241,7 +1255,7 @@ const I18N = {
     chat_title:'ผู้ช่วย AI', chat_open:'คุยกับผู้ช่วย AI', chat_placeholder:'พิมพ์คำถาม...', chat_send:'ส่ง', chat_thinking:'กำลังคิด...', chat_clear:'ล้างแชท', chat_close:'ปิด',
     chat_hello:'สวัสดีค่ะ', chat_intro:'มีอะไรให้ช่วยไหมคะ? ลองเลือกหัวข้อด้านล่าง หรือพิมพ์ถามได้เลย',
     chat_q1:'สรุปงานของฉันวันนี้', chat_q2:'งานไหนใกล้/เลยกำหนด?', chat_q3:'ร่างอีเมลทวงชำระเงิน', chat_q4:'ช่วยจัดลำดับความสำคัญงาน',
-    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง', chat_attach:'แนบไฟล์ (CSV/PDF/รูป) — จะใช้ Claude วิเคราะห์', chat_remove_file:'เอาไฟล์ออก', chat_file_too_big:'ไฟล์ใหญ่เกินไป (สูงสุด 5MB) — ลองย่อหรือแบ่งไฟล์', teamchat:'แชททีม', teamchat_open:'เปิดแชททีม', teamchat_sub:'ห้องรวมทั้งทีม', teamchat_empty:'ยังไม่มีข้อความ — เริ่มคุยกันได้เลย!', teamchat_placeholder:'พิมพ์ข้อความถึงทีม...', teamchat_file_big:'ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', teamchat_send_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
+    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง', chat_attach:'แนบไฟล์ (CSV/PDF/รูป) — จะใช้ Claude วิเคราะห์', chat_emoji:'อิโมจิ', chat_remove_file:'เอาไฟล์ออก', chat_file_too_big:'ไฟล์ใหญ่เกินไป (สูงสุด 5MB) — ลองย่อหรือแบ่งไฟล์', teamchat:'แชททีม', teamchat_open:'เปิดแชททีม', teamchat_sub:'ห้องรวมทั้งทีม', teamchat_empty:'ยังไม่มีข้อความ — เริ่มคุยกันได้เลย!', teamchat_placeholder:'พิมพ์ข้อความถึงทีม...', teamchat_file_big:'ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', teamchat_send_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
@@ -1297,7 +1311,7 @@ const I18N = {
     chat_title:'AI Assistant', chat_open:'Chat with AI assistant', chat_placeholder:'Type your question...', chat_send:'Send', chat_thinking:'Thinking...', chat_clear:'Clear chat', chat_close:'Close',
     chat_hello:'Hi', chat_intro:'How can I help? Pick a topic below, or just type your question.',
     chat_q1:'Summarize my tasks today', chat_q2:'What is due or overdue?', chat_q3:'Draft a payment reminder email', chat_q4:'Help me prioritize my tasks',
-    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.', chat_attach:'Attach a file (CSV/PDF/image) — analyzed by Claude', chat_remove_file:'Remove file', chat_file_too_big:'File too large (max 5MB) — try shrinking or splitting it', teamchat:'Team Chat', teamchat_open:'Open team chat', teamchat_sub:'Whole-team room', teamchat_empty:'No messages yet — say hi!', teamchat_placeholder:'Message the team...', teamchat_file_big:'File too large (max 10MB)', teamchat_send_fail:'Send failed, please try again',
+    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.', chat_attach:'Attach a file (CSV/PDF/image) — analyzed by Claude', chat_emoji:'Emoji', chat_remove_file:'Remove file', chat_file_too_big:'File too large (max 5MB) — try shrinking or splitting it', teamchat:'Team Chat', teamchat_open:'Open team chat', teamchat_sub:'Whole-team room', teamchat_empty:'No messages yet — say hi!', teamchat_placeholder:'Message the team...', teamchat_file_big:'File too large (max 10MB)', teamchat_send_fail:'Send failed, please try again',
   },
 };
 
@@ -3612,6 +3626,14 @@ function DriveModal({ cfg, onClose }) {
 }
 
 // ─── Phase 5.3: แชทกลุ่มทีม (ห้องเดียว เรียลไทม์ + แนบไฟล์) ─────────────────────
+const TEAM_EMOJIS = [
+  '😀','😁','😂','🤣','😊','😍','😎',
+  '🥳','😘','🤔','😅','😇','🙂','😉',
+  '😭','😢','😡','😴','🤩','🥺','😬',
+  '👍','👎','👌','🙏','👏','🙌','💪',
+  '✅','❌','⭐','🔥','💯','🎉','✨',
+  '❤️','💚','💙','💛','📌','💰','☕',
+];
 function TeamChat({ sbCfg, currentUser, ready }) {
   const { t } = useT();
   const [open,  setOpen]  = useState(false);
@@ -3620,10 +3642,20 @@ function TeamChat({ sbCfg, currentUser, ready }) {
   const [busy,  setBusy]  = useState(false);
   const [file,  setFile]  = useState(null);    // File object ที่จะส่ง
   const [unread, setUnread] = useState(0);
+  const [emojiOpen, setEmojiOpen] = useState(false);
   const bodyRef = React.useRef(null);
   const fileRef = React.useRef(null);
   const openRef = React.useRef(false);
+  const emojiRef = React.useRef(null);
   React.useEffect(() => { openRef.current = open; }, [open]);
+  // ปิดแผงอิโมจิเมื่อคลิกนอกแผง
+  React.useEffect(() => {
+    if (!emojiOpen) return;
+    const h = (e) => { if (emojiRef.current && !emojiRef.current.contains(e.target)) setEmojiOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, [emojiOpen]);
+  const addEmoji = (em) => setInput(v => v + em);
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
@@ -3721,6 +3753,16 @@ function TeamChat({ sbCfg, currentUser, ready }) {
         )}
         <div className="chat-input-row">
           <input type="file" ref={fileRef} style={{ display:'none' }} onChange={onFile} />
+          <div className="emoji-wrap" ref={emojiRef}>
+            <button className="chat-attach-btn" onClick={() => setEmojiOpen(o => !o)} disabled={busy} title={t('chat_emoji')}>😊</button>
+            {emojiOpen && (
+              <div className="emoji-panel">
+                {TEAM_EMOJIS.map(em => (
+                  <button key={em} type="button" className="emoji-cell" onClick={() => addEmoji(em)}>{em}</button>
+                ))}
+              </div>
+            )}
+          </div>
           <button className="chat-attach-btn" onClick={pickFile} disabled={busy} title={t('chat_attach')}>📎</button>
           <textarea className="chat-input" rows={1} value={input} placeholder={t('teamchat_placeholder')}
             onChange={e => setInput(e.target.value)} onKeyDown={onKey} />
