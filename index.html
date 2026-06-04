@@ -841,6 +841,24 @@
     .chat-send:hover:not(:disabled) { background: var(--primary-dark); }
     .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
     .chat-disclaimer { font-size: 0.66rem; color: var(--text-muted); text-align: center; margin-top: 7px; }
+    .chat-attach-btn {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 12px; cursor: pointer;
+      border: 1.5px solid var(--border); background: var(--input-bg); font-size: 1.05rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .chat-attach-btn:hover:not(:disabled) { border-color: var(--primary); }
+    .chat-attach-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .chat-attach {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 6px 10px;
+      background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; font-size: 0.78rem;
+    }
+    .chat-attach-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+    .chat-attach-x { border: none; background: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; flex-shrink: 0; }
+    .chat-file-chip {
+      display: inline-block; margin-bottom: 6px; padding: 3px 9px; border-radius: 8px;
+      background: rgba(255,255,255,0.18); font-size: 0.74rem; font-weight: 600;
+    }
+    .chat-engine { margin-top: 6px; font-size: 0.66rem; font-weight: 700; color: var(--text-muted); opacity: 0.85; }
     @media (max-width: 480px) {
       .chat-panel { right: 0; bottom: 0; width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
       .chat-fab { right: 16px; bottom: 16px; }
@@ -1061,7 +1079,7 @@ const I18N = {
     chat_title:'ผู้ช่วย AI', chat_open:'คุยกับผู้ช่วย AI', chat_placeholder:'พิมพ์คำถาม...', chat_send:'ส่ง', chat_thinking:'กำลังคิด...', chat_clear:'ล้างแชท', chat_close:'ปิด',
     chat_hello:'สวัสดีค่ะ', chat_intro:'มีอะไรให้ช่วยไหมคะ? ลองเลือกหัวข้อด้านล่าง หรือพิมพ์ถามได้เลย',
     chat_q1:'สรุปงานของฉันวันนี้', chat_q2:'งานไหนใกล้/เลยกำหนด?', chat_q3:'ร่างอีเมลทวงชำระเงิน', chat_q4:'ช่วยจัดลำดับความสำคัญงาน',
-    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง',
+    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง', chat_attach:'แนบไฟล์ (CSV/PDF/รูป) — จะใช้ Claude วิเคราะห์', chat_remove_file:'เอาไฟล์ออก', chat_file_too_big:'ไฟล์ใหญ่เกินไป (สูงสุด 5MB) — ลองย่อหรือแบ่งไฟล์',
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
@@ -1116,7 +1134,7 @@ const I18N = {
     chat_title:'AI Assistant', chat_open:'Chat with AI assistant', chat_placeholder:'Type your question...', chat_send:'Send', chat_thinking:'Thinking...', chat_clear:'Clear chat', chat_close:'Close',
     chat_hello:'Hi', chat_intro:'How can I help? Pick a topic below, or just type your question.',
     chat_q1:'Summarize my tasks today', chat_q2:'What is due or overdue?', chat_q3:'Draft a payment reminder email', chat_q4:'Help me prioritize my tasks',
-    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.',
+    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.', chat_attach:'Attach a file (CSV/PDF/image) — analyzed by Claude', chat_remove_file:'Remove file', chat_file_too_big:'File too large (max 5MB) — try shrinking or splitting it',
   },
 };
 
@@ -2887,9 +2905,11 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
   const role  = me ? tRole(me.role, lang) : '';
   const [open,  setOpen]  = useState(false);
   const [input, setInput] = useState('');
-  const [msgs,  setMsgs]  = useState([]);   // { role:'user'|'assistant', content }
+  const [msgs,  setMsgs]  = useState([]);   // { role:'user'|'assistant', content, engine?, file? }
   const [busy,  setBusy]  = useState(false);
+  const [attachedFile, setAttachedFile] = useState(null);  // { name, kind, mime, data, sizeKB }
   const bodyRef = React.useRef(null);
+  const fileRef = React.useRef(null);
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
@@ -2897,26 +2917,61 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
 
   const quicks = [t('chat_q1'), t('chat_q2'), t('chat_q3'), t('chat_q4')];
 
+  function pickFile() { if (fileRef.current) fileRef.current.click(); }
+  async function onFile(e) {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    if (f.size > 5 * 1024 * 1024) { setMsgs(m => [...m, { role:'assistant', content: t('chat_file_too_big') }]); return; }
+    const mime = f.type || '';
+    const ext  = (f.name.split('.').pop() || '').toLowerCase();
+    const isImg = mime.startsWith('image/') || ['png','jpg','jpeg','webp','gif'].includes(ext);
+    const isPdf = mime === 'application/pdf' || ext === 'pdf';
+    try {
+      if (isImg || isPdf) {
+        const data = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(String(r.result).split(',')[1] || '');   // base64 (ตัด data: prefix)
+          r.onerror = rej; r.readAsDataURL(f);
+        });
+        setAttachedFile({ name: f.name, kind: isImg ? 'image' : 'pdf',
+          mime: mime || (isPdf ? 'application/pdf' : 'image/png'), data, sizeKB: Math.round(f.size/1024) });
+      } else {
+        const data = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(String(r.result || '').slice(0, 50000));
+          r.onerror = rej; r.readAsText(f);
+        });
+        setAttachedFile({ name: f.name, kind: 'text', mime: mime || 'text/plain', data, sizeKB: Math.round(f.size/1024) });
+      }
+    } catch (e2) { setMsgs(m => [...m, { role:'assistant', content: t('chat_error') }]); }
+  }
+
   async function send(text) {
     const q = (text != null ? text : input).trim();
-    if (!q || busy) return;
-    setInput('');
+    const fileToSend = (text == null) ? attachedFile : null;   // chip ด่วนไม่แนบไฟล์
+    if ((!q && !fileToSend) || busy) return;
+    setInput(''); if (fileToSend) setAttachedFile(null);
+    const userMsg = { role:'user', content: q || (lang === 'en' ? '(file attached)' : '(แนบไฟล์)'),
+                      file: fileToSend ? fileToSend.name : null };
     if (!ready) {
-      setMsgs(m => [...m, { role:'user', content:q }, { role:'assistant', content:t('chat_not_ready') }]);
+      setMsgs(m => [...m, userMsg, { role:'assistant', content:t('chat_not_ready') }]);
       return;
     }
-    const next = [...msgs, { role:'user', content:q }];
+    const next = [...msgs, userMsg];
     setMsgs(next);
     setBusy(true);
     try {
-      const data = await sb.aiChat(sbCfg, {
+      const payload = {
         messages: next.map(m => ({ role:m.role, content:m.content })),
         persona: { buddy, name: currentUser, role },
         context: buildChatContext(tasks, currentUser, isManager),
         lang,
-      });
+      };
+      if (fileToSend) payload.file = { name: fileToSend.name, kind: fileToSend.kind, mime: fileToSend.mime, data: fileToSend.data };
+      const data = await sb.aiChat(sbCfg, payload);
       const reply = (data && (data.reply || (data.error ? t('chat_error') : ''))) || t('chat_error');
-      setMsgs(m => [...m, { role:'assistant', content: reply }]);
+      setMsgs(m => [...m, { role:'assistant', content: reply, engine: data && data.engine }]);
     } catch (e) {
       setMsgs(m => [...m, { role:'assistant', content: t('chat_error') }]);
     } finally {
@@ -2956,14 +3011,31 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
             </div>
           </div>
         )}
-        {msgs.map((m, i) => <div key={i} className={'chat-msg ' + (m.role === 'user' ? 'user' : 'ai')}>{m.content}</div>)}
+        {msgs.map((m, i) => (
+          <div key={i} className={'chat-msg ' + (m.role === 'user' ? 'user' : 'ai')}>
+            {m.role === 'user' && m.file && <div className="chat-file-chip">📎 {m.file}</div>}
+            {m.content}
+            {m.role === 'assistant' && m.engine && (
+              <div className="chat-engine">{m.engine === 'claude' ? '🧠 Claude' : '⚡ Gemini'}</div>
+            )}
+          </div>
+        ))}
         {busy && <div className="chat-typing">{buddy} {t('chat_thinking')}</div>}
       </div>
       <div className="chat-foot">
+        {attachedFile && (
+          <div className="chat-attach">
+            <span className="chat-attach-name">📎 {attachedFile.name} · {attachedFile.sizeKB} KB</span>
+            <button className="chat-attach-x" onClick={() => setAttachedFile(null)} title={t('chat_remove_file')}>✕</button>
+          </div>
+        )}
         <div className="chat-input-row">
+          <input type="file" ref={fileRef} style={{ display:'none' }}
+            accept=".csv,.txt,.pdf,.png,.jpg,.jpeg,.webp,.gif,image/*,application/pdf,text/*" onChange={onFile} />
+          <button className="chat-attach-btn" onClick={pickFile} disabled={busy} title={t('chat_attach')}>📎</button>
           <textarea className="chat-input" rows={1} value={input} placeholder={t('chat_placeholder')}
             onChange={e => setInput(e.target.value)} onKeyDown={onKey} />
-          <button className="chat-send" disabled={busy || !input.trim()} onClick={() => send()} title={t('chat_send')}>➤</button>
+          <button className="chat-send" disabled={busy || (!input.trim() && !attachedFile)} onClick={() => send()} title={t('chat_send')}>➤</button>
         </div>
         <div className="chat-disclaimer">{t('chat_disclaimer')}</div>
       </div>
