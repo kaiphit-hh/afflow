@@ -859,9 +859,35 @@
       background: rgba(255,255,255,0.18); font-size: 0.74rem; font-weight: 600;
     }
     .chat-engine { margin-top: 6px; font-size: 0.66rem; font-weight: 700; color: var(--text-muted); opacity: 0.85; }
+    /* ─── Team chat ─── */
+    .team-fab {
+      position: fixed; right: 22px; bottom: 84px; z-index: 2500;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0 18px 0 14px; height: 52px;
+      background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+      color: #fff; border: none; border-radius: 28px;
+      font-family: 'Sarabun', sans-serif; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; box-shadow: 0 6px 20px rgba(13,148,136,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .team-fab:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(13,148,136,0.5); }
+    .team-unread {
+      background: #ef4444; color: #fff; border-radius: 10px; font-size: 0.7rem; font-weight: 700;
+      min-width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px;
+    }
+    .team-head { background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%) !important; }
+    .team-msg { display: flex; flex-direction: column; margin-bottom: 10px; max-width: 86%; }
+    .team-msg.mine  { align-self: flex-end;   align-items: flex-end; }
+    .team-msg.other { align-self: flex-start; align-items: flex-start; }
+    .team-msg-sender { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 700; margin-bottom: 3px; }
+    .team-msg-sender .avatar-sm { width: 18px; height: 18px; font-size: 0.58rem; }
+    .team-bubble { padding: 8px 11px; border-radius: 12px; font-size: 0.86rem; line-height: 1.45; background: var(--input-bg); color: var(--text); }
+    .team-msg.mine .team-bubble { background: var(--primary); color: #fff; }
+    .team-file { margin-top: 5px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-decoration: underline; }
     @media (max-width: 480px) {
       .chat-panel { right: 0; bottom: 0; width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
       .chat-fab { right: 16px; bottom: 16px; }
+      .team-fab { right: 16px; bottom: 78px; }
     }
 
     /* ─── Divider ─── */
@@ -1079,7 +1105,7 @@ const I18N = {
     chat_title:'ผู้ช่วย AI', chat_open:'คุยกับผู้ช่วย AI', chat_placeholder:'พิมพ์คำถาม...', chat_send:'ส่ง', chat_thinking:'กำลังคิด...', chat_clear:'ล้างแชท', chat_close:'ปิด',
     chat_hello:'สวัสดีค่ะ', chat_intro:'มีอะไรให้ช่วยไหมคะ? ลองเลือกหัวข้อด้านล่าง หรือพิมพ์ถามได้เลย',
     chat_q1:'สรุปงานของฉันวันนี้', chat_q2:'งานไหนใกล้/เลยกำหนด?', chat_q3:'ร่างอีเมลทวงชำระเงิน', chat_q4:'ช่วยจัดลำดับความสำคัญงาน',
-    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง', chat_attach:'แนบไฟล์ (CSV/PDF/รูป) — จะใช้ Claude วิเคราะห์', chat_remove_file:'เอาไฟล์ออก', chat_file_too_big:'ไฟล์ใหญ่เกินไป (สูงสุด 5MB) — ลองย่อหรือแบ่งไฟล์',
+    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง', chat_attach:'แนบไฟล์ (CSV/PDF/รูป) — จะใช้ Claude วิเคราะห์', chat_remove_file:'เอาไฟล์ออก', chat_file_too_big:'ไฟล์ใหญ่เกินไป (สูงสุด 5MB) — ลองย่อหรือแบ่งไฟล์', teamchat:'แชททีม', teamchat_open:'เปิดแชททีม', teamchat_sub:'ห้องรวมทั้งทีม', teamchat_empty:'ยังไม่มีข้อความ — เริ่มคุยกันได้เลย!', teamchat_placeholder:'พิมพ์ข้อความถึงทีม...', teamchat_file_big:'ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', teamchat_send_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
@@ -1134,7 +1160,7 @@ const I18N = {
     chat_title:'AI Assistant', chat_open:'Chat with AI assistant', chat_placeholder:'Type your question...', chat_send:'Send', chat_thinking:'Thinking...', chat_clear:'Clear chat', chat_close:'Close',
     chat_hello:'Hi', chat_intro:'How can I help? Pick a topic below, or just type your question.',
     chat_q1:'Summarize my tasks today', chat_q2:'What is due or overdue?', chat_q3:'Draft a payment reminder email', chat_q4:'Help me prioritize my tasks',
-    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.', chat_attach:'Attach a file (CSV/PDF/image) — analyzed by Claude', chat_remove_file:'Remove file', chat_file_too_big:'File too large (max 5MB) — try shrinking or splitting it',
+    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.', chat_attach:'Attach a file (CSV/PDF/image) — analyzed by Claude', chat_remove_file:'Remove file', chat_file_too_big:'File too large (max 5MB) — try shrinking or splitting it', teamchat:'Team Chat', teamchat_open:'Open team chat', teamchat_sub:'Whole-team room', teamchat_empty:'No messages yet — say hi!', teamchat_placeholder:'Message the team...', teamchat_file_big:'File too large (max 10MB)', teamchat_send_fail:'Send failed, please try again',
   },
 };
 
@@ -1361,6 +1387,68 @@ const sb = {
     const c = getSb(cfg); if (!c) throw new Error('not_configured');
     const { error } = await c.auth.updateUser({ password: newPassword });
     if (error) throw error;
+  },
+  // Phase 5.2: ประวัติแชท AI ต่อคน (เก็บ 30 วัน — ดู supabase/chat_history.sql)
+  async loadChatHistory(cfg) {
+    const c = getSb(cfg); if (!c) return [];
+    const { data, error } = await c.from('ai_chat_messages')
+      .select('role, content, engine, created_at')
+      .order('created_at', { ascending: false })   // เก็บถาวร — ดึง 500 ข้อความล่าสุด
+      .limit(500);
+    if (error) throw error;
+    return (data || []).reverse().map(r => ({ role: r.role, content: r.content, engine: r.engine || undefined }));
+  },
+  async saveChatMessages(cfg, rows) {
+    const c = getSb(cfg); if (!c || !rows || !rows.length) return;
+    const { error } = await c.from('ai_chat_messages')
+      .insert(rows.map(m => ({ role: m.role, content: m.content, engine: m.engine || null })));
+    if (error) throw error;
+  },
+  async clearChatHistory(cfg) {
+    const c = getSb(cfg); if (!c) return;
+    const { error } = await c.from('ai_chat_messages').delete().gt('created_at', '1970-01-01T00:00:00Z');  // RLS จำกัดเฉพาะของตัวเอง
+    if (error) throw error;
+  },
+  // Phase 5.3: แชทกลุ่มทีม (เรียลไทม์ + ไฟล์ — ดู supabase/team_chat.sql)
+  async loadTeamMessages(cfg) {
+    const c = getSb(cfg); if (!c) return [];
+    const { data, error } = await c.from('team_messages')
+      .select('id, sender_id, sender_name, content, file_path, file_name, created_at')
+      .order('created_at', { ascending: false }).limit(800);   // เก็บถาวร — ดึง 800 ข้อความล่าสุด
+    if (error) throw error;
+    return (data || []).reverse();
+  },
+  async sendTeamMessage(cfg, msg) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const { error } = await c.from('team_messages').insert({
+      sender_name: msg.senderName,
+      content:   msg.content  || null,
+      file_path: msg.filePath || null,
+      file_name: msg.fileName || null,
+    });
+    if (error) throw error;
+  },
+  async uploadChatFile(cfg, file) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const safe = (file.name || 'file').replace(/[^\w.\-]+/g, '_').slice(-60);
+    const path = Date.now() + '_' + Math.floor(Math.random() * 1e6) + '_' + safe;
+    const { error } = await c.storage.from('chat-files').upload(path, file, { upsert: false });
+    if (error) throw error;
+    return { path, name: file.name };
+  },
+  async signedFileUrl(cfg, path) {
+    const c = getSb(cfg); if (!c) return null;
+    const { data, error } = await c.storage.from('chat-files').createSignedUrl(path, 7200);
+    if (error) throw error;
+    return data && data.signedUrl;
+  },
+  subscribeTeam(cfg, onInsert) {
+    const c = getSb(cfg); if (!c) return null;
+    const ch = c.channel('afflow-team-chat')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'team_messages' },
+          payload => onInsert(payload.new))
+      .subscribe();
+    return () => { try { c.removeChannel(ch); } catch (e) {} };
   },
 };
 
@@ -2912,12 +3000,24 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
   const [msgs,  setMsgs]  = useState([]);   // { role:'user'|'assistant', content, engine?, file? }
   const [busy,  setBusy]  = useState(false);
   const [attachedFile, setAttachedFile] = useState(null);  // { name, kind, mime, data, sizeKB }
+  const [loaded, setLoaded] = useState(false);             // โหลดประวัติแล้วหรือยัง
   const bodyRef = React.useRef(null);
   const fileRef = React.useRef(null);
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [msgs, busy, open]);
+
+  // โหลดประวัติแชทของคน ๆ นี้ (ครั้งเดียวเมื่อพร้อม) — เก็บ 30 วันใน Supabase
+  useEffect(() => {
+    if (!ready || loaded) return;
+    let alive = true;
+    sb.loadChatHistory(sbCfg)
+      .then(h => { if (alive && h && h.length) setMsgs(h); })
+      .catch(() => {})
+      .finally(() => { if (alive) setLoaded(true); });
+    return () => { alive = false; };
+  }, [ready]);
 
   const quicks = [t('chat_q1'), t('chat_q2'), t('chat_q3'), t('chat_q4')];
 
@@ -2980,7 +3080,13 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
         + (data.detail ? ('\n\n⚠️ [' + (data.engine || 'AI') + ' ' + (data.status || '') + '] ' + String(data.detail).slice(0, 300))
                        : ('\n\n⚠️ ' + data.error));
       else reply = t('chat_error');
-      setMsgs(m => [...m, { role:'assistant', content: reply, engine: data && data.engine }]);
+      const eng = data && data.engine;
+      setMsgs(m => [...m, { role:'assistant', content: reply, engine: eng }]);
+      // บันทึกลง Supabase (เก็บ 30 วัน) — เงียบ ๆ ไม่ขัดจังหวะผู้ใช้
+      sb.saveChatMessages(sbCfg, [
+        { role:'user', content: userMsg.content },
+        { role:'assistant', content: reply, engine: eng },
+      ]).catch(() => {});
     } catch (e) {
       setMsgs(m => [...m, { role:'assistant', content: t('chat_error') }]);
     } finally {
@@ -3008,7 +3114,7 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
           <div className="chat-head-name">{buddy}</div>
           <div className="chat-head-sub">{t('chat_title')}{role ? ' • ' + role : ''}</div>
         </div>
-        {msgs.length > 0 && <button className="chat-head-btn" title={t('chat_clear')} onClick={() => setMsgs([])}>🗑</button>}
+        {msgs.length > 0 && <button className="chat-head-btn" title={t('chat_clear')} onClick={() => { setMsgs([]); if (ready) sb.clearChatHistory(sbCfg).catch(()=>{}); }}>🗑</button>}
         <button className="chat-head-btn" title={t('chat_close')} onClick={() => setOpen(false)}>✕</button>
       </div>
       <div className="chat-body" ref={bodyRef}>
@@ -3047,6 +3153,126 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
           <button className="chat-send" disabled={busy || (!input.trim() && !attachedFile)} onClick={() => send()} title={t('chat_send')}>➤</button>
         </div>
         <div className="chat-disclaimer">{t('chat_disclaimer')}</div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Phase 5.3: แชทกลุ่มทีม (ห้องเดียว เรียลไทม์ + แนบไฟล์) ─────────────────────
+function TeamChat({ sbCfg, currentUser, ready }) {
+  const { t } = useT();
+  const [open,  setOpen]  = useState(false);
+  const [msgs,  setMsgs]  = useState([]);
+  const [input, setInput] = useState('');
+  const [busy,  setBusy]  = useState(false);
+  const [file,  setFile]  = useState(null);    // File object ที่จะส่ง
+  const [unread, setUnread] = useState(0);
+  const bodyRef = React.useRef(null);
+  const fileRef = React.useRef(null);
+  const openRef = React.useRef(false);
+  React.useEffect(() => { openRef.current = open; }, [open]);
+
+  useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+  }, [msgs, open]);
+
+  // โหลดข้อความเก่า + ฟังเรียลไทม์
+  useEffect(() => {
+    if (!ready) return;
+    let alive = true;
+    sb.loadTeamMessages(sbCfg).then(d => { if (alive) setMsgs(d); }).catch(() => {});
+    const unsub = sb.subscribeTeam(sbCfg, (m) => {
+      if (!alive) return;
+      setMsgs(prev => prev.some(x => x.id === m.id) ? prev : [...prev, m]);
+      if (!openRef.current && m.sender_name !== currentUser) setUnread(u => u + 1);
+    });
+    return () => { alive = false; if (unsub) unsub(); };
+  }, [ready, sbCfg.url, sbCfg.key]);
+
+  useEffect(() => { if (open) setUnread(0); }, [open]);
+
+  function pickFile() { if (fileRef.current) fileRef.current.click(); }
+  function onFile(e) {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    if (f.size > 10 * 1024 * 1024) { alert(t('teamchat_file_big')); return; }
+    setFile(f);
+  }
+
+  async function send() {
+    const text = input.trim();
+    if ((!text && !file) || busy || !ready) return;
+    setBusy(true); setInput('');
+    const theFile = file; setFile(null);
+    try {
+      let filePath = null, fileName = null;
+      if (theFile) { const up = await sb.uploadChatFile(sbCfg, theFile); filePath = up.path; fileName = up.name; }
+      await sb.sendTeamMessage(sbCfg, { senderName: currentUser, content: text, filePath, fileName });
+    } catch (e) { alert(t('teamchat_send_fail')); setInput(text); }
+    setBusy(false);
+  }
+
+  async function openFile(path) {
+    try { const url = await sb.signedFileUrl(sbCfg, path); if (url) window.open(url, '_blank'); } catch (e) {}
+  }
+
+  function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+
+  if (!ready) return null;
+
+  if (!open) {
+    return (
+      <button className="team-fab" onClick={() => setOpen(true)} title={t('teamchat_open')}>
+        <span className="chat-fab-emoji">👥</span> {t('teamchat')}
+        {unread > 0 && <span className="team-unread">{unread > 9 ? '9+' : unread}</span>}
+      </button>
+    );
+  }
+
+  return (
+    <div className="chat-panel team-panel">
+      <div className="chat-head team-head">
+        <div style={{ flex:1, minWidth:0 }}>
+          <div className="chat-head-name">👥 {t('teamchat')}</div>
+          <div className="chat-head-sub">{t('teamchat_sub')}</div>
+        </div>
+        <button className="chat-head-btn" title={t('chat_close')} onClick={() => setOpen(false)}>✕</button>
+      </div>
+      <div className="chat-body" ref={bodyRef}>
+        {msgs.length === 0 && <div className="chat-intro">{t('teamchat_empty')}</div>}
+        {msgs.map(m => {
+          const mine = m.sender_name === currentUser;
+          return (
+            <div key={m.id} className={'team-msg ' + (mine ? 'mine' : 'other')}>
+              {!mine && (
+                <div className="team-msg-sender" style={{ color: getUserColor(m.sender_name) }}>
+                  <span className="avatar avatar-sm" style={{ background: getUserColor(m.sender_name) }}>{initials(m.sender_name)}</span>
+                  {m.sender_name}
+                </div>
+              )}
+              <div className="team-bubble" style={mine ? null : { borderLeft: '3px solid ' + getUserColor(m.sender_name) }}>
+                {m.content && <div style={{ whiteSpace:'pre-wrap' }}>{m.content}</div>}
+                {m.file_path && <div className="team-file" onClick={() => openFile(m.file_path)}>📎 {m.file_name || 'file'}</div>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="chat-foot">
+        {file && (
+          <div className="chat-attach">
+            <span className="chat-attach-name">📎 {file.name}</span>
+            <button className="chat-attach-x" onClick={() => setFile(null)} title={t('chat_remove_file')}>✕</button>
+          </div>
+        )}
+        <div className="chat-input-row">
+          <input type="file" ref={fileRef} style={{ display:'none' }} onChange={onFile} />
+          <button className="chat-attach-btn" onClick={pickFile} disabled={busy} title={t('chat_attach')}>📎</button>
+          <textarea className="chat-input" rows={1} value={input} placeholder={t('teamchat_placeholder')}
+            onChange={e => setInput(e.target.value)} onKeyDown={onKey} />
+          <button className="chat-send" disabled={busy || (!input.trim() && !file)} onClick={send} title={t('chat_send')}>➤</button>
+        </div>
       </div>
     </div>
   );
@@ -3389,7 +3615,7 @@ function App() {
           onConfirm={handleDeleteConfirm}
         />
       )}
-      {showApp && (
+      {showApp && (<>
         <ChatWidget
           sbCfg={sbCfg}
           currentUser={currentUser}
@@ -3397,7 +3623,8 @@ function App() {
           isManager={currentUser === 'Big Boss'}
           ready={isAuthed}
         />
-      )}
+        <TeamChat sbCfg={sbCfg} currentUser={currentUser} ready={isAuthed} />
+      </>)}
       {settingsOpen && (
         <SettingsModal
           cfg={sbCfg}
