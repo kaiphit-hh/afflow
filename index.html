@@ -1109,7 +1109,7 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_timeline:'Timeline', nav_report:'รายงาน',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', nav_timeline:'Timeline', nav_report:'รายงาน',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
@@ -1165,7 +1165,7 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_timeline:'Timeline', nav_report:'Reports',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', nav_timeline:'Timeline', nav_report:'Reports',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
@@ -1335,6 +1335,7 @@ function saveUser(u)  { localStorage.setItem('afflow_user', u); }
 // ค่าเริ่มต้น (ฝังไว้เพื่อให้ทุกคนเปิดแอปแล้วเชื่อม Supabase อัตโนมัติ ไม่ต้องตั้งค่าเอง)
 // ปลอดภัย: นี่คือ anon/public key เท่านั้น (ห้ามใส่ service_role key เด็ดขาด)
 const SB_DEFAULT_URL = 'https://dadorjuprfxvlugxszsh.supabase.co';
+const DRIVE_URL = 'https://drive.google.com/drive/folders/1fIyMTInnhwNng9h_dKoSUqC24Bwjd7yn?usp=sharing';   // โฟลเดอร์ Drive กลางของทีม
 const SB_DEFAULT_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhZG9yanVwcmZ4dmx1Z3hzenNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzOTM4NTEsImV4cCI6MjA5NTk2OTg1MX0.n0ENm64sdxUYQyIWZqTDOeChLzvou8_QFZzY6L0z3a0';
 function loadSbCfg() {
   return {
@@ -3810,6 +3811,13 @@ function App() {
                 {n.id === 'inbox' && newReqCount > 0 && <span className="nav-badge">{newReqCount > 9 ? '9+' : newReqCount}</span>}
               </div>
             ))}
+            {DRIVE_URL && (
+              <a className="nav-item" href={DRIVE_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration:'none' }}>
+                <span className="nav-icon">📁</span>
+                <span>{tApp('nav_drive')}</span>
+                <span style={{ marginLeft:'auto', fontSize:'0.7rem', opacity:0.6 }}>↗</span>
+              </a>
+            )}
           </div>
 
           {/* Create button (manager only) */}
