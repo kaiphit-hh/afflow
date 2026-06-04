@@ -1008,6 +1008,28 @@
       background: rgba(255,255,255,0.18); font-size: 0.74rem; font-weight: 600;
     }
     .chat-engine { margin-top: 6px; font-size: 0.66rem; font-weight: 700; color: var(--text-muted); opacity: 0.85; }
+    /* ผลค้นหา Drive ในแชท AI */
+    .chat-drive-results { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .chat-drive-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+      transition: border-color .12s, transform .12s;
+    }
+    .chat-drive-item:hover { border-color: var(--primary); transform: translateX(2px); }
+    .chat-drive-info { flex: 1; min-width: 0; }
+    .chat-drive-name {
+      font-size: 0.82rem; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chat-drive-path {
+      font-size: 0.68rem; color: var(--text-muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .chat-drive-open { flex-shrink: 0; color: var(--primary); font-size: 0.9rem; font-weight: 700; }
+    .chat-drive-hint {
+      margin-top: 10px; text-align: center; font-size: 0.74rem; color: var(--text-muted);
+      background: var(--bg); border: 1px dashed var(--border); border-radius: 10px; padding: 7px 10px;
+    }
     /* ─── Team chat ─── */
     .team-fab {
       position: fixed; right: 22px; bottom: 84px; z-index: 2500;
@@ -1255,7 +1277,7 @@ const I18N = {
     chat_title:'ผู้ช่วย AI', chat_open:'คุยกับผู้ช่วย AI', chat_placeholder:'พิมพ์คำถาม...', chat_send:'ส่ง', chat_thinking:'กำลังคิด...', chat_clear:'ล้างแชท', chat_close:'ปิด',
     chat_hello:'สวัสดีค่ะ', chat_intro:'มีอะไรให้ช่วยไหมคะ? ลองเลือกหัวข้อด้านล่าง หรือพิมพ์ถามได้เลย',
     chat_q1:'สรุปงานของฉันวันนี้', chat_q2:'งานไหนใกล้/เลยกำหนด?', chat_q3:'ร่างอีเมลทวงชำระเงิน', chat_q4:'ช่วยจัดลำดับความสำคัญงาน',
-    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง', chat_attach:'แนบไฟล์ (CSV/PDF/รูป) — จะใช้ Claude วิเคราะห์', chat_emoji:'อิโมจิ', chat_remove_file:'เอาไฟล์ออก', chat_file_too_big:'ไฟล์ใหญ่เกินไป (สูงสุด 5MB) — ลองย่อหรือแบ่งไฟล์', teamchat:'แชททีม', teamchat_open:'เปิดแชททีม', teamchat_sub:'ห้องรวมทั้งทีม', teamchat_empty:'ยังไม่มีข้อความ — เริ่มคุยกันได้เลย!', teamchat_placeholder:'พิมพ์ข้อความถึงทีม...', teamchat_file_big:'ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', teamchat_send_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
+    chat_error:'ขออภัยค่ะ เชื่อมต่อ AI ไม่ได้ ลองใหม่อีกครั้งนะคะ', chat_not_ready:'ผู้ช่วย AI ยังไม่พร้อมใช้งาน — ต้องล็อกอินผ่าน Supabase ก่อน', chat_disclaimer:'AI อาจคลาดเคลื่อน โปรดตรวจสอบก่อนใช้งานจริง', chat_drive_found:'เจอ {n} รายการที่ตรงกับ "{q}" ใน Drive ค่ะ 👇 (คลิกเพื่อเปิด)', chat_drive_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" ใน Drive เลยค่ะ ลองพิมพ์ชื่อสั้นลงหรือสะกดใหม่นะคะ', chat_drive_err:'ขอโทษค่ะ ค้นหา Drive ไม่สำเร็จ', chat_drive_hint:'🔍 อยากหาไฟล์? พิมพ์ "หาไฟล์ งบ Q1" ได้เลย', chat_attach:'แนบไฟล์ (CSV/PDF/รูป) — จะใช้ Claude วิเคราะห์', chat_emoji:'อิโมจิ', chat_remove_file:'เอาไฟล์ออก', chat_file_too_big:'ไฟล์ใหญ่เกินไป (สูงสุด 5MB) — ลองย่อหรือแบ่งไฟล์', teamchat:'แชททีม', teamchat_open:'เปิดแชททีม', teamchat_sub:'ห้องรวมทั้งทีม', teamchat_empty:'ยังไม่มีข้อความ — เริ่มคุยกันได้เลย!', teamchat_placeholder:'พิมพ์ข้อความถึงทีม...', teamchat_file_big:'ไฟล์ใหญ่เกินไป (สูงสุด 10MB)', teamchat_send_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง',
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
@@ -1311,7 +1333,7 @@ const I18N = {
     chat_title:'AI Assistant', chat_open:'Chat with AI assistant', chat_placeholder:'Type your question...', chat_send:'Send', chat_thinking:'Thinking...', chat_clear:'Clear chat', chat_close:'Close',
     chat_hello:'Hi', chat_intro:'How can I help? Pick a topic below, or just type your question.',
     chat_q1:'Summarize my tasks today', chat_q2:'What is due or overdue?', chat_q3:'Draft a payment reminder email', chat_q4:'Help me prioritize my tasks',
-    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.', chat_attach:'Attach a file (CSV/PDF/image) — analyzed by Claude', chat_emoji:'Emoji', chat_remove_file:'Remove file', chat_file_too_big:'File too large (max 5MB) — try shrinking or splitting it', teamchat:'Team Chat', teamchat_open:'Open team chat', teamchat_sub:'Whole-team room', teamchat_empty:'No messages yet — say hi!', teamchat_placeholder:'Message the team...', teamchat_file_big:'File too large (max 10MB)', teamchat_send_fail:'Send failed, please try again',
+    chat_error:'Sorry, I could not reach the AI. Please try again.', chat_not_ready:'AI assistant not ready — please sign in via Supabase first.', chat_disclaimer:'AI can make mistakes. Please verify important info.', chat_drive_found:'Found {n} item(s) matching "{q}" in Drive 👇 (click to open)', chat_drive_none:'No files matching "{q}" found in Drive. Try a shorter or different spelling.', chat_drive_err:'Sorry, the Drive search failed.', chat_drive_hint:'🔍 Looking for a file? Try "find file Q1 report"', chat_attach:'Attach a file (CSV/PDF/image) — analyzed by Claude', chat_emoji:'Emoji', chat_remove_file:'Remove file', chat_file_too_big:'File too large (max 5MB) — try shrinking or splitting it', teamchat:'Team Chat', teamchat_open:'Open team chat', teamchat_sub:'Whole-team room', teamchat_empty:'No messages yet — say hi!', teamchat_placeholder:'Message the team...', teamchat_file_big:'File too large (max 10MB)', teamchat_send_fail:'Send failed, please try again',
   },
 };
 
@@ -1545,6 +1567,22 @@ const sb = {
     // ทุกชื่อ error — พยายามดึงข้อความที่ฟังก์ชันส่งกลับมาแสดง
     try { const j = await lastErr.context.json(); if (j) return j; } catch (e) {}
     throw lastErr || new Error('drive_list_failed');
+  },
+  // D2: AI ค้นหาไฟล์ทั้งทรี Drive ตามชื่อ (ใช้ Edge Function ตัวเดียวกับ driveList)
+  async driveSearch(cfg, query) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const candidates = sb._driveFn ? [sb._driveFn] : ['drive-list', 'smart-responder'];
+    let lastErr = null;
+    for (const name of candidates) {
+      try {
+        const { data, error } = await c.functions.invoke(name, { body: { query } });
+        if (error) { lastErr = error; continue; }
+        sb._driveFn = name;
+        return data;   // { results, query } หรือ { error, message }
+      } catch (e) { lastErr = e; }
+    }
+    try { const j = await lastErr.context.json(); if (j) return j; } catch (e) {}
+    throw lastErr || new Error('drive_search_failed');
   },
   // Phase 4: ลืมรหัสผ่าน — ส่งอีเมลลิงก์รีเซ็ต (เด้งกลับมาที่ redirectTo)
   async sendReset(cfg, email, redirectTo) {
@@ -3238,6 +3276,37 @@ function ResetPasswordScreen({ cfg, onDone }) {
 
 // ─── App Root ─────────────────────────────────────────────────────────────────
 
+// D2: ตรวจว่าข้อความเป็นคำสั่ง "ค้นหาไฟล์ใน Drive" ไหม → คืนคำค้น (ถ้าใช่)
+function cleanDriveQ(x) {
+  let q = (x || '').trim()
+    .replace(/\s*(ให้(หน่อย|ที|ด้วย)?|หน่อย(ครับ|ค่ะ)?|ที|ด้วย|ครับ|ค่ะ|คะ)\s*$/g, '')
+    .replace(/\s*ใน\s*(ไดร์ฟ|ไดรฟ์|ไดร์ว|ไดร์|ไดรว์|ไดร|drive)\b.*$/i, '')
+    .replace(/^(ชื่อ|ไฟล์ชื่อ|ไฟล์)\s*/, '')
+    .trim();
+  return q.length >= 2 ? q : null;
+}
+function detectDriveSearch(text) {
+  let s = (text || '').trim().replace(/[?？！.]+$/, '').trim();
+  if (!s) return null;
+  let m;
+  // นำหน้า: (ช่วย)(ค้นหา|ค้น|หา)(ไฟล์|เอกสาร) X
+  m = s.match(/^(?:ช่วย\s*)?(?:ค้นหา|ค้น|หา)\s*(?:ไฟล์|เอกสาร)\s+(.+)$/i);
+  if (m) return cleanDriveQ(m[1]);
+  // หาใน(ไดรฟ์/drive) X
+  m = s.match(/^(?:ช่วย\s*)?(?:ค้นหา|ค้น|หา)\s*(?:ใน)?\s*(?:ไดร์ฟ|ไดรฟ์|ไดร์ว|ไดร์|ไดรว์|ไดร|drive)\s+(.+)$/i);
+  if (m) return cleanDriveQ(m[1]);
+  // ลงท้าย: X อยู่ไหน / X อยู่โฟลเดอร์ไหน
+  m = s.match(/^(?:ไฟล์|เอกสาร)?\s*(.+?)\s*อยู่(?:ที่ไหน|โฟลเดอร์ไหน|ตรงไหน|ไหน)$/i);
+  if (m) return cleanDriveQ(m[1]);
+  // English: find/search file|document X ; find X in drive
+  m = s.match(/^(?:find|search)\s+(?:for\s+)?(?:a\s+|the\s+)?(?:file|document|doc)\s+(?:named\s+|called\s+)?(.+)$/i);
+  if (m) return cleanDriveQ(m[1]);
+  m = s.match(/^(?:find|search)\s+(.+?)\s+in\s+(?:the\s+)?drive$/i);
+  if (m) return cleanDriveQ(m[1]);
+  m = s.match(/^where(?:'s| is| are)\s+(?:the\s+)?(?:file\s+)?(.+)$/i);
+  if (m) return cleanDriveQ(m[1]);
+  return null;
+}
 // ─── Phase 4: AI Assistant chat widget ────────────────────────────────────────
 function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
   const { t, lang } = useT();
@@ -3311,6 +3380,34 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
       setMsgs(m => [...m, userMsg, { role:'assistant', content:t('chat_not_ready') }]);
       return;
     }
+    // ── D2: AI ค้นหา Drive — ถ้าข้อความเป็นคำสั่งค้นไฟล์ → ค้นใน Drive แทนการถาม AI ──
+    const driveQ = (!fileToSend) ? detectDriveSearch(q) : null;
+    if (driveQ) {
+      setMsgs(m => [...m, userMsg]);
+      setBusy(true);
+      try {
+        const res = await sb.driveSearch(sbCfg, driveQ);
+        const results = (res && res.results) || [];
+        let content, drive = null;
+        if (res && res.error) {
+          content = t('chat_drive_err') + (res.detail || res.message ? ' (' + (res.detail || res.message) + ')' : '');
+        } else if (!results.length) {
+          content = t('chat_drive_none', { q: driveQ });
+        } else {
+          content = t('chat_drive_found', { n: results.length, q: driveQ });
+          drive = results;
+        }
+        setMsgs(m => [...m, { role:'assistant', content, drive }]);
+        const histText = content + (drive ? '\n' + drive.map(r => '• ' + r.name + (r.path ? ' — 📁 ' + r.path : '')).join('\n') : '');
+        sb.saveChatMessages(sbCfg, [
+          { role:'user', content: userMsg.content },
+          { role:'assistant', content: histText },
+        ]).catch(() => {});
+      } catch (e) {
+        setMsgs(m => [...m, { role:'assistant', content: t('chat_drive_err') }]);
+      } finally { setBusy(false); }
+      return;
+    }
     const next = [...msgs, userMsg];
     setMsgs(next);
     setBusy(true);
@@ -3373,12 +3470,29 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
             <div className="chat-chips">
               {quicks.map((q, i) => <button key={i} className="chat-chip" onClick={() => send(q)}>{q}</button>)}
             </div>
+            <div className="chat-drive-hint">{t('chat_drive_hint')}</div>
           </div>
         )}
         {msgs.map((m, i) => (
           <div key={i} className={'chat-msg ' + (m.role === 'user' ? 'user' : 'ai')}>
             {m.role === 'user' && m.file && <div className="chat-file-chip">📎 {m.file}</div>}
             {m.content}
+            {m.role === 'assistant' && m.drive && m.drive.length > 0 && (
+              <div className="chat-drive-results">
+                {m.drive.map(r => (
+                  <div key={r.id} className="chat-drive-item"
+                       onClick={() => window.open(r.link, '_blank', 'noopener,noreferrer')}
+                       title={t('drive_open_external')}>
+                    <DriveFileIcon f={r} />
+                    <div className="chat-drive-info">
+                      <div className="chat-drive-name">{r.name}</div>
+                      <div className="chat-drive-path">📁 {r.path || t('nav_drive')}</div>
+                    </div>
+                    <div className="chat-drive-open">↗</div>
+                  </div>
+                ))}
+              </div>
+            )}
             {m.role === 'assistant' && m.engine && (
               <div className="chat-engine">{m.engine === 'claude' ? '🧠 Claude' : '⚡ Gemini'}</div>
             )}
