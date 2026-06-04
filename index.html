@@ -983,6 +983,7 @@
     }
     .chat-attach-btn:hover:not(:disabled) { border-color: var(--primary); }
     .chat-attach-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .chat-search-btn { border-color: var(--primary); background: var(--primary-soft, rgba(99,102,241,0.12)); }
     /* แผงเลือกอิโมจิ */
     .emoji-wrap { position: relative; flex-shrink: 0; display: flex; }
     .emoji-panel {
@@ -3325,6 +3326,7 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
   const [loaded, setLoaded] = useState(false);             // โหลดประวัติแล้วหรือยัง
   const bodyRef = React.useRef(null);
   const fileRef = React.useRef(null);
+  const inputRef = React.useRef(null);
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
@@ -3393,8 +3395,9 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
   }
   // ปุ่ม 🔍 — ค้นข้อความในช่องพิมพ์ใน Drive ทันที (ไม่ต้องมีคำว่า "หาไฟล์")
   function searchDriveBtn() {
+    if (busy) return;
     const qq = input.trim();
-    if (!qq || busy) return;
+    if (!qq) { if (inputRef.current) inputRef.current.focus(); return; }   // ยังไม่พิมพ์ → เด้งไปช่องพิมพ์
     setInput('');
     const userMsg = { role:'user', content: qq };
     if (!ready) { setMsgs(m => [...m, userMsg, { role:'assistant', content: t('chat_not_ready') }]); return; }
@@ -3518,8 +3521,8 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
           <input type="file" ref={fileRef} style={{ display:'none' }}
             accept=".csv,.txt,.pdf,.png,.jpg,.jpeg,.webp,.gif,image/*,application/pdf,text/*" onChange={onFile} />
           <button className="chat-attach-btn" onClick={pickFile} disabled={busy} title={t('chat_attach')}>📎</button>
-          <button className="chat-attach-btn" onClick={searchDriveBtn} disabled={busy || !input.trim()} title={t('chat_drive_btn')}>🔍</button>
-          <textarea className="chat-input" rows={1} value={input} placeholder={t('chat_placeholder')}
+          <button className="chat-attach-btn chat-search-btn" onClick={searchDriveBtn} disabled={busy} title={t('chat_drive_btn')}>🔍</button>
+          <textarea className="chat-input" ref={inputRef} rows={1} value={input} placeholder={t('chat_placeholder')}
             onChange={e => setInput(e.target.value)} onKeyDown={onKey} />
           <button className="chat-send" disabled={busy || (!input.trim() && !attachedFile)} onClick={() => send()} title={t('chat_send')}>➤</button>
         </div>
