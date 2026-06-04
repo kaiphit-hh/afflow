@@ -198,6 +198,30 @@
     .inbox-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .inbox-btn { font-size: 0.78rem; padding: 6px 12px; }
     .inbox-btn.danger { color: var(--danger); border-color: var(--danger); }
+    /* Drive กลาง — หน้าต่างดูไฟล์ */
+    .drive-overlay {
+      position: fixed; inset: 0; z-index: 3200; background: rgba(0,0,0,0.6);
+      display: flex; align-items: center; justify-content: center; padding: 2vh 2vw;
+    }
+    .drive-panel {
+      width: 96vw; max-width: 1500px; height: 94vh; background: var(--card);
+      border-radius: 16px; box-shadow: var(--shadow-lg); display: flex; flex-direction: column; overflow: hidden;
+    }
+    .drive-head {
+      display: flex; align-items: center; gap: 14px; padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--primary) 0%, #7c83ff 100%); color: #fff;
+    }
+    .drive-head-title { font-weight: 700; font-size: 1rem; }
+    .drive-head-link { margin-left: auto; color: #fff; font-size: 0.82rem; font-weight: 600; text-decoration: none; opacity: 0.95; }
+    .drive-head-link:hover { text-decoration: underline; }
+    .drive-head-close {
+      flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; border: none;
+      background: rgba(255,255,255,0.2); color: #fff; font-size: 1rem; cursor: pointer;
+    }
+    .drive-head-close:hover { background: rgba(255,255,255,0.32); }
+    .drive-frame { flex: 1; width: 100%; border: none; background: #fff; }
+    .drive-foot { padding: 8px 18px; font-size: 0.72rem; color: var(--text-muted); border-top: 1px solid var(--border); text-align: center; }
     .team-member {
       display: flex;
       align-items: center;
@@ -1109,7 +1133,7 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', nav_timeline:'Timeline', nav_report:'รายงาน',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'คลิกไฟล์เพื่อเปิดใน Google Drive (ต้องล็อกอิน Google ที่มีสิทธิ์เข้าโฟลเดอร์)', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', nav_timeline:'Timeline', nav_report:'รายงาน',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
@@ -1165,7 +1189,7 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', nav_timeline:'Timeline', nav_report:'Reports',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'Click a file to open it in Google Drive (sign in to Google with folder access)', drive_no_url:'No Drive link set', nav_timeline:'Timeline', nav_report:'Reports',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
@@ -3396,6 +3420,29 @@ function InboxView({ cfg }) {
   );
 }
 
+// ─── หน้าต่างดู Drive กลางในแอป (embedded folder view) ──────────────────────────
+function DriveModal({ onClose }) {
+  const { t } = useT();
+  const m = (DRIVE_URL || '').match(/folders\/([^?/]+)/);
+  const folderId = m ? m[1] : '';
+  const embedUrl = folderId ? ('https://drive.google.com/embeddedfolderview?id=' + folderId + '#grid') : '';
+  return (
+    <div className="drive-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="drive-panel">
+        <div className="drive-head">
+          <div className="drive-head-title">📁 {t('nav_drive')}</div>
+          <a className="drive-head-link" href={DRIVE_URL} target="_blank" rel="noopener noreferrer">{t('drive_open_external')} ↗</a>
+          <button className="drive-head-close" onClick={onClose} title={t('chat_close')}>✕</button>
+        </div>
+        {embedUrl
+          ? <iframe className="drive-frame" src={embedUrl} title="Drive" />
+          : <div className="drive-empty" style={{ padding:40, textAlign:'center', color:'var(--text-muted)' }}>{t('drive_no_url')}</div>}
+        <div className="drive-foot">{t('drive_hint')}</div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Phase 5.3: แชทกลุ่มทีม (ห้องเดียว เรียลไทม์ + แนบไฟล์) ─────────────────────
 function TeamChat({ sbCfg, currentUser, ready }) {
   const { t } = useT();
@@ -3663,6 +3710,7 @@ function App() {
   // ── ชุด C (#5): ฟอร์มส่งงานสาธารณะ + นับคำขอใหม่ (badge บนเมนู Inbox) ──────────
   const requestMode = /[?&]form=request/.test(typeof window !== 'undefined' ? window.location.search : '');
   const [newReqCount, setNewReqCount] = useState(0);
+  const [driveOpen, setDriveOpen] = useState(false);   // หน้าต่างดู Drive ในแอป
   useEffect(() => {
     if (!isAuthed) { setNewReqCount(0); return; }
     let alive = true;
@@ -3812,11 +3860,10 @@ function App() {
               </div>
             ))}
             {DRIVE_URL && (
-              <a className="nav-item" href={DRIVE_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration:'none' }}>
+              <div className="nav-item" onClick={() => { setDriveOpen(true); setSidebarOpen(false); }}>
                 <span className="nav-icon">📁</span>
                 <span>{tApp('nav_drive')}</span>
-                <span style={{ marginLeft:'auto', fontSize:'0.7rem', opacity:0.6 }}>↗</span>
-              </a>
+              </div>
             )}
           </div>
 
@@ -3954,6 +4001,8 @@ function App() {
           {toasts.map(tt => <div key={tt.id} className="toast">{tt.text}</div>)}
         </div>
       )}
+      {/* Drive กลาง — หน้าต่างดูไฟล์ในแอป */}
+      {driveOpen && <DriveModal onClose={() => setDriveOpen(false)} />}
       {settingsOpen && (
         <SettingsModal
           cfg={sbCfg}
