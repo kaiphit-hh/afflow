@@ -243,25 +243,23 @@
     .drive-refresh:disabled { opacity: 0.4; cursor: default; }
     /* body + grid */
     .drive-body { flex: 1; overflow-y: auto; background: var(--card); padding: 18px; }
-    .drive-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px;
+    .drive-list { display: flex; flex-direction: column; gap: 2px; }
+    .drive-li {
+      display: flex; align-items: center; gap: 12px; padding: 9px 12px;
+      border-radius: 9px; cursor: pointer; transition: background .12s, border-color .12s;
+      border: 1px solid transparent;
     }
-    .drive-item {
-      position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px;
-      padding: 18px 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg);
-      cursor: pointer; transition: transform .12s, box-shadow .12s, border-color .12s; text-align: center;
+    .drive-li:hover { background: var(--bg); border-color: var(--border); }
+    .drive-li.is-folder .drive-li-name { font-weight: 600; }
+    .drive-li-icon { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+    .drive-li-emoji { font-size: 1.5rem; width: 28px; text-align: center; flex-shrink: 0; line-height: 1; }
+    .drive-li-name {
+      flex: 1; min-width: 0; font-size: 0.9rem; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .drive-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
-    .drive-item.is-folder { background: var(--primary-soft, rgba(99,102,241,0.06)); }
-    .drive-item-icon { font-size: 2.4rem; line-height: 1; }
-    .drive-item-name {
-      font-size: 0.8rem; color: var(--text); word-break: break-word;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-height: 2.4em;
-    }
-    .drive-item-badge {
-      position: absolute; top: 8px; right: 8px; font-size: 0.7rem; color: var(--text-muted); opacity: 0; transition: opacity .12s;
-    }
-    .drive-item:hover .drive-item-badge { opacity: 0.8; }
+    .drive-li-meta { font-size: 0.74rem; color: var(--text-muted); flex-shrink: 0; }
+    .drive-li-open { width: 16px; text-align: center; font-size: 0.95rem; color: var(--text-muted); opacity: 0; transition: opacity .12s; flex-shrink: 0; }
+    .drive-li:hover .drive-li-open { opacity: 0.7; }
     /* states */
     .drive-state {
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
@@ -3510,8 +3508,25 @@ function driveIcon(f) {
   if (mt.includes('zip') || mt.includes('compressed')) return '🗜️';
   return '📄';
 }
+function fmtDriveDate(iso, lang) {
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleDateString(lang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short', year: '2-digit' });
+  } catch (e) { return ''; }
+}
+// ไอคอนไฟล์: ใช้รูปไอคอนจริงจาก Google Drive (บอกชนิดไฟล์ชัดเจน) — ถ้าโหลดไม่ขึ้นใช้ emoji สำรอง
+function DriveFileIcon({ f }) {
+  const [err, setErr] = useState(false);
+  if (f.isFolder) return <span className="drive-li-emoji">📁</span>;
+  if (f.icon && !err) {
+    const src = f.icon.replace('/16/', '/48/');
+    return <img className="drive-li-icon" src={src} alt="" onError={() => setErr(true)} />;
+  }
+  return <span className="drive-li-emoji">{driveIcon(f)}</span>;
+}
 function DriveModal({ cfg, onClose }) {
-  const { t } = useT();
+  const { t, lang } = useT();
   const m = (DRIVE_URL || '').match(/folders\/([^?/]+)/);
   const rootId = m ? m[1] : '';
   const [stack, setStack] = useState([{ id: rootId, name: t('nav_drive') }]);  // breadcrumb
@@ -3576,13 +3591,14 @@ function DriveModal({ cfg, onClose }) {
           ) : files.length === 0 ? (
             <div className="drive-state">{t('drive_empty_folder')}</div>
           ) : (
-            <div className="drive-grid">
+            <div className="drive-list">
               {files.map(f => (
-                <div key={f.id} className={'drive-item' + (f.isFolder ? ' is-folder' : '')}
+                <div key={f.id} className={'drive-li' + (f.isFolder ? ' is-folder' : '')}
                      onClick={() => f.isFolder ? openFolder(f) : openFile(f)} title={f.name}>
-                  <div className="drive-item-icon">{driveIcon(f)}</div>
-                  <div className="drive-item-name">{f.name}</div>
-                  {!f.isFolder && <div className="drive-item-badge">↗</div>}
+                  <DriveFileIcon f={f} />
+                  <div className="drive-li-name">{f.name}</div>
+                  {f.modified && <div className="drive-li-meta">{fmtDriveDate(f.modified, lang)}</div>}
+                  <div className="drive-li-open">{f.isFolder ? '›' : '↗'}</div>
                 </div>
               ))}
             </div>
