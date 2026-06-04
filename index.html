@@ -2970,7 +2970,12 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
       };
       if (fileToSend) payload.file = { name: fileToSend.name, kind: fileToSend.kind, mime: fileToSend.mime, data: fileToSend.data };
       const data = await sb.aiChat(sbCfg, payload);
-      const reply = (data && (data.reply || (data.error ? t('chat_error') : ''))) || t('chat_error');
+      let reply;
+      if (data && data.reply) reply = data.reply;
+      else if (data && data.error) reply = t('chat_error')
+        + (data.detail ? ('\n\n⚠️ [' + (data.engine || 'AI') + ' ' + (data.status || '') + '] ' + String(data.detail).slice(0, 300))
+                       : ('\n\n⚠️ ' + data.error));
+      else reply = t('chat_error');
       setMsgs(m => [...m, { role:'assistant', content: reply, engine: data && data.engine }]);
     } catch (e) {
       setMsgs(m => [...m, { role:'assistant', content: t('chat_error') }]);
