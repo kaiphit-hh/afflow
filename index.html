@@ -177,6 +177,27 @@
       animation: toastIn 0.3s ease;
     }
     @keyframes toastIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+    .nav-badge {
+      margin-left: auto; background: #ef4444; color: #fff; font-size: 0.66rem; font-weight: 700;
+      min-width: 18px; height: 18px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px;
+    }
+    .inbox-card {
+      background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--primary);
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+    }
+    .inbox-card.done { opacity: 0.6; border-left-color: var(--success); }
+    .inbox-card-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+    .inbox-from { font-weight: 700; font-size: 0.9rem; }
+    .inbox-time { font-size: 0.74rem; color: var(--text-muted); }
+    .inbox-status { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+    .inbox-status.new  { background: #fee2e2; color: #dc2626; }
+    .inbox-status.done { background: #dcfce7; color: #16a34a; }
+    .inbox-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+    .inbox-details { font-size: 0.85rem; color: var(--text); white-space: pre-wrap; margin-bottom: 6px; }
+    .inbox-contact { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
+    .inbox-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .inbox-btn { font-size: 0.78rem; padding: 6px 12px; }
+    .inbox-btn.danger { color: var(--danger); border-color: var(--danger); }
     .team-member {
       display: flex;
       align-items: center;
@@ -1088,7 +1109,8 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_timeline:'Timeline', nav_report:'รายงาน',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_timeline:'Timeline', nav_report:'รายงาน',
+    req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
     search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด',
@@ -1143,7 +1165,8 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_timeline:'Timeline', nav_report:'Reports',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_timeline:'Timeline', nav_report:'Reports',
+    req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
     search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines',
@@ -1492,6 +1515,38 @@ const sb = {
       .on('presence', { event: 'join' }, ({ key }) => handlers.onJoin && handlers.onJoin(key))
       .subscribe((status) => { if (status === 'SUBSCRIBED') ch.track({ name, online_at: nowISO() }); });
     return () => { try { ch.untrack(); c.removeChannel(ch); } catch (e) {} };
+  },
+  // ชุด C (#5): ฟอร์มส่งงาน + Inbox (ดู supabase/requests.sql)
+  async submitRequest(cfg, req) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const { error } = await c.from('requests').insert({
+      requester_name: req.name, requester_contact: req.contact || null,
+      title: req.title, details: req.details || null, category: req.category || null,
+    });
+    if (error) throw error;
+  },
+  async loadRequests(cfg) {
+    const c = getSb(cfg); if (!c) return [];
+    const { data, error } = await c.from('requests').select('*').order('created_at', { ascending: false }).limit(300);
+    if (error) throw error;
+    return data || [];
+  },
+  async updateRequestStatus(cfg, id, status) {
+    const c = getSb(cfg); if (!c) return;
+    const { error } = await c.from('requests').update({ status }).eq('id', id);
+    if (error) throw error;
+  },
+  async deleteRequest(cfg, id) {
+    const c = getSb(cfg); if (!c) return;
+    const { error } = await c.from('requests').delete().eq('id', id);
+    if (error) throw error;
+  },
+  subscribeRequests(cfg, onChange) {
+    const c = getSb(cfg); if (!c) return null;
+    const ch = c.channel('afflow-req-' + Math.floor(Math.random() * 1e9))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, () => onChange())
+      .subscribe();
+    return () => { try { c.removeChannel(ch); } catch (e) {} };
   },
 };
 
@@ -3239,6 +3294,107 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
   );
 }
 
+// ─── ชุด C (#5): ฟอร์มส่งงานสาธารณะ (เปิดผ่าน ?form=request — ไม่ต้องล็อกอิน) ─────
+function RequestForm({ cfg }) {
+  const { t, lang, setLang } = useT();
+  const [form, setForm] = useState({ name:'', contact:'', title:'', details:'' });
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err,  setErr]  = useState('');
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  async function submit(e) {
+    if (e) e.preventDefault();
+    setErr('');
+    if (!form.name.trim() || !form.title.trim()) { setErr(t('req_required')); return; }
+    setBusy(true);
+    try { await sb.submitRequest(cfg, form); setDone(true); }
+    catch (e2) { setErr(t('req_fail')); }
+    setBusy(false);
+  }
+  return (
+    <div className="welcome-overlay">
+      <div className="welcome-card" style={{ maxWidth: 480 }}>
+        <div className="topbar-lang-toggle" style={{ position:'absolute', top:14, right:14 }}
+             onClick={() => setLang(lang === 'th' ? 'en' : 'th')} title="TH / EN">
+          <span className={`lang-opt${lang === 'th' ? ' active' : ''}`}>TH</span>
+          <span className="lang-sep">/</span>
+          <span className={`lang-opt${lang === 'en' ? ' active' : ''}`}>EN</span>
+        </div>
+        <div className="welcome-logo"><img src={COMPANY_LOGO} alt="Hungry Hub" className="welcome-logo-img" /></div>
+        <div className="welcome-title" style={{ fontSize:'1.4rem' }}>{t('req_title')}</div>
+        <div className="welcome-sub">{t('req_sub')}</div>
+        {done ? (
+          <div style={{ marginTop:22, textAlign:'center' }}>
+            <div style={{ fontSize:'2.6rem' }}>✅</div>
+            <div className="welcome-sub" style={{ color:'var(--success)', fontWeight:700, marginTop:8 }}>{t('req_thanks')}</div>
+            <button className="welcome-btn" style={{ marginTop:18, width:'100%' }}
+              onClick={() => { setForm({ name:'', contact:'', title:'', details:'' }); setDone(false); }}>{t('req_again')}</button>
+          </div>
+        ) : (
+        <form onSubmit={submit} style={{ marginTop:16, textAlign:'left' }}>
+          <div className="form-group"><label className="form-label">{t('req_name')} *</label>
+            <input className="form-input" value={form.name} onChange={e => set('name', e.target.value)} placeholder={t('req_name_ph')} /></div>
+          <div className="form-group"><label className="form-label">{t('req_contact')}</label>
+            <input className="form-input" value={form.contact} onChange={e => set('contact', e.target.value)} placeholder={t('req_contact_ph')} /></div>
+          <div className="form-group"><label className="form-label">{t('req_what')} *</label>
+            <input className="form-input" value={form.title} onChange={e => set('title', e.target.value)} placeholder={t('req_what_ph')} /></div>
+          <div className="form-group"><label className="form-label">{t('req_details')}</label>
+            <textarea className="form-input" rows={3} value={form.details} onChange={e => set('details', e.target.value)} placeholder={t('req_details_ph')} /></div>
+          {err && <div style={{ color:'var(--danger)', fontSize:'0.82rem', fontWeight:600, marginBottom:10 }}>✕ {err}</div>}
+          <button className="welcome-btn" type="submit" disabled={busy} style={{ width:'100%' }}>{busy ? t('req_sending') : t('req_send')}</button>
+        </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── ชุด C: กล่อง Inbox (เฉพาะทีม) ────────────────────────────────────────────
+function InboxView({ cfg }) {
+  const { t, lang } = useT();
+  const [reqs, setReqs] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    sb.loadRequests(cfg).then(d => { if (alive) { setReqs(d); setLoaded(true); } }).catch(() => { if (alive) setLoaded(true); });
+    const unsub = sb.subscribeRequests(cfg, () => { sb.loadRequests(cfg).then(d => { if (alive) setReqs(d); }).catch(() => {}); });
+    return () => { alive = false; if (unsub) unsub(); };
+  }, [cfg.url, cfg.key]);
+  async function setStatus(id, status) { setReqs(rs => rs.map(r => r.id === id ? { ...r, status } : r)); try { await sb.updateRequestStatus(cfg, id, status); } catch (e) {} }
+  async function del(id) { if (!confirm(t('req_del_confirm'))) return; setReqs(rs => rs.filter(r => r.id !== id)); try { await sb.deleteRequest(cfg, id); } catch (e) {} }
+  const fmt = (iso) => { try { return new Date(iso).toLocaleString(lang === 'en' ? 'en-GB' : 'th-TH'); } catch (e) { return ''; } };
+  const newCount = reqs.filter(r => r.status !== 'done').length;
+  return (
+    <div>
+      <div className="page-header">
+        <div className="page-title">📥 {t('inbox_title')}</div>
+        <div className="page-subtitle">{t('inbox_sub', { n: newCount })}</div>
+      </div>
+      {loaded && reqs.length === 0 && (
+        <div className="card"><div className="empty-state"><div className="empty-icon">📭</div><div className="empty-text">{t('inbox_empty')}</div></div></div>
+      )}
+      {reqs.map(r => (
+        <div key={r.id} className={'inbox-card' + (r.status === 'done' ? ' done' : '')}>
+          <div className="inbox-card-head">
+            <span className="inbox-from">👤 {r.requester_name}</span>
+            <span className="inbox-time">{fmt(r.created_at)}</span>
+            <span className={'inbox-status ' + (r.status === 'done' ? 'done' : 'new')}>{r.status === 'done' ? t('inbox_done') : t('inbox_new')}</span>
+          </div>
+          <div className="inbox-title">{r.title}</div>
+          {r.details && <div className="inbox-details">{r.details}</div>}
+          {r.requester_contact && <div className="inbox-contact">📞 {r.requester_contact}</div>}
+          <div className="inbox-actions">
+            {r.status !== 'done'
+              ? <button className="btn btn-outline inbox-btn" onClick={() => setStatus(r.id, 'done')}>✅ {t('inbox_mark_done')}</button>
+              : <button className="btn btn-outline inbox-btn" onClick={() => setStatus(r.id, 'new')}>↩ {t('inbox_reopen')}</button>}
+            <button className="btn btn-outline inbox-btn danger" onClick={() => del(r.id)}>🗑 {t('delete')}</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── Phase 5.3: แชทกลุ่มทีม (ห้องเดียว เรียลไทม์ + แนบไฟล์) ─────────────────────
 function TeamChat({ sbCfg, currentUser, ready }) {
   const { t } = useT();
@@ -3503,6 +3659,18 @@ function App() {
     return () => { clearTimeout(timer); if (unsub) unsub(); setOnlineUsers([]); };
   }, [isAuthed, currentUser, sbCfg.url, sbCfg.key]);
 
+  // ── ชุด C (#5): ฟอร์มส่งงานสาธารณะ + นับคำขอใหม่ (badge บนเมนู Inbox) ──────────
+  const requestMode = /[?&]form=request/.test(typeof window !== 'undefined' ? window.location.search : '');
+  const [newReqCount, setNewReqCount] = useState(0);
+  useEffect(() => {
+    if (!isAuthed) { setNewReqCount(0); return; }
+    let alive = true;
+    const load = () => sb.loadRequests(sbCfg).then(d => { if (alive) setNewReqCount((d || []).filter(r => r.status !== 'done').length); }).catch(() => {});
+    load();
+    const unsub = sb.subscribeRequests(sbCfg, load);
+    return () => { alive = false; if (unsub) unsub(); };
+  }, [isAuthed, sbCfg.url, sbCfg.key]);
+
   function handleCreate(form) {
     const t = {
       id: uid(), title: form.title, description: form.description,
@@ -3555,6 +3723,7 @@ function App() {
 
   const NAV = [
     { id: 'dashboard', label: tApp('nav_dashboard'), icon: '📊' },
+    { id: 'inbox',     label: tApp('nav_inbox'),     icon: '📥' },
     { id: 'tasks',     label: tApp('nav_tasks'),     icon: '📋' },
     { id: 'completed', label: tApp('nav_completed'), icon: '✅' },
     { id: 'timeline',  label: tApp('nav_timeline'),  icon: '📅' },
@@ -3563,6 +3732,7 @@ function App() {
 
   const VIEW_LABELS = {
     dashboard: tApp('nav_dashboard'),
+    inbox:     tApp('nav_inbox'),
     tasks:     tApp('nav_tasks'),
     completed: tApp('nav_completed'),
     timeline:  tApp('nav_timeline'),
@@ -3577,6 +3747,15 @@ function App() {
   const showLoader  = isSb && (session === undefined || (!!session && !currentUser)) && !recovery;
   const showWelcome = !isSb && !currentUser;
   const showApp     = (isSb ? (!!session && !!currentUser) : !!currentUser) && !recovery;
+
+  // ชุด C: ฟอร์มส่งงานสาธารณะ (?form=request) — แสดงฟอร์มอย่างเดียว ไม่ต้องล็อกอิน
+  if (requestMode) {
+    return (
+      <LangContext.Provider value={{ lang, setLang }}>
+        <RequestForm cfg={sbCfg} />
+      </LangContext.Provider>
+    );
+  }
 
   return (
     <LangContext.Provider value={{ lang, setLang }}>
@@ -3628,6 +3807,7 @@ function App() {
               <div key={n.id} className={`nav-item${view === n.id ? ' active' : ''}`} onClick={() => goView(n.id)}>
                 <span className="nav-icon">{n.icon}</span>
                 <span>{n.label}</span>
+                {n.id === 'inbox' && newReqCount > 0 && <span className="nav-badge">{newReqCount > 9 ? '9+' : newReqCount}</span>}
               </div>
             ))}
           </div>
@@ -3685,6 +3865,9 @@ function App() {
           <div className="main-content">
             {view === 'dashboard' && (
               <Dashboard tasks={visibleTasks} currentUser={currentUser} onSelectTask={handleSelectTask} />
+            )}
+            {view === 'inbox' && (
+              <InboxView cfg={sbCfg} />
             )}
             {view === 'tasks' && (
               <TaskList
