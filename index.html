@@ -222,6 +222,64 @@
     .drive-head-close:hover { background: rgba(255,255,255,0.32); }
     .drive-frame { flex: 1; width: 100%; border: none; background: #fff; }
     .drive-foot { padding: 8px 18px; font-size: 0.72rem; color: var(--text-muted); border-top: 1px solid var(--border); text-align: center; }
+    /* breadcrumb */
+    .drive-crumb {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+      padding: 10px 18px; border-bottom: 1px solid var(--border); background: var(--bg);
+    }
+    .drive-crumb-item {
+      border: none; background: transparent; cursor: pointer; padding: 3px 8px; border-radius: 7px;
+      font-size: 0.85rem; color: var(--primary); font-weight: 600; max-width: 220px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .drive-crumb-item:hover:not(:disabled) { background: var(--primary-soft, rgba(99,102,241,0.12)); }
+    .drive-crumb-item.active { color: var(--text); cursor: default; font-weight: 700; }
+    .drive-crumb-sep { color: var(--text-muted); font-size: 0.9rem; }
+    .drive-refresh {
+      margin-left: auto; border: 1px solid var(--border); background: var(--card); cursor: pointer;
+      width: 30px; height: 30px; border-radius: 8px; color: var(--text-muted); font-size: 1rem;
+    }
+    .drive-refresh:hover:not(:disabled) { color: var(--primary); border-color: var(--primary); }
+    .drive-refresh:disabled { opacity: 0.4; cursor: default; }
+    /* body + grid */
+    .drive-body { flex: 1; overflow-y: auto; background: var(--card); padding: 18px; }
+    .drive-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px;
+    }
+    .drive-item {
+      position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 18px 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg);
+      cursor: pointer; transition: transform .12s, box-shadow .12s, border-color .12s; text-align: center;
+    }
+    .drive-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+    .drive-item.is-folder { background: var(--primary-soft, rgba(99,102,241,0.06)); }
+    .drive-item-icon { font-size: 2.4rem; line-height: 1; }
+    .drive-item-name {
+      font-size: 0.8rem; color: var(--text); word-break: break-word;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-height: 2.4em;
+    }
+    .drive-item-badge {
+      position: absolute; top: 8px; right: 8px; font-size: 0.7rem; color: var(--text-muted); opacity: 0; transition: opacity .12s;
+    }
+    .drive-item:hover .drive-item-badge { opacity: 0.8; }
+    /* states */
+    .drive-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+      min-height: 240px; color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 30px;
+    }
+    .drive-err-detail {
+      font-size: 0.74rem; color: var(--danger); max-width: 560px; word-break: break-word;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
+    }
+    .drive-retry {
+      border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer;
+      padding: 7px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    }
+    .drive-spinner {
+      width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--primary);
+      border-radius: 50%; animation: drive-spin 0.7s linear infinite;
+    }
+    @keyframes drive-spin { to { transform: rotate(360deg); } }
     .team-member {
       display: flex;
       align-items: center;
@@ -1133,7 +1191,7 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'คลิกไฟล์เพื่อเปิดใน Google Drive (ต้องล็อกอิน Google ที่มีสิทธิ์เข้าโฟลเดอร์)', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', nav_timeline:'Timeline', nav_report:'รายงาน',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'คลิกโฟลเดอร์เพื่อเข้าไปดู • คลิกไฟล์เพื่อเปิดใน Google Drive', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', nav_timeline:'Timeline', nav_report:'รายงาน',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
@@ -1189,7 +1247,7 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'Click a file to open it in Google Drive (sign in to Google with folder access)', drive_no_url:'No Drive link set', nav_timeline:'Timeline', nav_report:'Reports',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'Click a folder to open it • click a file to open in Google Drive', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', nav_timeline:'Timeline', nav_report:'Reports',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
@@ -1457,6 +1515,24 @@ const sb = {
       throw error;
     }
     return data;   // { reply, usage } หรือ { error, reply }
+  },
+  // D2: อ่านรายชื่อไฟล์/โฟลเดอร์ใน Drive ผ่าน Edge Function (Service Account)
+  // ลองทั้งชื่อ 'drive-list' และ 'smart-responder' อัตโนมัติ แล้วจำชื่อที่ใช้ได้
+  async driveList(cfg, folderId) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const candidates = sb._driveFn ? [sb._driveFn] : ['drive-list', 'smart-responder'];
+    let lastErr = null;
+    for (const name of candidates) {
+      try {
+        const { data, error } = await c.functions.invoke(name, { body: { folderId: folderId || null } });
+        if (error) { lastErr = error; continue; }   // ฟังก์ชันไม่เจอ/error → ลองชื่อถัดไป
+        sb._driveFn = name;                          // สำเร็จ → จำชื่อที่ใช้ได้
+        return data;                                 // { files, folderId } หรือ { error, message }
+      } catch (e) { lastErr = e; }
+    }
+    // ทุกชื่อ error — พยายามดึงข้อความที่ฟังก์ชันส่งกลับมาแสดง
+    try { const j = await lastErr.context.json(); if (j) return j; } catch (e) {}
+    throw lastErr || new Error('drive_list_failed');
   },
   // Phase 4: ลืมรหัสผ่าน — ส่งอีเมลลิงก์รีเซ็ต (เด้งกลับมาที่ redirectTo)
   async sendReset(cfg, email, redirectTo) {
@@ -3421,11 +3497,48 @@ function InboxView({ cfg }) {
 }
 
 // ─── หน้าต่างดู Drive กลางในแอป (embedded folder view) ──────────────────────────
-function DriveModal({ onClose }) {
+function driveIcon(f) {
+  if (f.isFolder) return '📁';
+  const mt = f.mimeType || '';
+  if (mt.includes('spreadsheet') || mt.includes('excel') || mt.includes('csv')) return '📊';
+  if (mt.includes('presentation') || mt.includes('powerpoint')) return '📽️';
+  if (mt.includes('document') || mt.includes('msword') || mt.includes('wordprocessing')) return '📝';
+  if (mt.includes('pdf')) return '📕';
+  if (mt.includes('image')) return '🖼️';
+  if (mt.includes('video')) return '🎬';
+  if (mt.includes('audio')) return '🎵';
+  if (mt.includes('zip') || mt.includes('compressed')) return '🗜️';
+  return '📄';
+}
+function DriveModal({ cfg, onClose }) {
   const { t } = useT();
   const m = (DRIVE_URL || '').match(/folders\/([^?/]+)/);
-  const folderId = m ? m[1] : '';
-  const embedUrl = folderId ? ('https://drive.google.com/embeddedfolderview?id=' + folderId + '#grid') : '';
+  const rootId = m ? m[1] : '';
+  const [stack, setStack] = useState([{ id: rootId, name: t('nav_drive') }]);  // breadcrumb
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const current = stack[stack.length - 1];
+
+  async function load(folderId) {
+    setLoading(true); setError('');
+    try {
+      const res = await sb.driveList(cfg, folderId);
+      if (res && res.error) {
+        setError(res.message || res.detail || res.error); setFiles([]);
+      } else {
+        setFiles((res && res.files) || []);
+      }
+    } catch (e) {
+      setError(String((e && e.message) || e)); setFiles([]);
+    } finally { setLoading(false); }
+  }
+  useEffect(() => { if (rootId) load(current.id); }, [current.id]);
+
+  const openFolder = (f) => setStack(s => [...s, { id: f.id, name: f.name }]);
+  const goTo = (idx) => setStack(s => s.slice(0, idx + 1));
+  const openFile = (f) => window.open(f.link, '_blank', 'noopener,noreferrer');
+
   return (
     <div className="drive-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="drive-panel">
@@ -3434,9 +3547,48 @@ function DriveModal({ onClose }) {
           <a className="drive-head-link" href={DRIVE_URL} target="_blank" rel="noopener noreferrer">{t('drive_open_external')} ↗</a>
           <button className="drive-head-close" onClick={onClose} title={t('chat_close')}>✕</button>
         </div>
-        {embedUrl
-          ? <iframe className="drive-frame" src={embedUrl} title="Drive" />
-          : <div className="drive-empty" style={{ padding:40, textAlign:'center', color:'var(--text-muted)' }}>{t('drive_no_url')}</div>}
+
+        <div className="drive-crumb">
+          {stack.map((s, i) => (
+            <React.Fragment key={s.id + '_' + i}>
+              {i > 0 && <span className="drive-crumb-sep">›</span>}
+              <button className={'drive-crumb-item' + (i === stack.length - 1 ? ' active' : '')}
+                      onClick={() => goTo(i)} disabled={i === stack.length - 1}>
+                {i === 0 ? '🏠 ' : ''}{s.name}
+              </button>
+            </React.Fragment>
+          ))}
+          <button className="drive-refresh" onClick={() => load(current.id)} disabled={loading} title={t('drive_refresh')}>↻</button>
+        </div>
+
+        <div className="drive-body">
+          {!rootId ? (
+            <div className="drive-state">{t('drive_no_url')}</div>
+          ) : loading ? (
+            <div className="drive-state"><div className="drive-spinner" />{t('drive_loading')}</div>
+          ) : error ? (
+            <div className="drive-state drive-err">
+              <div style={{ fontSize: '1.6rem' }}>⚠️</div>
+              <div style={{ fontWeight: 600 }}>{t('drive_error')}</div>
+              <div className="drive-err-detail">{error}</div>
+              <button className="drive-retry" onClick={() => load(current.id)}>{t('drive_retry')}</button>
+            </div>
+          ) : files.length === 0 ? (
+            <div className="drive-state">{t('drive_empty_folder')}</div>
+          ) : (
+            <div className="drive-grid">
+              {files.map(f => (
+                <div key={f.id} className={'drive-item' + (f.isFolder ? ' is-folder' : '')}
+                     onClick={() => f.isFolder ? openFolder(f) : openFile(f)} title={f.name}>
+                  <div className="drive-item-icon">{driveIcon(f)}</div>
+                  <div className="drive-item-name">{f.name}</div>
+                  {!f.isFolder && <div className="drive-item-badge">↗</div>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="drive-foot">{t('drive_hint')}</div>
       </div>
     </div>
@@ -4002,7 +4154,7 @@ function App() {
         </div>
       )}
       {/* Drive กลาง — หน้าต่างดูไฟล์ในแอป */}
-      {driveOpen && <DriveModal onClose={() => setDriveOpen(false)} />}
+      {driveOpen && <DriveModal cfg={sbCfg} onClose={() => setDriveOpen(false)} />}
       {settingsOpen && (
         <SettingsModal
           cfg={sbCfg}
