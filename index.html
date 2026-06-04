@@ -1029,7 +1029,7 @@ const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_timeline:'Timeline', nav_report:'รายงาน',
-    menu_main:'เมนูหลัก', team:'ทีม', create_task:'สร้างงานใหม่', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
+    menu_main:'เมนูหลัก', team:'ทีม', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
     search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด',
     overdue_days:'เกินกำหนด {n} วัน', due_today:'ครบกำหนดวันนี้', due_tomorrow:'ครบกำหนดพรุ่งนี้', in_days:'อีก {n} วัน',
@@ -1084,7 +1084,7 @@ const I18N = {
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_timeline:'Timeline', nav_report:'Reports',
-    menu_main:'Main Menu', team:'Team', create_task:'New Task', user_label:'User', select_user:'— Select user —',
+    menu_main:'Main Menu', team:'Team', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
     search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines',
     overdue_days:'Overdue by {n} days', due_today:'Due today', due_tomorrow:'Due tomorrow', in_days:'{n} days left',
@@ -1629,12 +1629,12 @@ function mabelzRecommend(title, description, category, tasks, lang) {
 
 // ─── CreateTaskModal ──────────────────────────────────────────────────────────
 
-function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks }) {
+function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, selfOnly }) {
   const editing = !!initialTask;
   const [form, setForm] = useState(
     editing
       ? { title: initialTask.title, description: initialTask.description || '', assignee: initialTask.assignee, category: initialTask.category, priority: initialTask.priority, deadline: initialTask.deadline, status: initialTask.status }
-      : { title: '', description: '', assignee: '', category: 'AR', priority: 'medium', deadline: '', status: 'pending' }
+      : { title: '', description: '', assignee: selfOnly ? currentUser : '', category: 'AR', priority: 'medium', deadline: '', status: 'pending' }
   );
   const [mabelzTip, setMabelzTip] = React.useState(null);
   const [thinking, setThinking]   = React.useState(false);
@@ -1645,7 +1645,7 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks }) {
 
   // Auto-assign ทันทีที่ title หรือ description หรือ category เปลี่ยน (debounce 600ms)
   React.useEffect(() => {
-    if (editing) return;
+    if (editing || selfOnly) return;   // selfOnly = ล็อกผู้รับผิดชอบเป็นตัวเอง ไม่ต้อง auto-assign
     if (!form.title.trim()) { setMabelzTip(null); return; }
     setThinking(true);
     clearTimeout(debounceRef.current);
@@ -1719,12 +1719,16 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks }) {
           )}
 
           <div className="form-grid-2">
-            {editing && (
+            {(editing || selfOnly) && (
               <div className="form-group">
                 <label className="form-label">{t('f_assignee')}</label>
-                <select className="form-select" value={form.assignee} onChange={e => set('assignee', e.target.value)}>
-                  {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
-                </select>
+                {selfOnly ? (
+                  <input className="form-input" value={currentUser} disabled readOnly title={t('f_assignee_locked')} />
+                ) : (
+                  <select className="form-select" value={form.assignee} onChange={e => set('assignee', e.target.value)}>
+                    {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                )}
               </div>
             )}
             <div className="form-group">
@@ -2371,7 +2375,8 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
 function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, setCreateOpen, search, setSearch }) {
   const { t, lang } = useT();
   const isManager = currentUser === 'Big Boss';
-  const base      = isManager ? tasks : tasks.filter(t => t.assignee === currentUser);
+  const base      = tasks;   // ทุกคนเห็นงานทั้งหมด (view all)
+  const canEdit   = (task) => isManager || task.assignee === currentUser || task.createdBy === currentUser;
 
   const [fStatus,   setFStatus]   = useState('');
   const [fAssignee, setFAssignee] = useState('');
@@ -2398,11 +2403,9 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
       <div className="page-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
         <div>
           <div className="page-title">{t('tasklist_title')}</div>
-          <div className="page-subtitle">{isManager ? t('tasklist_sub_mgr', { n: tasks.length }) : t('tasklist_sub_user', { name: currentUser, n: base.length })}</div>
+          <div className="page-subtitle">{t('tasklist_sub_mgr', { n: tasks.length })}</div>
         </div>
-        {isManager && (
-          <button className="btn btn-primary" style={{ marginTop:4 }} onClick={() => setCreateOpen(true)}>+ {t('create_task')}</button>
-        )}
+        <button className="btn btn-primary" style={{ marginTop:4 }} onClick={() => setCreateOpen(true)}>+ {isManager ? t('create_task') : t('create_my_task')}</button>
       </div>
 
       <div className="filter-bar">
@@ -2416,12 +2419,10 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
           <option value="">{t('filter_all_status')}</option>
           {STATUSES.map(s => <option key={s} value={s}>{tStatus(s, lang)}</option>)}
         </select>
-        {isManager && (
-          <select className="filter-select" value={fAssignee} onChange={e => setFAssignee(e.target.value)}>
-            <option value="">{t('filter_all_assignee')}</option>
-            {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
-          </select>
-        )}
+        <select className="filter-select" value={fAssignee} onChange={e => setFAssignee(e.target.value)}>
+          <option value="">{t('filter_all_assignee')}</option>
+          {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
+        </select>
         <select className="filter-select" value={fCat} onChange={e => setFCat(e.target.value)}>
           <option value="">{t('filter_all_cat')}</option>
           {CATEGORIES.map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
@@ -2444,7 +2445,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
               <thead>
                 <tr>
                   <th>{t('th_title')}</th>
-                  {isManager && <th>{t('th_assignee')}</th>}
+                  <th>{t('th_assignee')}</th>
                   <th>{t('th_category')}</th>
                   <th>{t('th_status')}</th>
                   <th>{t('th_priority')}</th>
@@ -2457,14 +2458,12 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
                 {filtered.map(task => (
                   <tr key={task.id} className={rowClass(task.deadline, task.status)}>
                     <td style={{ maxWidth:220, fontWeight:500, cursor:'pointer' }} onClick={() => onSelectTask(task)}>{task.title}</td>
-                    {isManager && (
-                      <td>
-                        <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                          <Avatar name={task.assignee} size="sm" />
-                          <span style={{ fontSize:'0.85rem' }}>{task.assignee}</span>
-                        </div>
-                      </td>
-                    )}
+                    <td>
+                      <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                        <Avatar name={task.assignee} size="sm" />
+                        <span style={{ fontSize:'0.85rem' }}>{task.assignee}</span>
+                      </div>
+                    </td>
                     <td><span style={{ fontSize:'0.8rem', color:'var(--text-muted)' }}>{tCat(task.category, lang)}</span></td>
                     <td><StatusBadge status={task.status} /></td>
                     <td><PriorityBadge priority={task.priority} /></td>
@@ -2472,7 +2471,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
                     <td><Countdown deadline={task.deadline} status={task.status} /></td>
                     <td style={{ whiteSpace:'nowrap' }}>
                       <button className="btn-icon" title={t('view_detail')} onClick={() => onSelectTask(task)}>👁️</button>
-                      {isManager && <>
+                      {canEdit(task) && <>
                         <button className="btn-icon" title={t('edit')} onClick={e => { e.stopPropagation(); onEditTask(task); }}>✏️</button>
                         <button className="btn-icon danger" title={t('delete')} onClick={e => { e.stopPropagation(); onDeleteTask(task); }}>🗑️</button>
                       </>}
@@ -3375,6 +3374,7 @@ function App() {
           currentUser={currentUser}
           initialTask={editingTask || null}
           tasks={tasks}
+          selfOnly={!isManager}
         />
       )}
       {deletingTask && (
