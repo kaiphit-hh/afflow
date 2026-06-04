@@ -1040,7 +1040,7 @@ const I18N = {
     stat_inprogress:'กำลังดำเนินการ', wait_start:'⏳ รอเริ่ม {n} งาน',
     stat_done:'เสร็จแล้ว', progress_n:'📈 คืบหน้า {n}%',
     stat_overdue:'เกินกำหนด', need_urgent:'🔴 ต้องเร่งจัดการ', no_overdue:'✓ ไม่มีงานเกินกำหนด',
-    card_all_tasks:'📋 งานทั้งหมดในระบบ', card_my_tasks:'📋 งานของฉัน', items_n:'{n} รายการ', no_tasks_now:'ไม่มีงานในขณะนี้',
+    card_all_tasks:'📋 งานทั้งหมดในระบบ', card_my_tasks:'📋 งานของฉัน', card_team_overview:'ภาพรวมงานทีม (งานค้าง/ใกล้ครบขึ้นก่อน)', items_n:'{n} รายการ', no_tasks_now:'ไม่มีงานในขณะนี้',
     th_title:'ชื่องาน', th_assignee:'ผู้รับผิดชอบ', th_category:'หมวด', th_status:'สถานะ', th_priority:'ความสำคัญ', th_deadline:'กำหนดส่ง', th_timeleft:'เวลาที่เหลือ', th_manage:'จัดการ',
     chart_team_active:'📊 งานตามทีม (Active)', chart_active_center:'งานที่ค้าง', chart_no_active:'ไม่มีงานที่ Active',
     chart_by_status:'📈 งานตามสถานะ', chart_my_summary:'📊 สรุปงานของฉัน', chart_done_center:'เสร็จแล้ว', no_tasks_yet:'ยังไม่มีงาน', unit_tasks:'งาน',
@@ -1095,7 +1095,7 @@ const I18N = {
     stat_inprogress:'In Progress', wait_start:'⏳ {n} to start',
     stat_done:'Completed', progress_n:'📈 {n}% progress',
     stat_overdue:'Overdue', need_urgent:'🔴 Needs attention', no_overdue:'✓ Nothing overdue',
-    card_all_tasks:'📋 All tasks', card_my_tasks:'📋 My tasks', items_n:'{n} items', no_tasks_now:'No tasks right now',
+    card_all_tasks:'📋 All tasks', card_my_tasks:'📋 My tasks', card_team_overview:'Team Overview (pending / due-soon first)', items_n:'{n} items', no_tasks_now:'No tasks right now',
     th_title:'Task', th_assignee:'Assignee', th_category:'Category', th_status:'Status', th_priority:'Priority', th_deadline:'Due', th_timeleft:'Time left', th_manage:'Actions',
     chart_team_active:'📊 Tasks by Team (Active)', chart_active_center:'Active', chart_no_active:'No active tasks',
     chart_by_status:'📈 Tasks by Status', chart_my_summary:'📊 My Summary', chart_done_center:'Done', no_tasks_yet:'No tasks yet', unit_tasks:'tasks',
@@ -2224,6 +2224,13 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
   const completionPct = stats.total > 0 ? Math.round((stats.done / stats.total) * 100) : 0;
   const activeCount   = stats.total - stats.done;
 
+  // ภาพรวมงานทั้งทีม — เรียงงานที่ยังไม่เสร็จ + ใกล้ครบ/เลยกำหนด ขึ้นก่อน (ช่วยกันเตือน)
+  const teamTasks = React.useMemo(() => [...tasks].sort((a, b) => {
+    const ad = a.status === 'done', bd = b.status === 'done';
+    if (ad !== bd) return ad ? 1 : -1;
+    return (a.deadline || '').localeCompare(b.deadline || '');
+  }), [tasks]);
+
   // ทักทายตามช่วงเวลา / time-based greeting
   const hr = new Date().getHours();
   const greeting = hr < 12 ? t('greet_morning') : hr < 17 ? t('greet_afternoon') : t('greet_evening');
@@ -2292,12 +2299,12 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
       {/* Task table */}
       <div className="card" style={{ marginBottom:20 }}>
         <div className="card-title">
-          {isManager ? t('card_all_tasks') : t('card_my_tasks')}
+          👥 {t('card_team_overview')}
           <span style={{ marginLeft:'auto', fontSize:'0.75rem', fontWeight:500, color:'var(--text-muted)' }}>
-            {t('items_n', { n: myTasks.length })}
+            {t('items_n', { n: teamTasks.length })}
           </span>
         </div>
-        {myTasks.length === 0 ? (
+        {teamTasks.length === 0 ? (
           <div className="empty-state"><div className="empty-icon">🎉</div><div className="empty-text">{t('no_tasks_now')}</div></div>
         ) : (
           <div className="table-wrap">
@@ -2305,7 +2312,7 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
               <thead>
                 <tr>
                   <th>{t('th_title')}</th>
-                  {isManager && <th>{t('th_assignee')}</th>}
+                  <th>{t('th_assignee')}</th>
                   <th>{t('th_category')}</th>
                   <th>{t('th_status')}</th>
                   <th>{t('th_priority')}</th>
@@ -2314,17 +2321,15 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
                 </tr>
               </thead>
               <tbody>
-                {myTasks.map(task => (
-                  <tr key={task.id} className={rowClass(task.deadline, task.status)} onClick={() => onSelectTask(task)}>
+                {teamTasks.map(task => (
+                  <tr key={task.id} className={rowClass(task.deadline, task.status)} style={{ borderLeft: '4px solid ' + getUserColor(task.assignee) }} onClick={() => onSelectTask(task)}>
                     <td style={{ maxWidth:240, fontWeight:500 }}>{task.title}</td>
-                    {isManager && (
-                      <td>
-                        <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                          <Avatar name={task.assignee} size="sm" />
-                          <span>{task.assignee}</span>
-                        </div>
-                      </td>
-                    )}
+                    <td>
+                      <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                        <Avatar name={task.assignee} size="sm" />
+                        <span>{task.assignee}</span>
+                      </div>
+                    </td>
                     <td><span style={{ fontSize:'0.8rem', color:'var(--text-muted)' }}>{tCat(task.category, lang)}</span></td>
                     <td><StatusBadge status={task.status} /></td>
                     <td><PriorityBadge priority={task.priority} /></td>
@@ -2456,7 +2461,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
               </thead>
               <tbody>
                 {filtered.map(task => (
-                  <tr key={task.id} className={rowClass(task.deadline, task.status)}>
+                  <tr key={task.id} className={rowClass(task.deadline, task.status)} style={{ borderLeft: '4px solid ' + getUserColor(task.assignee) }}>
                     <td style={{ maxWidth:220, fontWeight:500, cursor:'pointer' }} onClick={() => onSelectTask(task)}>{task.title}</td>
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:6 }}>
@@ -2500,7 +2505,7 @@ function TimelineView({ tasks, currentUser, onSelectTask }) {
   const DAY_HEADERS = lang === 'en' ? ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] : ['จ','อ','พ','พฤ','ศ','ส','อา'];
 
   const isManager    = currentUser === 'Big Boss';
-  const visibleTasks = isManager ? tasks : tasks.filter(t => t.assignee === currentUser);
+  const visibleTasks = tasks;   // เห็นงานทั้งทีม (pill ระบายสีแยกคน + มี legend อยู่แล้ว)
 
   const firstDay  = new Date(year, month, 1);
   const lastDay   = new Date(year, month + 1, 0);
@@ -2520,7 +2525,7 @@ function TimelineView({ tasks, currentUser, onSelectTask }) {
     <div>
       <div className="page-header">
         <div className="page-title">{t('timeline_title')}</div>
-        <div className="page-subtitle">{t('timeline_sub')}{isManager ? '' : ` — ${currentUser}`}</div>
+        <div className="page-subtitle">{t('timeline_sub')}</div>
       </div>
 
       <div className="cal-header">
@@ -2686,7 +2691,7 @@ function ReportView({ tasks, currentUser, onSelectTask }) {
             </thead>
             <tbody>
               {tasks.map(task => (
-                <tr key={task.id} className={rowClass(task.deadline, task.status)} onClick={() => onSelectTask(task)} style={{ cursor:'pointer' }}>
+                <tr key={task.id} className={rowClass(task.deadline, task.status)} onClick={() => onSelectTask(task)} style={{ cursor:'pointer', borderLeft: '4px solid ' + getUserColor(task.assignee) }}>
                   <td style={{ maxWidth:220, fontWeight:500 }}>{task.title}</td>
                   <td>
                     <div style={{ display:'flex', alignItems:'center', gap:6 }}>
