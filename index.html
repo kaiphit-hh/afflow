@@ -1129,8 +1129,8 @@
     .team-bubble { padding: 8px 11px; border-radius: 12px; font-size: 0.86rem; line-height: 1.45; background: var(--input-bg); color: var(--text); }
     .team-msg.mine .team-bubble { background: var(--primary); color: #fff; }
     .team-file { margin-top: 5px; font-size: 0.78rem; font-weight: 600; cursor: pointer; text-decoration: underline; }
-    @media (max-width: 480px) {
-      .chat-panel { right: 0; bottom: 0; width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
+    @media (max-width: 600px) {
+      .chat-panel { right: 0; bottom: 0; width: 100vw; height: 100vh; height: 100dvh; max-height: 100dvh; border-radius: 0; }
       .chat-fab { right: 16px; bottom: 16px; }
       .team-fab { right: 16px; bottom: 78px; }
     }
@@ -1225,9 +1225,27 @@
       .topbar-dark-toggle > span:first-child { display: none; }
       .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .detail-grid { grid-template-columns: 1fr; }
+      .main-content { padding: 14px 12px; }
+      /* Drive เต็มจอบนมือถือ */
+      .drive-overlay { padding: 0; }
+      .drive-panel { width: 100vw; max-width: none; height: 100vh; height: 100dvh; border-radius: 0; }
+      .drive-search { flex-wrap: wrap; padding: 10px 12px; }
+      .drive-search-input { flex: 1 1 100%; order: -1; }
+      .drive-crumb { flex-wrap: wrap; padding: 8px 12px; }
+      .drive-body { padding: 12px; }
+      .drive-li-open { display: none; }          /* ซ่อนลูกศร เพิ่มพื้นที่ชื่อไฟล์ */
+      .drive-li { padding: 11px 8px; }           /* แตะง่ายขึ้น */
+      /* Modal พอดีจอ + เลื่อนได้ */
+      .modal { max-height: 92vh; max-height: 92dvh; border-radius: 16px; }
+      .modal-header { padding: 16px 16px 12px; }
+      .modal-body { padding: 16px; }
+      /* การ์ด/ปุ่ม แตะง่ายขึ้น */
+      .inbox-actions .btn { padding: 9px 12px; }
+      .btn-icon { width: 34px; height: 34px; }
     }
     @media (max-width: 400px) {
       .topbar-dark-toggle { display: none; }
+      .stat-grid { grid-template-columns: 1fr; }   /* การ์ดสถิติเรียงเดี่ยวบนจอจิ๋ว */
     }
   </style>
 </head>
