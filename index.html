@@ -241,6 +241,28 @@
     }
     .drive-refresh:hover:not(:disabled) { color: var(--primary); border-color: var(--primary); }
     .drive-refresh:disabled { opacity: 0.4; cursor: default; }
+    /* ช่องค้นหาในหน้า Drive */
+    .drive-search {
+      display: flex; align-items: center; gap: 8px; padding: 11px 18px;
+      border-bottom: 1px solid var(--border); background: var(--card);
+    }
+    .drive-search-icon { font-size: 0.95rem; opacity: 0.6; flex-shrink: 0; }
+    .drive-search-input {
+      flex: 1; min-width: 0; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 9px 12px; font-size: 0.9rem; background: var(--input-bg, var(--bg)); color: var(--text); outline: none;
+    }
+    .drive-search-input:focus { border-color: var(--primary); }
+    .drive-search-btn {
+      flex-shrink: 0; border: none; background: var(--primary); color: #fff; cursor: pointer;
+      padding: 9px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 700;
+    }
+    .drive-search-btn:disabled { opacity: 0.45; cursor: default; }
+    .drive-search-x {
+      flex-shrink: 0; border: 1px solid var(--border); background: var(--card); color: var(--text-muted);
+      cursor: pointer; width: 34px; height: 34px; border-radius: 9px; font-size: 0.9rem;
+    }
+    .drive-search-x:hover { color: var(--danger); border-color: var(--danger); }
+    .drive-search-count { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; padding: 2px 4px 12px; }
     /* body + grid */
     .drive-body { flex: 1; overflow-y: auto; background: var(--card); padding: 18px; }
     .drive-list { display: flex; flex-direction: column; gap: 2px; }
@@ -1226,7 +1248,7 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'คลิกโฟลเดอร์เพื่อเข้าไปดู • คลิกไฟล์เพื่อเปิดใน Google Drive', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', nav_timeline:'Timeline', nav_report:'รายงาน',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', nav_timeline:'Timeline', nav_report:'รายงาน',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
@@ -1282,7 +1304,7 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'Click a folder to open it • click a file to open in Google Drive', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', nav_timeline:'Timeline', nav_report:'Reports',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', nav_timeline:'Timeline', nav_report:'Reports',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
@@ -3702,8 +3724,26 @@ function DriveModal({ cfg, onClose }) {
   }
   useEffect(() => { if (rootId) load(current.id); }, [current.id]);
 
-  const openFolder = (f) => setStack(s => [...s, { id: f.id, name: f.name }]);
-  const goTo = (idx) => setStack(s => s.slice(0, idx + 1));
+  const [searchQ, setSearchQ] = useState('');
+  const [results, setResults] = useState(null);     // null = โหมดเปิดดูโฟลเดอร์
+  const [searching, setSearching] = useState(false);
+  const [searchedFor, setSearchedFor] = useState('');
+
+  async function doSearch() {
+    const q = searchQ.trim();
+    if (!q || searching) return;
+    setSearching(true); setSearchedFor(q);
+    try {
+      const res = await sb.driveSearch(cfg, q);
+      setResults((res && res.results) || []);
+    } catch (e) { setResults([]); }
+    finally { setSearching(false); }
+  }
+  function clearSearch() { setResults(null); setSearchQ(''); setSearchedFor(''); }
+
+  const openFolder = (f) => { clearSearch(); setStack(s => [...s, { id: f.id, name: f.name }]); };
+  const openFolderFromSearch = (f) => { clearSearch(); setStack([{ id: rootId, name: t('nav_drive') }, { id: f.id, name: f.name }]); };
+  const goTo = (idx) => { clearSearch(); setStack(s => s.slice(0, idx + 1)); };
   const openFile = (f) => window.open(f.link, '_blank', 'noopener,noreferrer');
 
   return (
@@ -3715,22 +3755,52 @@ function DriveModal({ cfg, onClose }) {
           <button className="drive-head-close" onClick={onClose} title={t('chat_close')}>✕</button>
         </div>
 
-        <div className="drive-crumb">
-          {stack.map((s, i) => (
-            <React.Fragment key={s.id + '_' + i}>
-              {i > 0 && <span className="drive-crumb-sep">›</span>}
-              <button className={'drive-crumb-item' + (i === stack.length - 1 ? ' active' : '')}
-                      onClick={() => goTo(i)} disabled={i === stack.length - 1}>
-                {i === 0 ? '🏠 ' : ''}{s.name}
-              </button>
-            </React.Fragment>
-          ))}
-          <button className="drive-refresh" onClick={() => load(current.id)} disabled={loading} title={t('drive_refresh')}>↻</button>
+        <div className="drive-search">
+          <span className="drive-search-icon">🔍</span>
+          <input className="drive-search-input" value={searchQ} placeholder={t('drive_search_ph')}
+                 onChange={e => setSearchQ(e.target.value)}
+                 onKeyDown={e => { if (e.key === 'Enter') doSearch(); else if (e.key === 'Escape') clearSearch(); }} />
+          {results !== null && <button className="drive-search-x" onClick={clearSearch} title={t('drive_search_clear')}>✕</button>}
+          <button className="drive-search-btn" onClick={doSearch} disabled={searching || !searchQ.trim()}>{t('drive_search_go')}</button>
         </div>
+
+        {results === null && (
+          <div className="drive-crumb">
+            {stack.map((s, i) => (
+              <React.Fragment key={s.id + '_' + i}>
+                {i > 0 && <span className="drive-crumb-sep">›</span>}
+                <button className={'drive-crumb-item' + (i === stack.length - 1 ? ' active' : '')}
+                        onClick={() => goTo(i)} disabled={i === stack.length - 1}>
+                  {i === 0 ? '🏠 ' : ''}{s.name}
+                </button>
+              </React.Fragment>
+            ))}
+            <button className="drive-refresh" onClick={() => load(current.id)} disabled={loading} title={t('drive_refresh')}>↻</button>
+          </div>
+        )}
 
         <div className="drive-body">
           {!rootId ? (
             <div className="drive-state">{t('drive_no_url')}</div>
+          ) : searching ? (
+            <div className="drive-state"><div className="drive-spinner" />{t('drive_searching')}</div>
+          ) : results !== null ? (
+            results.length === 0 ? (
+              <div className="drive-state">🔍<div>{t('drive_search_none', { q: searchedFor })}</div></div>
+            ) : (
+              <div className="drive-list">
+                <div className="drive-search-count">{t('drive_search_count', { n: results.length, q: searchedFor })}</div>
+                {results.map(f => (
+                  <div key={f.id} className={'drive-li' + (f.isFolder ? ' is-folder' : '')}
+                       onClick={() => f.isFolder ? openFolderFromSearch(f) : openFile(f)} title={f.name}>
+                    <DriveFileIcon f={f} />
+                    <div className="drive-li-name">{f.name}</div>
+                    <div className="drive-li-meta">📁 {f.path || t('nav_drive')}</div>
+                    <div className="drive-li-open">{f.isFolder ? '›' : '↗'}</div>
+                  </div>
+                ))}
+              </div>
+            )
           ) : loading ? (
             <div className="drive-state"><div className="drive-spinner" />{t('drive_loading')}</div>
           ) : error ? (
