@@ -1569,21 +1569,29 @@ const sb = {
     try { const j = await lastErr.context.json(); if (j) return j; } catch (e) {}
     throw lastErr || new Error('drive_list_failed');
   },
-  // D2: AI ค้นหาไฟล์ทั้งทรี Drive ตามชื่อ (ใช้ Edge Function ตัวเดียวกับ driveList)
+  // D2: AI ค้นหาไฟล์ทั้งทรี Drive ตามชื่อ — ค้นฝั่งแอปเองโดยไล่ลิสต์ทุกโฟลเดอร์
+  // (ใช้ driveList ที่ deploy แล้วและทำงานอยู่ — ไม่ต้องพึ่งโหมดค้นหาใน Edge Function)
   async driveSearch(cfg, query) {
-    const c = getSb(cfg); if (!c) throw new Error('not_configured');
-    const candidates = sb._driveFn ? [sb._driveFn] : ['drive-list', 'smart-responder'];
-    let lastErr = null;
-    for (const name of candidates) {
-      try {
-        const { data, error } = await c.functions.invoke(name, { body: { query } });
-        if (error) { lastErr = error; continue; }
-        sb._driveFn = name;
-        return data;   // { results, query } หรือ { error, message }
-      } catch (e) { lastErr = e; }
+    const ql = String(query || '').toLowerCase().trim();
+    if (!ql) return { results: [], query };
+    const results = [];
+    let visited = 0; const MAX = 80;   // จำกัดจำนวนโฟลเดอร์ที่ไล่ (กันช้า/ลึกเกิน)
+    async function walk(folderId, path) {
+      if (visited >= MAX) return;
+      visited++;
+      let data;
+      try { data = await sb.driveList(cfg, folderId); } catch (e) { return; }
+      if (data && data.error) return;
+      const files = (data && data.files) || [];
+      const subs = [];
+      for (const f of files) {
+        if (String(f.name || '').toLowerCase().includes(ql)) results.push({ ...f, path: path.join(' / ') });
+        if (f.isFolder) subs.push(walk(f.id, [...path, f.name]));
+      }
+      await Promise.all(subs);
     }
-    try { const j = await lastErr.context.json(); if (j) return j; } catch (e) {}
-    throw lastErr || new Error('drive_search_failed');
+    await walk(null, []);   // null = เริ่มจากโฟลเดอร์กลาง (ROOT)
+    return { results: results.slice(0, 50), query };
   },
   // Phase 4: ลืมรหัสผ่าน — ส่งอีเมลลิงก์รีเซ็ต (เด้งกลับมาที่ redirectTo)
   async sendReset(cfg, email, redirectTo) {
