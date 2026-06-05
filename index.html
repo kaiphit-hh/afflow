@@ -4500,18 +4500,15 @@ function App() {
   }, [session && session.user && session.user.id]);
 
   // ── Phase 3: โหลดงานจาก Supabase + realtime (อัปเดตทุกเครื่องทันที) ───────────
-  const firstTaskLoadRef = React.useRef(true);
   useEffect(() => {
     if (!isSb || !session) return;
     let alive = true;
-    firstTaskLoadRef.current = true;   // โหลดครั้งแรกของแต่ละรอบ effect = ไม่แจ้งเตือนคอมเมนต์
     async function load() {
       try {
         setBackendStatus(s => (s === 'online' ? 'online' : 'syncing'));
         const list = await sb.listTasks(sbCfg);
         if (!alive) return;
-        if (firstTaskLoadRef.current) firstTaskLoadRef.current = false;
-        else detectNewComments(tasksRef.current || [], list);   // #1: เทียบคอมเมนต์ใหม่ → แจ้งเจ้าของงาน
+        detectNewComments(list);   // #1: แจ้งคอมเมนต์ใหม่ในงานของฉัน (จับได้แม้คอมเมนต์เข้ามาตอนปิดแอป)
         setTasks(list);
         setBackendStatus('online');
       } catch (e) { if (alive) setBackendStatus('offline'); }
@@ -4520,7 +4517,7 @@ function App() {
     const c = getSb(sbCfg);
     let channel = null;
     if (c) {
-      channel = c.channel('afflow-tasks')
+      channel = c.channel('afflow-tasks-' + Math.floor(Math.random() * 1e9))
         .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, () => { load(); })
         .subscribe();
     }
@@ -4616,23 +4613,28 @@ function App() {
     setTimeout(() => setToasts(ts => ts.filter(x => x.id !== id)), 4000);
   }
 
-  // #1: เทียบคอมเมนต์ใหม่หลัง reload — ถ้ามีคนคอมเมนต์งานของฉัน (เจ้าของ/ผู้รับผิดชอบ) → แจ้งเตือน
-  function detectNewComments(prevList, nextList) {
+  // #1: แจ้งเตือนคอมเมนต์ในงานของฉัน (เจ้าของ/ผู้รับผิดชอบ) — จับคอมเมนต์ที่ "ยังไม่เคยเห็น"
+  // ครบทุกกรณี: เด้งสด (realtime) + คอมเมนต์ที่เข้ามาตอนปิดแอป (แจ้งตอนเปิด) + ไม่แจ้งคอมเมนต์ของตัวเอง
+  function detectNewComments(list) {
     if (!currentUser) return;
-    const prevMap = {};
-    (prevList || []).forEach(t => { prevMap[t.id] = t; });
-    (nextList || []).forEach(t => {
+    const KEY = 'afflow_seen_cmts_' + currentUser;
+    let raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) {}
+    const isBaseline = (raw === null);   // ครั้งแรกสุดของบัญชีนี้ = ตั้งฐาน (ไม่แจ้งย้อนหลัง)
+    const seen = new Set((raw || '').split(',').filter(Boolean));
+    const toNotify = [];
+    (list || []).forEach(t => {
       const isMine = t.assignee === currentUser || t.createdBy === currentUser;
       if (!isMine) return;
-      const old = prevMap[t.id];
-      if (!old) return;
-      const oldN = (old.comments || []).length;
-      const newN = (t.comments || []).length;
-      if (newN <= oldN) return;
-      const fresh = (t.comments || []).slice(oldN).filter(c => c.author && c.author !== currentUser);
-      if (!fresh.length) return;
-      addCommentNotif(t, fresh[fresh.length - 1]);
+      (t.comments || []).forEach(c => {
+        const cid = c.id || (t.id + '_' + (c.createdAt || ''));
+        if (seen.has(cid)) return;
+        seen.add(cid);
+        if (c.author && c.author !== currentUser && !isBaseline) toNotify.push({ task: t, comment: c });
+      });
     });
+    try { localStorage.setItem(KEY, Array.from(seen).slice(-800).join(',')); } catch (e) {}
+    toNotify.forEach(x => addCommentNotif(x.task, x.comment));
   }
   function addCommentNotif(task, comment) {
     const nid = (comment.id || (task.id + '_' + (comment.createdAt || nowISO())));
