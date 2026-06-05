@@ -704,6 +704,13 @@
       transition: border-color 0.15s, background 0.25s;
     }
     .filter-select:focus, .filter-input:focus { border-color: var(--primary); }
+    .filter-toggle {
+      padding: 8px 14px; border: 1.5px solid var(--primary); border-radius: 8px; cursor: pointer;
+      font-size: 0.85rem; font-weight: 700; background: var(--input-bg); color: var(--primary);
+      transition: background 0.15s;
+    }
+    .filter-toggle.active { background: var(--primary); color: #fff; }
+    .filter-toggle:hover { filter: brightness(1.05); }
     .filter-input { min-width: 200px; }
     .search-chip {
       display: inline-flex; align-items: center; gap: 8px;
@@ -870,6 +877,9 @@
     .cal-cell.today-cell .cal-date-num { background: var(--primary); color: #fff; }
     .cal-cell.holiday-cell { background: rgba(239,68,68,0.07); }
     .cal-cell.holiday-cell .cal-date-num { color: var(--danger); }
+    .cal-cell.weekend-cell { background: rgba(148,163,184,0.10); }
+    .cal-cell.weekend-cell .cal-date-num { color: var(--text-muted); }
+    .cal-day-header.weekend-header { color: var(--danger); opacity: 0.85; }
     .cal-holiday {
       font-size: 0.62rem; font-weight: 700; color: var(--danger); margin-bottom: 4px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3;
@@ -1335,7 +1345,7 @@ const I18N = {
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่', inbox_to_task:'สร้างเป็นงาน', inbox_from:'จากคำขอของ', inbox_inprogress:'🔧 กำลังทำ', inbox_linked:'เชื่อมกับงานแล้ว — จะปิดเองเมื่องานเสร็จ', inbox_history:'ประวัติคำขอที่เสร็จแล้ว', inbox_all_clear:'ไม่มีคำขอค้าง — เคลียร์หมดแล้ว! 🎉',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
-    search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด', notif_enable:'เปิดแจ้งเตือนบนเครื่อง', notif_on:'เปิดแจ้งเตือนบนเครื่องแล้ว', notif_blocked:'การแจ้งเตือนถูกปิด — เปิดได้ในตั้งค่าเบราว์เซอร์',
+    search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด', notif_enable:'เปิดแจ้งเตือนบนเครื่อง', notif_on:'เปิดแจ้งเตือนบนเครื่องแล้ว', notif_blocked:'การแจ้งเตือนถูกปิด — เปิดได้ในตั้งค่าเบราว์เซอร์', cmt_notif_toast:'คอมเมนต์งานของคุณ', cmt_notif_title:'คอมเมนต์งานคุณ', cmt_notif_section:'💬 คอมเมนต์ใหม่ในงานของคุณ', cmt_notif_commented:'คอมเมนต์',
     overdue_days:'เกินกำหนด {n} วัน', due_today:'ครบกำหนดวันนี้', due_tomorrow:'ครบกำหนดพรุ่งนี้', in_days:'อีก {n} วัน',
     cd_done:'เสร็จแล้ว', cd_over:'เกิน {n} วัน', cd_today:'วันนี้!', cd_in:'อีก {n} วัน',
     greet_morning:'สวัสดีตอนเช้า', greet_afternoon:'สวัสดีตอนบ่าย', greet_evening:'สวัสดีตอนเย็น',
@@ -1350,10 +1360,10 @@ const I18N = {
     chart_by_status:'📈 งานตามสถานะ', chart_my_summary:'📊 สรุปงานของฉัน', chart_done_center:'เสร็จแล้ว', no_tasks_yet:'ยังไม่มีงาน', unit_tasks:'งาน',
     week_timeline:'📅 Timeline สัปดาห์นี้',
     tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ', completed_sub:'เสร็จแล้ว {n} รายการ',
-    filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด',
+    filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด', scope_mine:'งานของฉัน', scope_all:'ทั้งทีม',
     clear_filters:'✕ ล้างตัวกรอง', found_n:'พบ {n} รายการ', no_match:'ไม่พบงานที่ตรงกับเงื่อนไข', clear_search:'ล้างคำค้นหา',
     view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ', duplicate:'ทำซ้ำงานนี้',
-    timeline_title:'Timeline รายเดือน 📅', timeline_sub:'งานตามวันกำหนดส่ง', prev:'← ก่อนหน้า', next:'ถัดไป →', legend:'สัญลักษณ์:', today:'วันนี้', legend_holiday:'วันหยุดไทย',
+    timeline_title:'Timeline รายเดือน 📅', timeline_sub:'งานตามวันกำหนดส่ง', prev:'← ก่อนหน้า', next:'ถัดไป →', legend:'สัญลักษณ์:', today:'วันนี้', legend_holiday:'วันหยุดไทย', legend_weekend:'เสาร์-อาทิตย์ (หยุด)',
     report_title:'รายงานสรุปประจำเดือน 📈', report_sub:'ภาพรวมความคืบหน้า — {month}', export_csv:'⬇️ Export CSV',
     assistant:'ผู้ช่วย', progress:'ความคืบหน้า', tasks_word:'งาน',
     rb_all:'ทั้งหมด {n}', rb_done:'เสร็จ {n}', rb_inprogress:'กำลังทำ {n}', rb_review:'รอตรวจ {n}', rb_pending:'รอ {n}', rb_blocked:'ติดขัด {n}',
@@ -1393,7 +1403,7 @@ const I18N = {
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen', inbox_to_task:'Create task', inbox_from:'From request by', inbox_inprogress:'🔧 In progress', inbox_linked:'Linked to a task — closes automatically when the task is done', inbox_history:'Completed requests log', inbox_all_clear:'No pending requests — all clear! 🎉',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
-    search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines', notif_enable:'Enable device notifications', notif_on:'Device notifications on', notif_blocked:'Notifications blocked — enable in browser settings',
+    search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines', notif_enable:'Enable device notifications', notif_on:'Device notifications on', notif_blocked:'Notifications blocked — enable in browser settings', cmt_notif_toast:'commented on your task', cmt_notif_title:'commented on your task', cmt_notif_section:'💬 New comments on your tasks', cmt_notif_commented:'commented',
     overdue_days:'Overdue by {n} days', due_today:'Due today', due_tomorrow:'Due tomorrow', in_days:'{n} days left',
     cd_done:'Done', cd_over:'{n}d over', cd_today:'Today!', cd_in:'{n} days left',
     greet_morning:'Good morning', greet_afternoon:'Good afternoon', greet_evening:'Good evening',
@@ -1408,10 +1418,10 @@ const I18N = {
     chart_by_status:'📈 Tasks by Status', chart_my_summary:'📊 My Summary', chart_done_center:'Done', no_tasks_yet:'No tasks yet', unit_tasks:'tasks',
     week_timeline:'📅 This Week',
     tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks', completed_sub:'{n} completed',
-    filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories',
+    filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories', scope_mine:'My tasks', scope_all:'Team (all)',
     clear_filters:'✕ Clear filters', found_n:'{n} found', no_match:'No matching tasks', clear_search:'Clear search',
     view_detail:'View details', edit:'Edit', delete:'Delete', duplicate:'Duplicate task',
-    timeline_title:'Monthly Timeline 📅', timeline_sub:'Tasks by due date', prev:'← Prev', next:'Next →', legend:'Legend:', today:'Today', legend_holiday:'Thai holiday',
+    timeline_title:'Monthly Timeline 📅', timeline_sub:'Tasks by due date', prev:'← Prev', next:'Next →', legend:'Legend:', today:'Today', legend_holiday:'Thai holiday', legend_weekend:'Weekend (off)',
     report_title:'Monthly Summary Report 📈', report_sub:'Progress overview — {month}', export_csv:'⬇️ Export CSV',
     assistant:'Assistant', progress:'Progress', tasks_word:'tasks',
     rb_all:'All {n}', rb_done:'Done {n}', rb_inprogress:'In progress {n}', rb_review:'In review {n}', rb_pending:'To do {n}', rb_blocked:'Blocked {n}',
@@ -2539,7 +2549,7 @@ function TopbarClock() {
   );
 }
 
-function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy }) {
+function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy, commentNotifs = [], onOpenCommentNotif }) {
   const { t, lang, setLang } = useT();
   const [notifOpen, setNotifOpen] = React.useState(false);
   const [notifPerm, setNotifPerm] = React.useState(('Notification' in window) ? Notification.permission : 'unsupported');
@@ -2637,7 +2647,7 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
         <div className="topbar-notif-wrap">
           <div className="topbar-notif" title={t('notif')} onClick={() => setNotifOpen(o => !o)}>
             🔔
-            {alerts.length > 0 && <div className="notif-badge">{alerts.length > 9 ? '9+' : alerts.length}</div>}
+            {(alerts.length + commentNotifs.length) > 0 && <div className="notif-badge">{(alerts.length + commentNotifs.length) > 9 ? '9+' : (alerts.length + commentNotifs.length)}</div>}
           </div>
           {notifOpen && (
             <>
@@ -2656,6 +2666,20 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
                 )}
                 {notifPerm === 'denied' && (
                   <div style={{ padding:'7px 12px', fontSize:'0.72rem', color:'var(--text-muted)', borderBottom:'1px solid var(--border)' }}>{t('notif_blocked')}</div>
+                )}
+                {commentNotifs.length > 0 && (
+                  <div className="notif-list" style={{ borderBottom:'1px solid var(--border)' }}>
+                    <div style={{ fontSize:'0.74rem', fontWeight:700, color:'var(--text-muted)', padding:'6px 10px 4px' }}>{t('cmt_notif_section')}</div>
+                    {commentNotifs.map(cn => (
+                      <div key={cn.id} className="notif-item" onClick={() => { onOpenCommentNotif(cn); setNotifOpen(false); }}>
+                        <div className="notif-dot-ind blue" />
+                        <div style={{ minWidth:0, flex:1 }}>
+                          <div className="notif-item-title"><b>{cn.author}</b> {t('cmt_notif_commented')} · {cn.taskTitle}</div>
+                          {cn.text && <div className="notif-item-meta">“{cn.text}”</div>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
                 {alerts.length === 0 ? (
                   <div className="notif-empty">{t('no_upcoming')}</div>
@@ -3075,15 +3099,19 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
 function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, onDuplicate, setCreateOpen, search, setSearch, mode }) {
   const { t, lang } = useT();
   const isManager = currentUser === 'Big Boss';
-  const base      = tasks;   // ทุกคนเห็นงานทั้งหมด (view all)
   const canEdit   = (task) => isManager || task.assignee === currentUser || task.createdBy === currentUser;
 
+  const [myOnly,    setMyOnly]    = useState(mode !== 'completed' && !isManager);   // #2: เริ่มต้นเห็นงานตัวเอง
   const [fStatus,   setFStatus]   = useState('');
   const [fAssignee, setFAssignee] = useState('');
   const [fCat,      setFCat]      = useState('');
 
-  const filtered = useMemo(() => base.filter(t => {
-    if (fStatus   && t.status   !== fStatus)   return false;
+  const scoped = useMemo(() => myOnly ? tasks.filter(t => t.assignee === currentUser) : tasks, [tasks, myOnly, currentUser]);
+
+  const filtered = useMemo(() => scoped.filter(t => {
+    // #4: หน้า "งานทั้งหมด" ซ่อนงานเสร็จแล้ว เฉพาะตอนไม่ได้กรองสถานะ (พอกรองสถานะ = เห็นครบทุกสถานะ)
+    if (mode !== 'completed' && !fStatus && t.status === 'done') return false;
+    if (fStatus   && t.status   !== fStatus)    return false;
     if (fAssignee && t.assignee !== fAssignee)  return false;
     if (fCat      && t.category !== fCat)       return false;
     if (search    && !(
@@ -3093,17 +3121,18 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
       t.assignee.toLowerCase().includes(search.toLowerCase())
     )) return false;
     return true;
-  }), [base, fStatus, fAssignee, fCat, search]);
+  }), [scoped, mode, fStatus, fAssignee, fCat, search]);
 
   function clearFilters() { setFStatus(''); setFAssignee(''); setFCat(''); setSearch(''); }
   const hasFilter = fStatus || fAssignee || fCat || search;
+  const headerCount = mode === 'completed' ? scoped.length : scoped.filter(t => t.status !== 'done').length;
 
   return (
     <div>
       <div className="page-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
         <div>
           <div className="page-title">{mode === 'completed' ? t('completed_title') : t('tasklist_title')}</div>
-          <div className="page-subtitle">{mode === 'completed' ? t('completed_sub', { n: tasks.length }) : t('tasklist_sub_mgr', { n: tasks.length })}</div>
+          <div className="page-subtitle">{mode === 'completed' ? t('completed_sub', { n: headerCount }) : t('tasklist_sub_mgr', { n: headerCount })}</div>
         </div>
         {mode !== 'completed' && (
           <button className="btn btn-primary" style={{ marginTop:4 }} onClick={() => setCreateOpen(true)}>+ {isManager ? t('create_task') : t('create_my_task')}</button>
@@ -3117,14 +3146,22 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
             <button onClick={() => setSearch('')} title={t('clear_search')}>✕</button>
           </span>
         )}
+        {mode !== 'completed' && (
+          <button className={'filter-toggle' + (myOnly ? ' active' : '')}
+                  onClick={() => setMyOnly(m => { const nv = !m; if (nv) setFAssignee(''); return nv; })}>
+            {myOnly ? '👤 ' + t('scope_mine') : '👥 ' + t('scope_all')} ⇄
+          </button>
+        )}
         <select className="filter-select" value={fStatus} onChange={e => setFStatus(e.target.value)}>
           <option value="">{t('filter_all_status')}</option>
           {STATUSES.map(s => <option key={s} value={s}>{tStatus(s, lang)}</option>)}
         </select>
-        <select className="filter-select" value={fAssignee} onChange={e => setFAssignee(e.target.value)}>
-          <option value="">{t('filter_all_assignee')}</option>
-          {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
-        </select>
+        {!myOnly && (
+          <select className="filter-select" value={fAssignee} onChange={e => setFAssignee(e.target.value)}>
+            <option value="">{t('filter_all_assignee')}</option>
+            {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
+          </select>
+        )}
         <select className="filter-select" value={fCat} onChange={e => setFCat(e.target.value)}>
           <option value="">{t('filter_all_cat')}</option>
           {CATEGORIES.map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
@@ -3237,15 +3274,17 @@ function TimelineView({ tasks, currentUser, onSelectTask }) {
 
       <div className="cal-grid-wrap">
         <div className="cal-day-headers">
-          {DAY_HEADERS.map(h => <div key={h} className="cal-day-header">{h}</div>)}
+          {DAY_HEADERS.map((h, idx) => <div key={h} className={'cal-day-header' + (idx >= 5 ? ' weekend-header' : '')}>{h}</div>)}
         </div>
         <div className="cal-days">
           {cells.map((cell, i) => {
             const isToday   = cell.ds === TODAY;
             const holiday   = cell.ds ? THAI_HOLIDAY_NAMES[cell.ds] : null;
+            const dow       = cell.ds ? new Date(cell.ds + 'T00:00:00').getDay() : -1;
+            const isWeekend = dow === 0 || dow === 6;   // อาทิตย์/เสาร์ — ออฟฟิศหยุด
             const dayTasks  = cell.ds ? visibleTasks.filter(t => t.deadline === cell.ds) : [];
             return (
-              <div key={i} className={`cal-cell${!cell.dn ? ' other-month' : ''}${isToday ? ' today-cell' : ''}${holiday ? ' holiday-cell' : ''}`}>
+              <div key={i} className={`cal-cell${!cell.dn ? ' other-month' : ''}${isToday ? ' today-cell' : ''}${holiday ? ' holiday-cell' : ''}${isWeekend && !holiday ? ' weekend-cell' : ''}`}>
                 {cell.dn && (
                   <>
                     <div className="cal-date-num">{cell.dn}</div>
@@ -3285,6 +3324,10 @@ function TimelineView({ tasks, currentUser, onSelectTask }) {
         <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:'0.82rem', color:'var(--text-muted)' }}>
           <span style={{ width:12, height:12, borderRadius:3, background:'rgba(239,68,68,0.15)', border:'1.5px solid var(--danger)', display:'inline-block' }} />
           🏖️ {t('legend_holiday')}
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:'0.82rem', color:'var(--text-muted)' }}>
+          <span style={{ width:12, height:12, borderRadius:3, background:'rgba(148,163,184,0.2)', display:'inline-block' }} />
+          {t('legend_weekend')}
         </div>
       </div>
     </div>
@@ -4396,6 +4439,7 @@ function App() {
   const [createOpen,   setCreateOpen]   = useState(false);
   const [convertReq,   setConvertReq]   = useState(null);   // คำขอจาก Inbox ที่กำลังแปลงเป็นงาน
   const [duplicateSrc, setDuplicateSrc] = useState(null);   // งานต้นฉบับที่กำลังทำซ้ำ
+  const [commentNotifs, setCommentNotifs] = useState([]);   // #1: แจ้งเตือนคอมเมนต์ใหม่ในงานของฉัน
   const [autoBackup,   setAutoBackup]   = useState(() => localStorage.getItem('afflow_autobackup') !== 'off');
   const [lastBackup,   setLastBackup]   = useState(() => localStorage.getItem('afflow_last_backup') || '');
   const tasksRef = React.useRef(tasks);
@@ -4450,14 +4494,18 @@ function App() {
   }, [session && session.user && session.user.id]);
 
   // ── Phase 3: โหลดงานจาก Supabase + realtime (อัปเดตทุกเครื่องทันที) ───────────
+  const firstTaskLoadRef = React.useRef(true);
   useEffect(() => {
     if (!isSb || !session) return;
     let alive = true;
+    firstTaskLoadRef.current = true;   // โหลดครั้งแรกของแต่ละรอบ effect = ไม่แจ้งเตือนคอมเมนต์
     async function load() {
       try {
         setBackendStatus(s => (s === 'online' ? 'online' : 'syncing'));
         const list = await sb.listTasks(sbCfg);
         if (!alive) return;
+        if (firstTaskLoadRef.current) firstTaskLoadRef.current = false;
+        else detectNewComments(tasksRef.current || [], list);   // #1: เทียบคอมเมนต์ใหม่ → แจ้งเจ้าของงาน
         setTasks(list);
         setBackendStatus('online');
       } catch (e) { if (alive) setBackendStatus('offline'); }
@@ -4560,6 +4608,48 @@ function App() {
     const id = Date.now() + '-' + Math.random();
     setToasts(ts => [...ts, { id, text }]);
     setTimeout(() => setToasts(ts => ts.filter(x => x.id !== id)), 4000);
+  }
+
+  // #1: เทียบคอมเมนต์ใหม่หลัง reload — ถ้ามีคนคอมเมนต์งานของฉัน (เจ้าของ/ผู้รับผิดชอบ) → แจ้งเตือน
+  function detectNewComments(prevList, nextList) {
+    if (!currentUser) return;
+    const prevMap = {};
+    (prevList || []).forEach(t => { prevMap[t.id] = t; });
+    (nextList || []).forEach(t => {
+      const isMine = t.assignee === currentUser || t.createdBy === currentUser;
+      if (!isMine) return;
+      const old = prevMap[t.id];
+      if (!old) return;
+      const oldN = (old.comments || []).length;
+      const newN = (t.comments || []).length;
+      if (newN <= oldN) return;
+      const fresh = (t.comments || []).slice(oldN).filter(c => c.author && c.author !== currentUser);
+      if (!fresh.length) return;
+      addCommentNotif(t, fresh[fresh.length - 1]);
+    });
+  }
+  function addCommentNotif(task, comment) {
+    const nid = (comment.id || (task.id + '_' + (comment.createdAt || nowISO())));
+    setCommentNotifs(list => {
+      if (list.some(x => x.id === nid)) return list;
+      return [{ id: nid, taskId: task.id, taskTitle: task.title, author: comment.author, text: comment.text || '', at: comment.createdAt || nowISO() }, ...list].slice(0, 30);
+    });
+    pushToast('💬 ' + comment.author + ' ' + tApp('cmt_notif_toast'));
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const n = new Notification('💬 ' + comment.author + ' ' + tApp('cmt_notif_title'), {
+          body: '📋 ' + task.title + (comment.text ? '\n' + comment.text : ''),
+          icon: 'icon-192.png', tag: 'afflow-cmt-' + task.id,
+        });
+        n.onclick = () => { try { window.focus(); } catch (e) {} handleSelectTask(task); n.close(); };
+      } catch (e) {}
+    }
+  }
+  // คลิกแจ้งเตือนคอมเมนต์ → เปิดงานนั้น + เอาแจ้งเตือนออก
+  function openCommentNotif(notif) {
+    const task = (tasksRef.current || []).find(x => x.id === notif.taskId);
+    if (task) handleSelectTask(task);
+    setCommentNotifs(list => list.filter(x => x.id !== notif.id));
   }
   useEffect(() => {
     if (!isAuthed || !currentUser) { setOnlineUsers([]); return; }
@@ -4878,6 +4968,8 @@ function App() {
             onOpenSettings={() => setSettingsOpen(true)}
             privacyMode={privacyMode}
             onTogglePrivacy={() => setPrivacyMode(p => !p)}
+            commentNotifs={commentNotifs}
+            onOpenCommentNotif={openCommentNotif}
           />
 
           {/* Page content */}
@@ -4890,7 +4982,7 @@ function App() {
             )}
             {view === 'tasks' && (
               <TaskList
-                tasks={visibleTasks.filter(t => t.status !== 'done')}
+                tasks={visibleTasks}
                 currentUser={currentUser}
                 onSelectTask={handleSelectTask}
                 onEditTask={setEditingTask}
