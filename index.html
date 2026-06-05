@@ -191,7 +191,23 @@
     .inbox-time { font-size: 0.74rem; color: var(--text-muted); }
     .inbox-status { font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
     .inbox-status.new  { background: #fee2e2; color: #dc2626; }
+    .inbox-status.inprogress { background: #fef3c7; color: #d97706; }
     .inbox-status.done { background: #dcfce7; color: #16a34a; }
+    .inbox-linked { font-size: 0.74rem; color: var(--primary); font-weight: 600; margin-bottom: 8px; }
+    .inbox-allclear { text-align: center; padding: 22px; color: var(--success); font-weight: 600; font-size: 0.92rem; }
+    .inbox-history { margin-top: 18px; }
+    .inbox-history-toggle {
+      width: 100%; display: flex; align-items: center; gap: 10px; cursor: pointer;
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 11px 16px;
+      font-size: 0.9rem; font-weight: 700; color: var(--text); transition: border-color .12s;
+    }
+    .inbox-history-toggle:hover { border-color: var(--primary); }
+    .inbox-history-caret { color: var(--text-muted); font-size: 0.8rem; width: 14px; }
+    .inbox-history-count {
+      margin-left: auto; background: var(--success, #16a34a); color: #fff; font-size: 0.72rem; font-weight: 700;
+      padding: 2px 9px; border-radius: 10px;
+    }
+    .inbox-history-list { margin-top: 10px; }
     .inbox-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
     .inbox-details { font-size: 0.85rem; color: var(--text); white-space: pre-wrap; margin-bottom: 6px; }
     .inbox-contact { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
@@ -1277,7 +1293,7 @@ const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', drive_download:'ดาวน์โหลด', drive_upload:'อัปโหลด', drive_uploading:'กำลังอัปโหลด...', drive_upload_done:'อัปโหลดเสร็จ — สำเร็จ {ok} · ล้มเหลว {fail}', drive_drop_hint:'วางไฟล์ที่นี่เพื่ออัปโหลดเข้าโฟลเดอร์นี้', drive_delete:'ลบ (ลงถังขยะ)', drive_delete_confirm:'ย้าย "{name}" ลงถังขยะ?\n(ยังกู้คืนได้ใน Google Drive)', drive_delete_fail:'ลบไม่สำเร็จ', nav_timeline:'Timeline', nav_report:'รายงาน',
-    req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่', inbox_to_task:'สร้างเป็นงาน', inbox_from:'จากคำขอของ',
+    req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่', inbox_to_task:'สร้างเป็นงาน', inbox_from:'จากคำขอของ', inbox_inprogress:'🔧 กำลังทำ', inbox_linked:'เชื่อมกับงานแล้ว — จะปิดเองเมื่องานเสร็จ', inbox_history:'ประวัติคำขอที่เสร็จแล้ว', inbox_all_clear:'ไม่มีคำขอค้าง — เคลียร์หมดแล้ว! 🎉',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
     search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด',
@@ -1333,7 +1349,7 @@ const I18N = {
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', drive_download:'Download', drive_upload:'Upload', drive_uploading:'Uploading...', drive_upload_done:'Upload done — {ok} ok · {fail} failed', drive_drop_hint:'Drop files here to upload to this folder', drive_delete:'Delete (to Trash)', drive_delete_confirm:'Move "{name}" to Trash?\n(Recoverable in Google Drive)', drive_delete_fail:'Delete failed', nav_timeline:'Timeline', nav_report:'Reports',
-    req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen', inbox_to_task:'Create task', inbox_from:'From request by',
+    req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen', inbox_to_task:'Create task', inbox_from:'From request by', inbox_inprogress:'🔧 In progress', inbox_linked:'Linked to a task — closes automatically when the task is done', inbox_history:'Completed requests log', inbox_all_clear:'No pending requests — all clear! 🎉',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
     search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines',
@@ -1545,16 +1561,19 @@ function taskFromRow(r) {
     createdAt: r.created_at, createdBy: r.created_by,
     comments: Array.isArray(r.comments) ? r.comments : (r.comments || []),
     updatedAt: r.updated_at,
+    requestId: r.request_id || undefined,   // ผูกกับคำขอใน Inbox (ถ้ามี)
   };
 }
 function taskToRow(t) {
-  return {
+  const row = {
     id: t.id, title: t.title || '', description: t.description || '',
     assignee: t.assignee || '', category: t.category || '', priority: t.priority || '',
     deadline: t.deadline || '', status: t.status || 'pending',
     created_at: t.createdAt || nowISO(), created_by: t.createdBy || '',
     comments: t.comments || [], updated_at: nowISO(),
   };
+  if (t.requestId) row.request_id = t.requestId;   // ใส่เฉพาะงานที่มาจากคำขอ (ต้อง migrate คอลัมน์ก่อน)
+  return row;
 }
 
 const sb = {
@@ -3690,6 +3709,7 @@ function InboxView({ cfg, onConvert }) {
   const { t, lang } = useT();
   const [reqs, setReqs] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [showDone, setShowDone] = useState(false);   // dropdown ประวัติงานที่เสร็จแล้ว
   useEffect(() => {
     let alive = true;
     sb.loadRequests(cfg).then(d => { if (alive) { setReqs(d); setLoaded(true); } }).catch(() => { if (alive) setLoaded(true); });
@@ -3699,7 +3719,36 @@ function InboxView({ cfg, onConvert }) {
   async function setStatus(id, status) { setReqs(rs => rs.map(r => r.id === id ? { ...r, status } : r)); try { await sb.updateRequestStatus(cfg, id, status); } catch (e) {} }
   async function del(id) { if (!confirm(t('req_del_confirm'))) return; setReqs(rs => rs.filter(r => r.id !== id)); try { await sb.deleteRequest(cfg, id); } catch (e) {} }
   const fmt = (iso) => { try { return new Date(iso).toLocaleString(lang === 'en' ? 'en-GB' : 'th-TH'); } catch (e) { return ''; } };
-  const newCount = reqs.filter(r => r.status !== 'done').length;
+  const active   = reqs.filter(r => r.status !== 'done');
+  const doneReqs = reqs.filter(r => r.status === 'done');
+  const newCount = active.length;
+
+  function card(r) {
+    const st = r.status === 'done' ? 'done' : (r.status === 'in_progress' ? 'inprogress' : 'new');
+    const stTxt = r.status === 'done' ? t('inbox_done') : (r.status === 'in_progress' ? t('inbox_inprogress') : t('inbox_new'));
+    return (
+      <div key={r.id} className={'inbox-card' + (r.status === 'done' ? ' done' : '')}>
+        <div className="inbox-card-head">
+          <span className="inbox-from">👤 {r.requester_name}</span>
+          <span className="inbox-time">{fmt(r.created_at)}</span>
+          <span className={'inbox-status ' + st}>{stTxt}</span>
+        </div>
+        <div className="inbox-title">{r.title}</div>
+        {r.details && <div className="inbox-details">{r.details}</div>}
+        {r.requester_contact && <div className="inbox-contact">📞 {r.requester_contact}</div>}
+        {r.status === 'in_progress' && <div className="inbox-linked">🔗 {t('inbox_linked')}</div>}
+        <div className="inbox-actions">
+          {onConvert && r.status === 'new' &&
+            <button className="btn btn-primary inbox-btn" onClick={() => onConvert(r)}>➕ {t('inbox_to_task')}</button>}
+          {r.status !== 'done'
+            ? <button className="btn btn-outline inbox-btn" onClick={() => setStatus(r.id, 'done')}>✅ {t('inbox_mark_done')}</button>
+            : <button className="btn btn-outline inbox-btn" onClick={() => setStatus(r.id, 'new')}>↩ {t('inbox_reopen')}</button>}
+          <button className="btn btn-outline inbox-btn danger" onClick={() => del(r.id)}>🗑 {t('delete')}</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="page-header">
@@ -3709,26 +3758,21 @@ function InboxView({ cfg, onConvert }) {
       {loaded && reqs.length === 0 && (
         <div className="card"><div className="empty-state"><div className="empty-icon">📭</div><div className="empty-text">{t('inbox_empty')}</div></div></div>
       )}
-      {reqs.map(r => (
-        <div key={r.id} className={'inbox-card' + (r.status === 'done' ? ' done' : '')}>
-          <div className="inbox-card-head">
-            <span className="inbox-from">👤 {r.requester_name}</span>
-            <span className="inbox-time">{fmt(r.created_at)}</span>
-            <span className={'inbox-status ' + (r.status === 'done' ? 'done' : 'new')}>{r.status === 'done' ? t('inbox_done') : t('inbox_new')}</span>
-          </div>
-          <div className="inbox-title">{r.title}</div>
-          {r.details && <div className="inbox-details">{r.details}</div>}
-          {r.requester_contact && <div className="inbox-contact">📞 {r.requester_contact}</div>}
-          <div className="inbox-actions">
-            {onConvert && r.status !== 'done' &&
-              <button className="btn btn-primary inbox-btn" onClick={() => onConvert(r)}>➕ {t('inbox_to_task')}</button>}
-            {r.status !== 'done'
-              ? <button className="btn btn-outline inbox-btn" onClick={() => setStatus(r.id, 'done')}>✅ {t('inbox_mark_done')}</button>
-              : <button className="btn btn-outline inbox-btn" onClick={() => setStatus(r.id, 'new')}>↩ {t('inbox_reopen')}</button>}
-            <button className="btn btn-outline inbox-btn danger" onClick={() => del(r.id)}>🗑 {t('delete')}</button>
-          </div>
+      {loaded && reqs.length > 0 && active.length === 0 && (
+        <div className="inbox-allclear">✅ {t('inbox_all_clear')}</div>
+      )}
+      {active.map(card)}
+
+      {doneReqs.length > 0 && (
+        <div className="inbox-history">
+          <button className="inbox-history-toggle" onClick={() => setShowDone(s => !s)}>
+            <span className="inbox-history-caret">{showDone ? '▾' : '▸'}</span>
+            <span>📋 {t('inbox_history')}</span>
+            <span className="inbox-history-count">{doneReqs.length}</span>
+          </button>
+          {showDone && <div className="inbox-history-list">{doneReqs.map(card)}</div>}
         </div>
-      ))}
+      )}
     </div>
   );
 }
@@ -4239,6 +4283,10 @@ function App() {
     setTasks(ts => ts.map(t => t.id === updated.id ? updated : t));
     setSelectedTask(prev => prev && prev.id === updated.id ? updated : prev);
     pushUpsert(updated);
+    // ผูกกับคำขอใน Inbox: งานเสร็จ → คำขอ "เสร็จแล้ว", ยังไม่เสร็จ → "กำลังทำ"
+    if (updated.requestId && isAuthed) {
+      sb.updateRequestStatus(sbCfg, updated.requestId, updated.status === 'done' ? 'done' : 'in_progress').catch(() => {});
+    }
   }
 
   // ── ชุด B (#3): สถานะออนไลน์ทีม (Realtime Presence) + แจ้งเตือนเมื่อมีคนเข้า ──────
@@ -4279,11 +4327,12 @@ function App() {
       assignee: form.assignee, category: form.category,
       priority: form.priority, deadline: form.deadline, status: form.status,
       createdAt: nowISO(), createdBy: currentUser, comments: [],
+      requestId: convertReq ? convertReq.id : undefined,   // ผูกกับคำขอใน Inbox
     };
     setTasks(ts => [...ts, t]);
     pushUpsert(t);
-    // ถ้าสร้างจากคำขอใน Inbox → ปิดคำขอนั้น (mark done) แล้วล้างค่า
-    if (convertReq) { sb.updateRequestStatus(sbCfg, convertReq.id, 'done').catch(() => {}); setConvertReq(null); }
+    // ถ้าสร้างจากคำขอ → ตั้งคำขอเป็น "กำลังทำ" (รอจนกว่างานจะเสร็จค่อยปิดเอง)
+    if (convertReq) { sb.updateRequestStatus(sbCfg, convertReq.id, 'in_progress').catch(() => {}); setConvertReq(null); }
     setCreateOpen(false);
   }
 
