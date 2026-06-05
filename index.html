@@ -208,6 +208,13 @@
       padding: 2px 9px; border-radius: 10px;
     }
     .inbox-history-list { margin-top: 10px; }
+    /* กล่องแบบภาษีสรรพากร ในฟอร์มสร้างงาน */
+    .recur-tax-box { margin: -2px 0 10px; padding: 10px 12px; border: 1px solid var(--primary); border-radius: 10px; background: var(--primary-soft, rgba(99,102,241,0.08)); }
+    .recur-efile { display: flex; align-items: center; gap: 8px; font-size: 0.84rem; font-weight: 600; color: var(--text); cursor: pointer; }
+    .recur-efile input { width: 16px; height: 16px; cursor: pointer; }
+    .recur-tax-note { font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-top: 6px; }
+    .recur-tax-note a { color: var(--primary); text-decoration: underline; }
+    .recur-tax-warn { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
     .inbox-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
     .inbox-details { font-size: 0.85rem; color: var(--text); white-space: pre-wrap; margin-bottom: 6px; }
     .inbox-contact { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; }
@@ -1324,6 +1331,7 @@ const I18N = {
     mabelz_analyzing:'มาเบลกำลังวิเคราะห์...', mabelz_finding:'กำลังดูว่าใครเหมาะสมที่สุดค่ะ',
     mabelz_assign:'👩‍💼 มาเบลมอบหมายให้', mabelz_runner:'ตัวเลือกสำรอง: {name}', mabelz_hint:'พิมพ์ชื่องาน มาเบลจะเลือกผู้รับผิดชอบให้อัตโนมัติค่ะ',
     f_assignee:'ผู้รับผิดชอบ', f_category:'หมวดหมู่', f_priority:'ความสำคัญ', f_status:'สถานะ', f_deadline:'กำหนดส่ง *',
+    recur_label:'ทำซ้ำ', recur_none:'ไม่ซ้ำ (ครั้งเดียว)', recur_weekly:'ทุกสัปดาห์', recur_monthly:'ทุกเดือน', recur_quarterly:'ทุกไตรมาส', recur_yearly:'ทุกปี', recur_hint:'พอกดงานนี้ "เสร็จแล้ว" ระบบจะสร้างงานรอบถัดไปให้อัตโนมัติ', recur_spawned:'สร้างงานประจำรอบถัดไปแล้ว — กำหนดส่ง {date}', recur_badge:'🔁 งานประจำ', recur_tax_group:'📅 ภาษีสรรพากร (ยื่นรายเดือน)', recur_efile:'ยื่นออนไลน์ (e-Filing) — ขยายเวลายื่น', recur_tax_note:'กำหนดยื่นถัดไป: {date} (อิงปฏิทินสรรพากร)', recur_tax_ref:'ดูปฏิทินสรรพากร ↗', recur_tax_warn:'เลื่อนวันเสาร์-อาทิตย์ให้อัตโนมัติ — แต่วันหยุดนักขัตฤกษ์โปรดตรวจสอบกับสรรพากรอีกครั้ง',
     cancel:'ยกเลิก', save_edit:'บันทึกการแก้ไข', create_btn:'สร้างงาน',
     alert_title:'กรุณากรอกชื่องาน', alert_deadline:'กรุณาเลือกกำหนดส่ง', alert_assignee:'กรุณากรอกชื่องานก่อน มาเบลจะเลือกผู้รับผิดชอบให้ค่ะ',
     del_title:'ยืนยันการลบงาน', del_confirm:'คุณต้องการลบงานนี้ใช่หรือไม่?', del_btn:'ลบงาน',
@@ -1380,6 +1388,7 @@ const I18N = {
     mabelz_analyzing:'Mabelz is analyzing...', mabelz_finding:'Finding the best person...',
     mabelz_assign:'👩‍💼 Mabelz assigns to', mabelz_runner:'Backup: {name}', mabelz_hint:'Type a task name and Mabelz will auto-assign.',
     f_assignee:'Assignee', f_category:'Category', f_priority:'Priority', f_status:'Status', f_deadline:'Due date *',
+    recur_label:'Repeat', recur_none:'No repeat (once)', recur_weekly:'Weekly', recur_monthly:'Monthly', recur_quarterly:'Quarterly', recur_yearly:'Yearly', recur_hint:'When you mark this task done, the next occurrence is created automatically', recur_spawned:'Next recurring task created — due {date}', recur_badge:'🔁 Recurring', recur_tax_group:'📅 Revenue Dept tax (monthly)', recur_efile:'File online (e-Filing) — extended deadline', recur_tax_note:'Next filing due: {date} (per Revenue Dept calendar)', recur_tax_ref:'View RD calendar ↗', recur_tax_warn:'Weekends auto-shifted — please verify public holidays with the Revenue Dept',
     cancel:'Cancel', save_edit:'Save changes', create_btn:'Create task',
     alert_title:'Please enter a task name', alert_deadline:'Please select a due date', alert_assignee:'Enter a task name first; Mabelz will pick the assignee.',
     del_title:'Confirm delete', del_confirm:'Delete this task?', del_btn:'Delete task',
@@ -1433,6 +1442,52 @@ function thaiDateFull(iso, lang) {
   const d = new Date(iso + 'T00:00:00');
   if (lang === 'en') return `${MONTH_EN[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   return `${d.getDate()} ${MONTH_TH[d.getMonth()]} ${d.getFullYear() + 543}`;
+}
+
+// ─── ปฏิทินภาษีสรรพากร (ยื่นรายเดือน) ──────────────────────────────────────────
+// กำหนดยื่นของเดือนถัดไป: กระดาษ vs ออนไลน์ (e-Filing ขยายเวลา +8 วัน)
+const TAX_FORMS = {
+  pnd1:  { label: 'ภ.ง.ด.1',  desc: 'หัก ณ ที่จ่าย เงินเดือน',     paper: 7,  efile: 15 },
+  pnd3:  { label: 'ภ.ง.ด.3',  desc: 'หัก ณ ที่จ่าย บุคคลธรรมดา',   paper: 7,  efile: 15 },
+  pnd53: { label: 'ภ.ง.ด.53', desc: 'หัก ณ ที่จ่าย นิติบุคคล',     paper: 7,  efile: 15 },
+  pnd54: { label: 'ภ.ง.ด.54', desc: 'จ่ายไปต่างประเทศ',           paper: 7,  efile: 15 },
+  pp36:  { label: 'ภ.พ.36',   desc: 'นำส่ง VAT แทนผู้ประกอบการ',  paper: 7,  efile: 15 },
+  pp30:  { label: 'ภ.พ.30',   desc: 'ภาษีมูลค่าเพิ่ม (VAT)',       paper: 15, efile: 23 },
+  pt40:  { label: 'ภ.ธ.40',   desc: 'ภาษีธุรกิจเฉพาะ',            paper: 15, efile: 23 },
+};
+const TAX_FORM_ORDER = ['pnd1', 'pnd3', 'pnd53', 'pnd54', 'pp36', 'pp30', 'pt40'];
+// คืน YYYY-MM-DD โดยเลื่อนวันเสาร์→จันทร์, อาทิตย์→จันทร์ (ไม่รวมวันหยุดนักขัตฤกษ์)
+function taxDueDate(y, m0, day) {
+  let dt = new Date(y, m0, day);
+  const dow = dt.getDay();
+  if (dow === 0) dt = new Date(y, m0, day + 1);
+  else if (dow === 6) dt = new Date(y, m0, day + 2);
+  const off = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000);
+  return off.toISOString().slice(0, 10);
+}
+function parseTaxRec(rec) {
+  if (!rec || rec.indexOf('tax:') !== 0) return null;
+  const p = rec.split(':');
+  return { form: p[1], efile: p[2] === 'efile' };
+}
+// กำหนดยื่นถัดไปที่ยังมาไม่ถึง (ใช้ตอนเลือกแบบภาษีตอนสร้างงาน)
+function upcomingTaxDeadline(form, efile, today) {
+  const r = TAX_FORMS[form]; if (!r) return today;
+  const day = efile ? r.efile : r.paper;
+  const now = new Date(today + 'T00:00:00');
+  let y = now.getFullYear(), m = now.getMonth();
+  let cand = taxDueDate(y, m, day);
+  if (cand < today) { m++; if (m > 11) { m = 0; y++; } cand = taxDueDate(y, m, day); }
+  return cand;
+}
+// กำหนดยื่นรอบถัดไป (เดือนถัดจากกำหนดเดิม) — ใช้ตอนงานเสร็จแล้วสร้างรอบใหม่
+function nextTaxDeadlineAfter(currentISO, form, efile, today) {
+  const r = TAX_FORMS[form] || { paper: 15, efile: 23 };
+  const day = efile ? r.efile : r.paper;
+  const base = (currentISO && /^\d{4}-\d{2}-\d{2}/.test(currentISO)) ? new Date(currentISO + 'T00:00:00') : new Date(today + 'T00:00:00');
+  let y = base.getFullYear(), m = base.getMonth() + 1;
+  if (m > 11) { m = 0; y++; }
+  return taxDueDate(y, m, day);
 }
 
 // แผนที่ ผู้รับผิดชอบ → หมวดงานหลัก (ใช้เป็น fallback เมื่อ keyword ไม่ชี้ชัด)
@@ -1562,6 +1617,7 @@ function taskFromRow(r) {
     comments: Array.isArray(r.comments) ? r.comments : (r.comments || []),
     updatedAt: r.updated_at,
     requestId: r.request_id || undefined,   // ผูกกับคำขอใน Inbox (ถ้ามี)
+    recurrence: r.recurrence || 'none',     // งานประจำ
   };
 }
 function taskToRow(t) {
@@ -1573,6 +1629,7 @@ function taskToRow(t) {
     comments: t.comments || [], updated_at: nowISO(),
   };
   if (t.requestId) row.request_id = t.requestId;   // ใส่เฉพาะงานที่มาจากคำขอ (ต้อง migrate คอลัมน์ก่อน)
+  if (t.recurrence && t.recurrence !== 'none') row.recurrence = t.recurrence;   // งานประจำ (ต้อง migrate คอลัมน์ก่อน)
   return row;
 }
 
@@ -2075,8 +2132,8 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
   const editing = !!initialTask;
   const [form, setForm] = useState(
     editing
-      ? { title: initialTask.title, description: initialTask.description || '', assignee: initialTask.assignee, category: initialTask.category, priority: initialTask.priority, deadline: initialTask.deadline, status: initialTask.status }
-      : { title: (prefill && prefill.title) || '', description: (prefill && prefill.description) || '', assignee: selfOnly ? currentUser : '', category: (prefill && prefill.category) || 'AR', priority: 'medium', deadline: '', status: 'pending' }
+      ? { title: initialTask.title, description: initialTask.description || '', assignee: initialTask.assignee, category: initialTask.category, priority: initialTask.priority, deadline: initialTask.deadline, status: initialTask.status, recurrence: initialTask.recurrence || 'none' }
+      : { title: (prefill && prefill.title) || '', description: (prefill && prefill.description) || '', assignee: selfOnly ? currentUser : '', category: (prefill && prefill.category) || 'AR', priority: 'medium', deadline: '', status: 'pending', recurrence: 'none' }
   );
   const [mabelzTip, setMabelzTip] = React.useState(null);
   const [thinking, setThinking]   = React.useState(false);
@@ -2109,6 +2166,23 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
     if (!form.deadline)       { alert(t('alert_deadline')); return; }
     if (!form.assignee)       { alert(t('alert_assignee')); return; }
     onSave(form);
+  }
+
+  // งานประจำ/ภาษีสรรพากร
+  const taxRec = parseTaxRec(form.recurrence);
+  const recSelectValue = taxRec ? ('tax:' + taxRec.form) : (form.recurrence || 'none');
+  function onRecChange(val) {
+    if (val.indexOf('tax:') === 0) {
+      const fc = val.split(':')[1];
+      const ef = taxRec ? taxRec.efile : false;
+      setForm(f => ({ ...f, recurrence: 'tax:' + fc + ':' + (ef ? 'efile' : 'paper'), deadline: upcomingTaxDeadline(fc, ef, TODAY) }));
+    } else {
+      setForm(f => ({ ...f, recurrence: val }));
+    }
+  }
+  function onEfileChange(checked) {
+    if (!taxRec) return;
+    setForm(f => ({ ...f, recurrence: 'tax:' + taxRec.form + ':' + (checked ? 'efile' : 'paper'), deadline: upcomingTaxDeadline(taxRec.form, checked, TODAY) }));
   }
 
   return (
@@ -2190,10 +2264,34 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
               </select>
             </div>
           </div>
-          <div className="form-group">
-            <label className="form-label">{t('f_deadline')}</label>
-            <input className="form-input" type="date" value={form.deadline} onChange={e => set('deadline', e.target.value)} />
+          <div className="form-grid-2">
+            <div className="form-group">
+              <label className="form-label">{t('f_deadline')}</label>
+              <input className="form-input" type="date" value={form.deadline} onChange={e => set('deadline', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">🔁 {t('recur_label')}</label>
+              <select className="form-select" value={recSelectValue} onChange={e => onRecChange(e.target.value)}>
+                {['none','weekly','monthly','quarterly','yearly'].map(rc => <option key={rc} value={rc}>{t('recur_' + rc)}</option>)}
+                <optgroup label={t('recur_tax_group')}>
+                  {TAX_FORM_ORDER.map(fc => <option key={fc} value={'tax:' + fc}>{TAX_FORMS[fc].label} — {TAX_FORMS[fc].desc}</option>)}
+                </optgroup>
+              </select>
+            </div>
           </div>
+          {taxRec && (
+            <div className="recur-tax-box">
+              <label className="recur-efile">
+                <input type="checkbox" checked={taxRec.efile} onChange={e => onEfileChange(e.target.checked)} />
+                <span>{t('recur_efile')}</span>
+              </label>
+              <div className="recur-tax-note">📅 {t('recur_tax_note', { date: thaiDateFull(form.deadline, lang) })} <a href="https://www.rd.go.th/62348.html" target="_blank" rel="noopener noreferrer">{t('recur_tax_ref')}</a></div>
+              <div className="recur-tax-warn">⚠️ {t('recur_tax_warn')}</div>
+            </div>
+          )}
+          {!taxRec && form.recurrence && form.recurrence !== 'none' && (
+            <div style={{ fontSize:'0.78rem', color:'var(--primary)', marginTop:-6, marginBottom:8 }}>💡 {t('recur_hint')}</div>
+          )}
           <div style={{ display:'flex', gap:10, justifyContent:'flex-end', marginTop:8 }}>
             <button className="btn btn-outline" onClick={onClose}>{t('cancel')}</button>
             <button className="btn btn-primary" onClick={handleSave}>{editing ? t('save_edit') : t('create_btn')}</button>
@@ -2942,7 +3040,10 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
               <tbody>
                 {filtered.map(task => (
                   <tr key={task.id} className={rowClass(task.deadline, task.status)} style={{ borderLeft: '4px solid ' + getUserColor(task.assignee) }}>
-                    <td style={{ maxWidth:220, fontWeight:500, cursor:'pointer' }} onClick={() => onSelectTask(task)}>{task.title}</td>
+                    <td style={{ maxWidth:220, fontWeight:500, cursor:'pointer' }} onClick={() => onSelectTask(task)}>
+                      {task.recurrence && task.recurrence !== 'none' && <span title={t('recur_badge')} style={{ marginRight:4 }}>{task.recurrence.indexOf('tax:') === 0 ? '📅' : '🔁'}</span>}
+                      {task.title}
+                    </td>
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:6 }}>
                         <Avatar name={task.assignee} size="sm" />
@@ -4280,6 +4381,7 @@ function App() {
   }
 
   function updateTask(updated) {
+    const prevTask = tasks.find(x => x.id === updated.id);
     setTasks(ts => ts.map(t => t.id === updated.id ? updated : t));
     setSelectedTask(prev => prev && prev.id === updated.id ? updated : prev);
     pushUpsert(updated);
@@ -4287,6 +4389,36 @@ function App() {
     if (updated.requestId && isAuthed) {
       sb.updateRequestStatus(sbCfg, updated.requestId, updated.status === 'done' ? 'done' : 'in_progress').catch(() => {});
     }
+    // งานประจำ: เพิ่งเปลี่ยนเป็น "เสร็จแล้ว" → สร้างงานรอบถัดไปอัตโนมัติ
+    const justDone = prevTask && prevTask.status !== 'done' && updated.status === 'done';
+    if (justDone && updated.recurrence && updated.recurrence !== 'none') {
+      spawnNextRecurrence(updated);
+    }
+  }
+
+  // คำนวณกำหนดส่งรอบถัดไปตามความถี่
+  function nextDeadline(iso, rec) {
+    const base = iso && /^\d{4}-\d{2}-\d{2}/.test(iso) ? iso : TODAY;
+    const d = new Date(base + 'T00:00:00');
+    if (rec === 'weekly')         d.setDate(d.getDate() + 7);
+    else if (rec === 'monthly')   d.setMonth(d.getMonth() + 1);
+    else if (rec === 'quarterly') d.setMonth(d.getMonth() + 3);
+    else if (rec === 'yearly')    d.setFullYear(d.getFullYear() + 1);
+    const off = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+    return off.toISOString().slice(0, 10);
+  }
+  function spawnNextRecurrence(task) {
+    const taxRec = parseTaxRec(task.recurrence);
+    const nd = taxRec
+      ? nextTaxDeadlineAfter(task.deadline, taxRec.form, taxRec.efile, TODAY)
+      : nextDeadline(task.deadline, task.recurrence);
+    const nt = {
+      ...task, id: uid(), status: 'pending', deadline: nd,
+      createdAt: nowISO(), createdBy: currentUser, comments: [], requestId: undefined,
+    };
+    setTasks(ts => [...ts, nt]);
+    pushUpsert(nt);
+    pushToast((taxRec ? '📅 ' : '🔁 ') + tApp('recur_spawned').replace('{date}', thaiDateFull(nd, lang)));
   }
 
   // ── ชุด B (#3): สถานะออนไลน์ทีม (Realtime Presence) + แจ้งเตือนเมื่อมีคนเข้า ──────
@@ -4326,6 +4458,7 @@ function App() {
       id: uid(), title: form.title, description: form.description,
       assignee: form.assignee, category: form.category,
       priority: form.priority, deadline: form.deadline, status: form.status,
+      recurrence: form.recurrence || 'none',
       createdAt: nowISO(), createdBy: currentUser, comments: [],
       requestId: convertReq ? convertReq.id : undefined,   // ผูกกับคำขอใน Inbox
     };
