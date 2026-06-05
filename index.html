@@ -1352,7 +1352,7 @@ const I18N = {
     tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ', completed_sub:'เสร็จแล้ว {n} รายการ',
     filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด',
     clear_filters:'✕ ล้างตัวกรอง', found_n:'พบ {n} รายการ', no_match:'ไม่พบงานที่ตรงกับเงื่อนไข', clear_search:'ล้างคำค้นหา',
-    view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ',
+    view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ', duplicate:'ทำซ้ำงานนี้',
     timeline_title:'Timeline รายเดือน 📅', timeline_sub:'งานตามวันกำหนดส่ง', prev:'← ก่อนหน้า', next:'ถัดไป →', legend:'สัญลักษณ์:', today:'วันนี้', legend_holiday:'วันหยุดไทย',
     report_title:'รายงานสรุปประจำเดือน 📈', report_sub:'ภาพรวมความคืบหน้า — {month}', export_csv:'⬇️ Export CSV',
     assistant:'ผู้ช่วย', progress:'ความคืบหน้า', tasks_word:'งาน',
@@ -1363,7 +1363,7 @@ const I18N = {
     mabelz_analyzing:'มาเบลกำลังวิเคราะห์...', mabelz_finding:'กำลังดูว่าใครเหมาะสมที่สุดค่ะ',
     mabelz_assign:'👩‍💼 มาเบลมอบหมายให้', mabelz_runner:'ตัวเลือกสำรอง: {name}', mabelz_hint:'พิมพ์ชื่องาน มาเบลจะเลือกผู้รับผิดชอบให้อัตโนมัติค่ะ',
     f_assignee:'ผู้รับผิดชอบ', f_category:'หมวดหมู่', f_priority:'ความสำคัญ', f_status:'สถานะ', f_deadline:'กำหนดส่ง *',
-    recur_label:'ทำซ้ำ', recur_none:'ไม่ซ้ำ (ครั้งเดียว)', recur_weekly:'ทุกสัปดาห์', recur_monthly:'ทุกเดือน', recur_quarterly:'ทุกไตรมาส', recur_yearly:'ทุกปี', recur_hint:'พอกดงานนี้ "เสร็จแล้ว" ระบบจะสร้างงานรอบถัดไปให้อัตโนมัติ', recur_spawned:'สร้างงานประจำรอบถัดไปแล้ว — กำหนดส่ง {date}', recur_badge:'🔁 งานประจำ', recur_tax_group:'📅 ภาษีสรรพากร (ยื่นรายเดือน)', recur_efile:'ยื่นออนไลน์ (e-Filing) — ขยายเวลายื่น', recur_tax_note:'กำหนดยื่นถัดไป: {date} (อิงปฏิทินสรรพากร)', recur_tax_ref:'ดูปฏิทินสรรพากร ↗', recur_tax_warn:'เลื่อนวันเสาร์-อาทิตย์ + วันหยุดราชการไทยให้อัตโนมัติ — วันหยุดพิเศษบางปีโปรดเช็กกับสรรพากร',
+    recur_label:'ทำซ้ำ', recur_none:'ไม่ซ้ำ (ครั้งเดียว)', recur_daily:'ทุกวัน', recur_weekly:'ทุกสัปดาห์', recur_monthly:'ทุกเดือน', recur_quarterly:'ทุกไตรมาส', recur_yearly:'ทุกปี', recur_hint:'พอกดงานนี้ "เสร็จแล้ว" ระบบจะสร้างงานรอบถัดไปให้อัตโนมัติ', recur_spawned:'สร้างงานประจำรอบถัดไปแล้ว — กำหนดส่ง {date}', recur_badge:'🔁 งานประจำ', recur_tax_group:'📅 ภาษีสรรพากร (ยื่นรายเดือน)', recur_efile:'ยื่นออนไลน์ (e-Filing) — ขยายเวลายื่น', recur_tax_note:'กำหนดยื่นถัดไป: {date} (อิงปฏิทินสรรพากร)', recur_tax_ref:'ดูปฏิทินสรรพากร ↗', recur_tax_warn:'เลื่อนวันเสาร์-อาทิตย์ + วันหยุดราชการไทยให้อัตโนมัติ — วันหยุดพิเศษบางปีโปรดเช็กกับสรรพากร',
     cancel:'ยกเลิก', save_edit:'บันทึกการแก้ไข', create_btn:'สร้างงาน',
     alert_title:'กรุณากรอกชื่องาน', alert_deadline:'กรุณาเลือกกำหนดส่ง', alert_assignee:'กรุณากรอกชื่องานก่อน มาเบลจะเลือกผู้รับผิดชอบให้ค่ะ',
     del_title:'ยืนยันการลบงาน', del_confirm:'คุณต้องการลบงานนี้ใช่หรือไม่?', del_btn:'ลบงาน',
@@ -1410,7 +1410,7 @@ const I18N = {
     tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks', completed_sub:'{n} completed',
     filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories',
     clear_filters:'✕ Clear filters', found_n:'{n} found', no_match:'No matching tasks', clear_search:'Clear search',
-    view_detail:'View details', edit:'Edit', delete:'Delete',
+    view_detail:'View details', edit:'Edit', delete:'Delete', duplicate:'Duplicate task',
     timeline_title:'Monthly Timeline 📅', timeline_sub:'Tasks by due date', prev:'← Prev', next:'Next →', legend:'Legend:', today:'Today', legend_holiday:'Thai holiday',
     report_title:'Monthly Summary Report 📈', report_sub:'Progress overview — {month}', export_csv:'⬇️ Export CSV',
     assistant:'Assistant', progress:'Progress', tasks_word:'tasks',
@@ -1421,7 +1421,7 @@ const I18N = {
     mabelz_analyzing:'Mabelz is analyzing...', mabelz_finding:'Finding the best person...',
     mabelz_assign:'👩‍💼 Mabelz assigns to', mabelz_runner:'Backup: {name}', mabelz_hint:'Type a task name and Mabelz will auto-assign.',
     f_assignee:'Assignee', f_category:'Category', f_priority:'Priority', f_status:'Status', f_deadline:'Due date *',
-    recur_label:'Repeat', recur_none:'No repeat (once)', recur_weekly:'Weekly', recur_monthly:'Monthly', recur_quarterly:'Quarterly', recur_yearly:'Yearly', recur_hint:'When you mark this task done, the next occurrence is created automatically', recur_spawned:'Next recurring task created — due {date}', recur_badge:'🔁 Recurring', recur_tax_group:'📅 Revenue Dept tax (monthly)', recur_efile:'File online (e-Filing) — extended deadline', recur_tax_note:'Next filing due: {date} (per Revenue Dept calendar)', recur_tax_ref:'View RD calendar ↗', recur_tax_warn:'Weekends & Thai public holidays auto-shifted — please verify special holidays with the Revenue Dept',
+    recur_label:'Repeat', recur_none:'No repeat (once)', recur_daily:'Daily', recur_weekly:'Weekly', recur_monthly:'Monthly', recur_quarterly:'Quarterly', recur_yearly:'Yearly', recur_hint:'When you mark this task done, the next occurrence is created automatically', recur_spawned:'Next recurring task created — due {date}', recur_badge:'🔁 Recurring', recur_tax_group:'📅 Revenue Dept tax (monthly)', recur_efile:'File online (e-Filing) — extended deadline', recur_tax_note:'Next filing due: {date} (per Revenue Dept calendar)', recur_tax_ref:'View RD calendar ↗', recur_tax_warn:'Weekends & Thai public holidays auto-shifted — please verify special holidays with the Revenue Dept',
     cancel:'Cancel', save_edit:'Save changes', create_btn:'Create task',
     alert_title:'Please enter a task name', alert_deadline:'Please select a due date', alert_assignee:'Enter a task name first; Mabelz will pick the assignee.',
     del_title:'Confirm delete', del_confirm:'Delete this task?', del_btn:'Delete task',
@@ -2203,7 +2203,7 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
   const [form, setForm] = useState(
     editing
       ? { title: initialTask.title, description: initialTask.description || '', assignee: initialTask.assignee, category: initialTask.category, priority: initialTask.priority, deadline: initialTask.deadline, status: initialTask.status, recurrence: initialTask.recurrence || 'none' }
-      : { title: (prefill && prefill.title) || '', description: (prefill && prefill.description) || '', assignee: selfOnly ? currentUser : '', category: (prefill && prefill.category) || 'AR', priority: 'medium', deadline: '', status: 'pending', recurrence: 'none' }
+      : { title: (prefill && prefill.title) || '', description: (prefill && prefill.description) || '', assignee: (prefill && prefill.assignee != null) ? prefill.assignee : (selfOnly ? currentUser : ''), category: (prefill && prefill.category) || 'AR', priority: (prefill && prefill.priority) || 'medium', deadline: '', status: 'pending', recurrence: (prefill && prefill.recurrence) || 'none' }
   );
   const [mabelzTip, setMabelzTip] = React.useState(null);
   const [thinking, setThinking]   = React.useState(false);
@@ -2342,7 +2342,7 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
             <div className="form-group">
               <label className="form-label">🔁 {t('recur_label')}</label>
               <select className="form-select" value={recSelectValue} onChange={e => onRecChange(e.target.value)}>
-                {['none','weekly','monthly','quarterly','yearly'].map(rc => <option key={rc} value={rc}>{t('recur_' + rc)}</option>)}
+                {['none','daily','weekly','monthly','quarterly','yearly'].map(rc => <option key={rc} value={rc}>{t('recur_' + rc)}</option>)}
                 <optgroup label={t('recur_tax_group')}>
                   {TAX_FORM_ORDER.map(fc => <option key={fc} value={'tax:' + fc}>{TAX_FORMS[fc].label} — {TAX_FORMS[fc].desc}</option>)}
                 </optgroup>
@@ -3072,7 +3072,7 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
 
 // ─── TaskList ─────────────────────────────────────────────────────────────────
 
-function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, setCreateOpen, search, setSearch, mode }) {
+function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, onDuplicate, setCreateOpen, search, setSearch, mode }) {
   const { t, lang } = useT();
   const isManager = currentUser === 'Big Boss';
   const base      = tasks;   // ทุกคนเห็นงานทั้งหมด (view all)
@@ -3176,6 +3176,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
                     <td><Countdown deadline={task.deadline} status={task.status} /></td>
                     <td style={{ whiteSpace:'nowrap' }}>
                       <button className="btn-icon" title={t('view_detail')} onClick={() => onSelectTask(task)}>👁️</button>
+                      {onDuplicate && <button className="btn-icon" title={t('duplicate')} onClick={e => { e.stopPropagation(); onDuplicate(task); }}>📋</button>}
                       {canEdit(task) && <>
                         <button className="btn-icon" title={t('edit')} onClick={e => { e.stopPropagation(); onEditTask(task); }}>✏️</button>
                         <button className="btn-icon danger" title={t('delete')} onClick={e => { e.stopPropagation(); onDeleteTask(task); }}>🗑️</button>
@@ -4394,6 +4395,7 @@ function App() {
   const [deletingTask, setDeletingTask] = useState(null);
   const [createOpen,   setCreateOpen]   = useState(false);
   const [convertReq,   setConvertReq]   = useState(null);   // คำขอจาก Inbox ที่กำลังแปลงเป็นงาน
+  const [duplicateSrc, setDuplicateSrc] = useState(null);   // งานต้นฉบับที่กำลังทำซ้ำ
   const [autoBackup,   setAutoBackup]   = useState(() => localStorage.getItem('afflow_autobackup') !== 'off');
   const [lastBackup,   setLastBackup]   = useState(() => localStorage.getItem('afflow_last_backup') || '');
   const tasksRef = React.useRef(tasks);
@@ -4529,7 +4531,8 @@ function App() {
   function nextDeadline(iso, rec) {
     const base = iso && /^\d{4}-\d{2}-\d{2}/.test(iso) ? iso : TODAY;
     const d = new Date(base + 'T00:00:00');
-    if (rec === 'weekly')         d.setDate(d.getDate() + 7);
+    if (rec === 'daily')          d.setDate(d.getDate() + 1);
+    else if (rec === 'weekly')    d.setDate(d.getDate() + 7);
     else if (rec === 'monthly')   d.setMonth(d.getMonth() + 1);
     else if (rec === 'quarterly') d.setMonth(d.getMonth() + 3);
     else if (rec === 'yearly')    d.setFullYear(d.getFullYear() + 1);
@@ -4601,6 +4604,12 @@ function App() {
   // แปลงคำขอใน Inbox → เปิดหน้าสร้างงานพร้อมข้อมูลที่กรอกให้แล้ว
   function handleConvertRequest(req) {
     setConvertReq(req);
+    setView('tasks');
+    setCreateOpen(true);
+  }
+  // ทำซ้ำงาน → เปิดหน้าสร้างงานที่ก๊อปข้อมูลมาให้ (เหลือแค่ใส่วันที่/แก้หัวข้อ)
+  function handleDuplicate(task) {
+    setDuplicateSrc(task);
     setView('tasks');
     setCreateOpen(true);
   }
@@ -4886,6 +4895,7 @@ function App() {
                 onSelectTask={handleSelectTask}
                 onEditTask={setEditingTask}
                 onDeleteTask={setDeletingTask}
+                onDuplicate={handleDuplicate}
                 setCreateOpen={setCreateOpen}
                 search={search}
                 setSearch={setSearch}
@@ -4898,6 +4908,7 @@ function App() {
                 onSelectTask={handleSelectTask}
                 onEditTask={setEditingTask}
                 onDeleteTask={setDeletingTask}
+                onDuplicate={handleDuplicate}
                 setCreateOpen={setCreateOpen}
                 search={search}
                 setSearch={setSearch}
@@ -4925,7 +4936,7 @@ function App() {
       )}
       {(createOpen || editingTask) && (
         <CreateTaskModal
-          onClose={() => { setCreateOpen(false); setEditingTask(null); setConvertReq(null); }}
+          onClose={() => { setCreateOpen(false); setEditingTask(null); setConvertReq(null); setDuplicateSrc(null); }}
           onSave={editingTask ? handleEditSave : handleCreate}
           currentUser={currentUser}
           initialTask={editingTask || null}
@@ -4935,6 +4946,13 @@ function App() {
             title: convertReq.title,
             description: (convertReq.details || '') + '\n\n— ' + tApp('inbox_from') + ': ' + convertReq.requester_name + (convertReq.requester_contact ? ' (' + convertReq.requester_contact + ')' : ''),
             category: convertReq.category || undefined,
+          } : duplicateSrc ? {
+            title: duplicateSrc.title,
+            description: duplicateSrc.description || '',
+            category: duplicateSrc.category,
+            assignee: duplicateSrc.assignee,
+            priority: duplicateSrc.priority,
+            recurrence: duplicateSrc.recurrence || 'none',
           } : null}
         />
       )}
