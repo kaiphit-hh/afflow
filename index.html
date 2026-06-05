@@ -1357,7 +1357,7 @@ const I18N = {
     mabelz_analyzing:'มาเบลกำลังวิเคราะห์...', mabelz_finding:'กำลังดูว่าใครเหมาะสมที่สุดค่ะ',
     mabelz_assign:'👩‍💼 มาเบลมอบหมายให้', mabelz_runner:'ตัวเลือกสำรอง: {name}', mabelz_hint:'พิมพ์ชื่องาน มาเบลจะเลือกผู้รับผิดชอบให้อัตโนมัติค่ะ',
     f_assignee:'ผู้รับผิดชอบ', f_category:'หมวดหมู่', f_priority:'ความสำคัญ', f_status:'สถานะ', f_deadline:'กำหนดส่ง *',
-    recur_label:'ทำซ้ำ', recur_none:'ไม่ซ้ำ (ครั้งเดียว)', recur_weekly:'ทุกสัปดาห์', recur_monthly:'ทุกเดือน', recur_quarterly:'ทุกไตรมาส', recur_yearly:'ทุกปี', recur_hint:'พอกดงานนี้ "เสร็จแล้ว" ระบบจะสร้างงานรอบถัดไปให้อัตโนมัติ', recur_spawned:'สร้างงานประจำรอบถัดไปแล้ว — กำหนดส่ง {date}', recur_badge:'🔁 งานประจำ', recur_tax_group:'📅 ภาษีสรรพากร (ยื่นรายเดือน)', recur_efile:'ยื่นออนไลน์ (e-Filing) — ขยายเวลายื่น', recur_tax_note:'กำหนดยื่นถัดไป: {date} (อิงปฏิทินสรรพากร)', recur_tax_ref:'ดูปฏิทินสรรพากร ↗', recur_tax_warn:'เลื่อนวันเสาร์-อาทิตย์ให้อัตโนมัติ — แต่วันหยุดนักขัตฤกษ์โปรดตรวจสอบกับสรรพากรอีกครั้ง',
+    recur_label:'ทำซ้ำ', recur_none:'ไม่ซ้ำ (ครั้งเดียว)', recur_weekly:'ทุกสัปดาห์', recur_monthly:'ทุกเดือน', recur_quarterly:'ทุกไตรมาส', recur_yearly:'ทุกปี', recur_hint:'พอกดงานนี้ "เสร็จแล้ว" ระบบจะสร้างงานรอบถัดไปให้อัตโนมัติ', recur_spawned:'สร้างงานประจำรอบถัดไปแล้ว — กำหนดส่ง {date}', recur_badge:'🔁 งานประจำ', recur_tax_group:'📅 ภาษีสรรพากร (ยื่นรายเดือน)', recur_efile:'ยื่นออนไลน์ (e-Filing) — ขยายเวลายื่น', recur_tax_note:'กำหนดยื่นถัดไป: {date} (อิงปฏิทินสรรพากร)', recur_tax_ref:'ดูปฏิทินสรรพากร ↗', recur_tax_warn:'เลื่อนวันเสาร์-อาทิตย์ + วันหยุดราชการไทยให้อัตโนมัติ — วันหยุดพิเศษบางปีโปรดเช็กกับสรรพากร',
     cancel:'ยกเลิก', save_edit:'บันทึกการแก้ไข', create_btn:'สร้างงาน',
     alert_title:'กรุณากรอกชื่องาน', alert_deadline:'กรุณาเลือกกำหนดส่ง', alert_assignee:'กรุณากรอกชื่องานก่อน มาเบลจะเลือกผู้รับผิดชอบให้ค่ะ',
     del_title:'ยืนยันการลบงาน', del_confirm:'คุณต้องการลบงานนี้ใช่หรือไม่?', del_btn:'ลบงาน',
@@ -1372,6 +1372,7 @@ const I18N = {
     settings_key:'Anon public key', settings_key_ph:'eyJhbGci... (anon / public key)',
     settings_test:'ทดสอบการเชื่อมต่อ', settings_test_ok:'✓ เชื่อมต่อสำเร็จ', settings_test_fail:'✕ เชื่อมต่อไม่ได้ — ตรวจ URL/Key หรือยังไม่ได้รัน schema', settings_testing:'กำลังทดสอบ...',
     settings_push:'⬆️ นำข้อมูลในเครื่องขึ้น Supabase', settings_push_done:'✓ อัปโหลดแล้ว {n} งาน', settings_push_fail:'✕ อัปโหลดไม่สำเร็จ (ต้องล็อกอินก่อน)', settings_pushing:'กำลังอัปโหลด...',
+    backup_title:'สำรองข้อมูลขึ้น Google Drive', backup_intro:'สำรองงาน + คำขอ + แชททีม ทั้งหมดเป็นไฟล์ JSON เก็บไว้ใน Drive กลาง (เฉพาะหัวหน้า)', backup_now:'สำรองตอนนี้', backup_running:'กำลังสำรอง...', backup_done:'✓ สำรองแล้ว: {name}', backup_fail:'✕ สำรองไม่สำเร็จ', backup_auto:'สำรองอัตโนมัติทุกวัน (ตอนเปิดแอป)', backup_last:'สำรองล่าสุด',
     settings_push_warn:'⚠️ จะแทนที่ข้อมูลทั้งหมดใน Supabase ด้วยข้อมูลในเครื่องนี้ — ต้องล็อกอินและบันทึกการตั้งค่าก่อน', settings_save:'บันทึก', settings_disconnect:'ยกเลิกการเชื่อมต่อ', settings_save_first:'กรุณาบันทึกการตั้งค่าก่อน',
     login_title:'เข้าสู่ระบบ', login_sub:'ระบบจัดการงาน Accounting & Finance', login_email:'อีเมล', login_email_ph:'you@hungryhub.com', login_password:'รหัสผ่าน', login_password_ph:'รหัสผ่านของคุณ',
     login_btn:'เข้าสู่ระบบ', login_loading:'กำลังเข้าสู่ระบบ...', login_error:'อีเมลหรือรหัสผ่านไม่ถูกต้อง', login_logout:'ออกจากระบบ', login_loading_app:'กำลังโหลด...', login_no_profile:'บัญชีนี้ยังไม่ได้กำหนดชื่อทีม — ติดต่อหัวหน้า', login_forgot:'ลืมรหัสผ่าน?', reset_title:'รีเซ็ตรหัสผ่าน', reset_desc:'กรอกอีเมลของคุณ เราจะส่งลิงก์ตั้งรหัสใหม่ไปให้', reset_send:'ส่งลิงก์รีเซ็ต', reset_sending:'กำลังส่ง...', reset_sent:'ส่งลิงก์ไปที่อีเมลแล้ว ✓ เช็คกล่องจดหมาย (และโฟลเดอร์ Junk/Spam)', reset_back:'← กลับไปเข้าสู่ระบบ', reset_email_required:'กรุณากรอกอีเมลก่อน', reset_fail:'ส่งไม่สำเร็จ — อาจส่งบ่อยเกินไป ลองใหม่ภายหลัง', newpass_title:'ตั้งรหัสผ่านใหม่', newpass_label:'รหัสผ่านใหม่', newpass_ph:'อย่างน้อย 6 ตัวอักษร', newpass_btn:'บันทึกรหัสผ่านใหม่', newpass_saving:'กำลังบันทึก...', newpass_done:'เปลี่ยนรหัสสำเร็จ! กำลังพาเข้าระบบ...', newpass_short:'รหัสผ่านสั้นไป (อย่างน้อย 6 ตัว)', newpass_fail:'บันทึกไม่สำเร็จ — ลิงก์อาจหมดอายุ ลองขอลิงก์ใหม่',
@@ -1414,7 +1415,7 @@ const I18N = {
     mabelz_analyzing:'Mabelz is analyzing...', mabelz_finding:'Finding the best person...',
     mabelz_assign:'👩‍💼 Mabelz assigns to', mabelz_runner:'Backup: {name}', mabelz_hint:'Type a task name and Mabelz will auto-assign.',
     f_assignee:'Assignee', f_category:'Category', f_priority:'Priority', f_status:'Status', f_deadline:'Due date *',
-    recur_label:'Repeat', recur_none:'No repeat (once)', recur_weekly:'Weekly', recur_monthly:'Monthly', recur_quarterly:'Quarterly', recur_yearly:'Yearly', recur_hint:'When you mark this task done, the next occurrence is created automatically', recur_spawned:'Next recurring task created — due {date}', recur_badge:'🔁 Recurring', recur_tax_group:'📅 Revenue Dept tax (monthly)', recur_efile:'File online (e-Filing) — extended deadline', recur_tax_note:'Next filing due: {date} (per Revenue Dept calendar)', recur_tax_ref:'View RD calendar ↗', recur_tax_warn:'Weekends auto-shifted — please verify public holidays with the Revenue Dept',
+    recur_label:'Repeat', recur_none:'No repeat (once)', recur_weekly:'Weekly', recur_monthly:'Monthly', recur_quarterly:'Quarterly', recur_yearly:'Yearly', recur_hint:'When you mark this task done, the next occurrence is created automatically', recur_spawned:'Next recurring task created — due {date}', recur_badge:'🔁 Recurring', recur_tax_group:'📅 Revenue Dept tax (monthly)', recur_efile:'File online (e-Filing) — extended deadline', recur_tax_note:'Next filing due: {date} (per Revenue Dept calendar)', recur_tax_ref:'View RD calendar ↗', recur_tax_warn:'Weekends & Thai public holidays auto-shifted — please verify special holidays with the Revenue Dept',
     cancel:'Cancel', save_edit:'Save changes', create_btn:'Create task',
     alert_title:'Please enter a task name', alert_deadline:'Please select a due date', alert_assignee:'Enter a task name first; Mabelz will pick the assignee.',
     del_title:'Confirm delete', del_confirm:'Delete this task?', del_btn:'Delete task',
@@ -1429,6 +1430,7 @@ const I18N = {
     settings_key:'Anon public key', settings_key_ph:'eyJhbGci... (anon / public key)',
     settings_test:'Test connection', settings_test_ok:'✓ Connected', settings_test_fail:'✕ Cannot connect — check URL/Key or run schema first', settings_testing:'Testing...',
     settings_push:'⬆️ Upload local data to Supabase', settings_push_done:'✓ Uploaded {n} tasks', settings_push_fail:'✕ Upload failed (must be logged in)', settings_pushing:'Uploading...',
+    backup_title:'Backup to Google Drive', backup_intro:'Back up all tasks + requests + team chat as a JSON file in the Central Drive (manager only)', backup_now:'Back up now', backup_running:'Backing up...', backup_done:'✓ Backed up: {name}', backup_fail:'✕ Backup failed', backup_auto:'Auto-backup daily (on app open)', backup_last:'Last backup',
     settings_push_warn:'⚠️ This replaces ALL data in Supabase with this device\'s data — you must be logged in and have saved the config.', settings_save:'Save', settings_disconnect:'Disconnect', settings_save_first:'Please save the config first',
     login_title:'Sign in', login_sub:'Accounting & Finance task system', login_email:'Email', login_email_ph:'you@hungryhub.com', login_password:'Password', login_password_ph:'Your password',
     login_btn:'Sign in', login_loading:'Signing in...', login_error:'Incorrect email or password', login_logout:'Sign out', login_loading_app:'Loading...', login_no_profile:'This account has no team name set — contact your manager', login_forgot:'Forgot password?', reset_title:'Reset password', reset_desc:'Enter your email and we will send you a reset link', reset_send:'Send reset link', reset_sending:'Sending...', reset_sent:'Reset link sent ✓ Check your inbox (and Junk/Spam folder)', reset_back:'← Back to sign in', reset_email_required:'Please enter your email first', reset_fail:'Could not send — possibly too many requests. Try again later', newpass_title:'Set a new password', newpass_label:'New password', newpass_ph:'At least 6 characters', newpass_btn:'Save new password', newpass_saving:'Saving...', newpass_done:'Password changed! Signing you in...', newpass_short:'Password too short (min 6)', newpass_fail:'Could not save — the link may have expired. Request a new one',
@@ -1482,14 +1484,31 @@ const TAX_FORMS = {
   pt40:  { label: 'ภ.ธ.40',   desc: 'ภาษีธุรกิจเฉพาะ',            paper: 15, efile: 23 },
 };
 const TAX_FORM_ORDER = ['pnd1', 'pnd3', 'pnd53', 'pnd54', 'pp36', 'pp30', 'pt40'];
-// คืน YYYY-MM-DD โดยเลื่อนวันเสาร์→จันทร์, อาทิตย์→จันทร์ (ไม่รวมวันหยุดนักขัตฤกษ์)
+// วันหยุดราชการไทย (วันที่ตายตัว) — อัปเดต/เพิ่มได้ทุกปี + ควรเช็กกับสรรพากร
+// ⚠️ วันหยุดทางพุทธศาสนา (มาฆบูชา/วิสาขบูชา/อาสาฬหบูชา-เข้าพรรษา) เลื่อนทุกปี — เพิ่มเองด้านล่าง
+const THAI_HOLIDAYS = new Set([
+  // ── 2025 ──
+  '2025-01-01','2025-04-07','2025-04-14','2025-04-15','2025-05-01','2025-05-05','2025-06-03',
+  '2025-07-28','2025-08-12','2025-10-13','2025-10-23','2025-12-05','2025-12-10','2025-12-31',
+  '2025-02-12','2025-05-12','2025-07-10','2025-07-11',   // มาฆบูชา/วิสาขบูชา/อาสาฬหบูชา-เข้าพรรษา 2568
+  // ── 2026 ──
+  '2026-01-01','2026-04-06','2026-04-13','2026-04-14','2026-04-15','2026-05-01','2026-05-04','2026-06-03',
+  '2026-07-28','2026-08-12','2026-10-13','2026-10-23','2026-12-05','2026-12-07','2026-12-10','2026-12-31',
+  '2026-03-03','2026-05-31','2026-06-01','2026-06-29','2026-06-30',  // มาฆบูชา/วิสาขบูชา/อาสาฬหบูชา-เข้าพรรษา 2569 (โปรดตรวจสอบ)
+  // ── 2027 ── (วันที่ตายตัว — เพิ่มวันพุทธศาสนาเองภายหลัง)
+  '2027-01-01','2027-04-06','2027-04-13','2027-04-14','2027-04-15','2027-05-01','2027-05-04','2027-06-03',
+  '2027-07-28','2027-08-12','2027-10-13','2027-10-23','2027-12-06','2027-12-10','2027-12-31',
+]);
+// คืน YYYY-MM-DD โดยเลื่อนข้ามเสาร์-อาทิตย์ + วันหยุดราชการไทย ไปวันทำการถัดไป
 function taxDueDate(y, m0, day) {
   let dt = new Date(y, m0, day);
-  const dow = dt.getDay();
-  if (dow === 0) dt = new Date(y, m0, day + 1);
-  else if (dow === 6) dt = new Date(y, m0, day + 2);
-  const off = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000);
-  return off.toISOString().slice(0, 10);
+  const isoOf = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  let iso = isoOf(dt), guard = 0;
+  while ((dt.getDay() === 0 || dt.getDay() === 6 || THAI_HOLIDAYS.has(iso)) && guard < 25) {
+    dt = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() + 1);
+    iso = isoOf(dt); guard++;
+  }
+  return iso;
 }
 function parseTaxRec(rec) {
   if (!rec || rec.indexOf('tax:') !== 0) return null;
@@ -1771,6 +1790,21 @@ const sb = {
     const { data: out, error } = await c.functions.invoke('drive-write', { body: { action: 'delete', fileId } });
     if (error) { try { const j = await error.context.json(); if (j) return j; } catch (e) {} throw error; }
     return out;
+  },
+  // สำรองข้อมูลทั้งหมดเป็นไฟล์ JSON แล้วอัปโหลดขึ้น Drive (ผ่าน drive-write)
+  async backupToDrive(cfg, payload) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const body = {
+      app: 'AFFlow', version: 1, exportedAt: nowISO(),
+      tasks: payload.tasks || [], requests: payload.requests || [], teamMessages: payload.teamMessages || [],
+    };
+    const json = JSON.stringify(body, null, 2);
+    const b64 = btoa(unescape(encodeURIComponent(json)));   // base64 รองรับภาษาไทย (UTF-8)
+    const stamp = nowISO().slice(0, 16).replace('T', '_').replace(/:/g, '');
+    const name = 'AFFlow_backup_' + stamp + '.json';
+    const { data, error } = await c.functions.invoke('drive-write', { body: { action: 'upload', name, mimeType: 'application/json', data: b64 } });
+    if (error) { try { const j = await error.context.json(); if (j) return j; } catch (e) {} throw error; }
+    return { ...(data || {}), name };
   },
   // Phase 4: ลืมรหัสผ่าน — ส่งอีเมลลิงก์รีเซ็ต (เด้งกลับมาที่ redirectTo)
   async sendReset(cfg, email, redirectTo) {
@@ -2354,13 +2388,26 @@ function DeleteModal({ task, onClose, onConfirm }) {
 
 // ─── SettingsModal (Phase 2: เชื่อม Google Sheet) ──────────────────────────────
 
-function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal }) {
-  const { t } = useT();
+function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal, isManager, onBackup, autoBackup, onToggleAutoBackup, lastBackup }) {
+  const { t, lang } = useT();
   const [url, setUrl] = useState(cfg.url || '');
   const [key, setKey] = useState(cfg.key || '');
   const [testState, setTestState] = useState('');   // '' | testing | ok | fail
   const [pushState, setPushState] = useState('');   // '' | pushing | done | fail
   const [pushMsg,   setPushMsg]   = useState('');
+  const [backupState, setBackupState] = useState('');  // '' | backing | done | fail
+  const [backupMsg,   setBackupMsg]   = useState('');
+
+  async function backupNow() {
+    setBackupState('backing'); setBackupMsg('');
+    try {
+      const res = await onBackup();
+      setBackupState('done'); setBackupMsg(t('backup_done', { name: (res && res.name) || '' }));
+    } catch (e) {
+      setBackupState('fail'); setBackupMsg(t('backup_fail') + (e && e.message ? ' (' + String(e.message).slice(0, 120) + ')' : ''));
+    }
+  }
+  const fmtBackupTime = (iso) => { try { return new Date(iso).toLocaleString(lang === 'en' ? 'en-GB' : 'th-TH'); } catch (e) { return iso; } };
 
   const saved = url.trim() === (cfg.url || '') && key.trim() === (cfg.key || '');
 
@@ -2422,6 +2469,26 @@ function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal }) {
                 {pushMsg && <span style={{ fontSize:'0.82rem', fontWeight:600, color: pushState === 'done' ? 'var(--success)' : 'var(--danger)' }}>{pushMsg}</span>}
               </div>
               <p style={{ fontSize:'0.72rem', color:'var(--warning)', marginTop:6 }}>{t('settings_push_warn')}</p>
+            </>
+          )}
+
+          {/* สำรองข้อมูลขึ้น Google Drive — เฉพาะหัวหน้า */}
+          {authed && isManager && (
+            <>
+              <div style={{ borderTop:'1px solid var(--border)', margin:'16px 0' }} />
+              <div style={{ fontWeight:700, fontSize:'0.92rem', marginBottom:6 }}>💾 {t('backup_title')}</div>
+              <p style={{ fontSize:'0.78rem', color:'var(--text-muted)', marginBottom:10, lineHeight:1.6 }}>{t('backup_intro')}</p>
+              <div style={{ display:'flex', alignItems:'center', gap:12, flexWrap:'wrap', marginBottom:10 }}>
+                <button className="btn btn-primary" onClick={backupNow} disabled={backupState === 'backing'}>
+                  {backupState === 'backing' ? t('backup_running') : '💾 ' + t('backup_now')}
+                </button>
+                {backupMsg && <span style={{ fontSize:'0.8rem', fontWeight:600, color: backupState === 'done' ? 'var(--success)' : 'var(--danger)' }}>{backupMsg}</span>}
+              </div>
+              <label style={{ display:'flex', alignItems:'center', gap:8, fontSize:'0.84rem', cursor:'pointer', marginBottom:6 }}>
+                <input type="checkbox" checked={autoBackup} onChange={e => onToggleAutoBackup(e.target.checked)} style={{ width:16, height:16 }} />
+                <span>{t('backup_auto')}</span>
+              </label>
+              {lastBackup && <div style={{ fontSize:'0.74rem', color:'var(--text-muted)' }}>{t('backup_last')}: {fmtBackupTime(lastBackup)}</div>}
             </>
           )}
 
@@ -4295,6 +4362,10 @@ function App() {
   const [deletingTask, setDeletingTask] = useState(null);
   const [createOpen,   setCreateOpen]   = useState(false);
   const [convertReq,   setConvertReq]   = useState(null);   // คำขอจาก Inbox ที่กำลังแปลงเป็นงาน
+  const [autoBackup,   setAutoBackup]   = useState(() => localStorage.getItem('afflow_autobackup') !== 'off');
+  const [lastBackup,   setLastBackup]   = useState(() => localStorage.getItem('afflow_last_backup') || '');
+  const tasksRef = React.useRef(tasks);
+  useEffect(() => { tasksRef.current = tasks; }, [tasks]);
   const [darkMode,     setDarkMode]     = useState(() => localStorage.getItem('afflow_dark') === 'true');
   const [search,       setSearch]       = useState('');
   const [sidebarOpen,  setSidebarOpen]  = useState(false);
@@ -4501,6 +4572,36 @@ function App() {
     setView('tasks');
     setCreateOpen(true);
   }
+
+  // สำรองข้อมูลทั้งหมดขึ้น Google Drive (ใช้ข้อมูลล่าสุดจาก ref)
+  async function handleBackup() {
+    const tk = tasksRef.current || tasks;
+    if (!tk.length) throw new Error('no_data');
+    const [requests, teamMessages] = await Promise.all([
+      sb.loadRequests(sbCfg).catch(() => []),
+      sb.loadTeamMessages(sbCfg).catch(() => []),
+    ]);
+    const res = await sb.backupToDrive(sbCfg, { tasks: tk, requests, teamMessages });
+    if (res && res.error) throw new Error(res.message || res.detail || res.error);
+    const now = nowISO();
+    setLastBackup(now);
+    try { localStorage.setItem('afflow_last_backup', now); } catch (e) {}
+    return res;
+  }
+  function toggleAutoBackup(on) {
+    setAutoBackup(on);
+    try { localStorage.setItem('afflow_autobackup', on ? 'on' : 'off'); } catch (e) {}
+  }
+  // สำรองอัตโนมัติ: หัวหน้าเปิดแอป + เปิด auto + ครั้งล่าสุดเกิน 24 ชม. → สำรองเงียบ ๆ
+  useEffect(() => {
+    if (!isAuthed || !isManager || !autoBackup) return;
+    const last = lastBackup ? new Date(lastBackup).getTime() : 0;
+    if (Date.now() - last < 24 * 3600 * 1000) return;
+    const id = setTimeout(() => {
+      if ((tasksRef.current || []).length) handleBackup().catch(() => {});
+    }, 6000);   // รอให้ข้อมูลโหลดเสร็จก่อน
+    return () => clearTimeout(id);
+  }, [isAuthed, isManager, autoBackup]);
 
   function handleEditSave(form) {
     updateTask({ ...editingTask, ...form });
@@ -4801,6 +4902,11 @@ function App() {
           onClose={() => setSettingsOpen(false)}
           onSave={handleSaveSettings}
           onPushLocal={() => sb.pushAll(sbCfg, tasks)}
+          isManager={isManager}
+          onBackup={handleBackup}
+          autoBackup={autoBackup}
+          onToggleAutoBackup={toggleAutoBackup}
+          lastBackup={lastBackup}
         />
       )}
     </LangContext.Provider>
