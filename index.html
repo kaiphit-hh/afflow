@@ -1295,24 +1295,20 @@ const ASSIGNEES = ['Ple', 'Pang', 'Nam', 'Issan'];
 
 // AI ผู้ช่วยเฉพาะทาง (ทำงานเบื้องหลัง คอยช่วยตรวจ/ร่าง/สอน)
 const AI_TEAM = [
-  { name: 'Mabelz',    role: 'ผู้จัดการ AI',        color: '#1e3a5f', style: 'adventurer' },
-  { name: 'Alice',     role: 'ผู้ช่วยบัญชี/AR',     color: '#6366f1', style: 'adventurer' },
-  { name: 'Mona',      role: 'ผู้ช่วยภาษี',          color: '#f59e0b', style: 'adventurer' },
-  { name: 'Ling Ling', role: 'ผู้ช่วยธุรการ',        color: '#10b981', style: 'adventurer' },
-  { name: 'Leena',     role: 'ผู้ช่วยการเงิน',       color: '#a855f7', style: 'adventurer' },
+  { name: 'Mabelz',    role: 'ผู้จัดการ AI',        color: '#1e3a5f', animal: '🦁' },
+  { name: 'Alice',     role: 'ผู้ช่วยบัญชี/AR',     color: '#6366f1', animal: '🐱' },
+  { name: 'Mona',      role: 'ผู้ช่วยภาษี',          color: '#f59e0b', animal: '🦊' },
+  { name: 'Ling Ling', role: 'ผู้ช่วยธุรการ',        color: '#10b981', animal: '🐼' },
+  { name: 'Leena',     role: 'ผู้ช่วยการเงิน',       color: '#a855f7', animal: '🐻' },
 ];
 const AI_INFO = AI_TEAM.reduce((m, a) => { m[a.name] = a; return m; }, {});
-// รูปตัวละครน่ารักของ AI แต่ละคน (DiceBear) — ถ้ารูปโหลดไม่ขึ้นใช้ตัวอักษรสำรอง
+// อวตารสัตว์น่ารักของ AI แต่ละคน (emoji ในวงกลมสีนุ่ม) — ไม่ต้องโหลดจากเน็ต ใช้ออฟไลน์ได้
 function AiAvatar({ name, size = 36, ring = true }) {
-  const [err, setErr] = React.useState(false);
   const info = AI_INFO[name] || {};
   const color = info.color || '#6366f1';
-  if (err || !name) {
-    return <div style={{ width: size, height: size, borderRadius: '50%', background: color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: Math.round(size * 0.42), flexShrink: 0 }}>{((name || 'A')[0]).toUpperCase()}</div>;
-  }
-  const url = 'https://api.dicebear.com/9.x/' + (info.style || 'adventurer') + '/svg?seed=' + encodeURIComponent(name) + '&radius=50';
-  return <img src={url} alt={name} title={name} onError={() => setErr(true)}
-              style={{ width: size, height: size, borderRadius: '50%', background: '#fff', border: ring ? ('2px solid ' + color) : 'none', flexShrink: 0, objectFit: 'cover' }} />;
+  const animal = info.animal || (name ? '🐾' : '🤖');
+  return <div title={name} aria-label={name}
+              style={{ width: size, height: size, borderRadius: '50%', background: color + '22', border: ring ? ('2px solid ' + color) : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: Math.round(size * 0.58), lineHeight: 1, flexShrink: 0, userSelect: 'none' }}>{animal}</div>;
 }
 
 const CATEGORIES  = ['AR', 'AP', 'ภาษี', 'Admin', 'Gift Card', 'ลูกค้า/Line'];
