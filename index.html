@@ -1329,7 +1329,7 @@ const I18N = {
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่', inbox_to_task:'สร้างเป็นงาน', inbox_from:'จากคำขอของ', inbox_inprogress:'🔧 กำลังทำ', inbox_linked:'เชื่อมกับงานแล้ว — จะปิดเองเมื่องานเสร็จ', inbox_history:'ประวัติคำขอที่เสร็จแล้ว', inbox_all_clear:'ไม่มีคำขอค้าง — เคลียร์หมดแล้ว! 🎉',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
-    search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด',
+    search_ph:'ค้นหางาน...', clear:'ล้าง', notif:'การแจ้งเตือน', no_upcoming:'🎉 ไม่มีงานที่ใกล้ครบกำหนด', notif_enable:'เปิดแจ้งเตือนบนเครื่อง', notif_on:'เปิดแจ้งเตือนบนเครื่องแล้ว', notif_blocked:'การแจ้งเตือนถูกปิด — เปิดได้ในตั้งค่าเบราว์เซอร์',
     overdue_days:'เกินกำหนด {n} วัน', due_today:'ครบกำหนดวันนี้', due_tomorrow:'ครบกำหนดพรุ่งนี้', in_days:'อีก {n} วัน',
     cd_done:'เสร็จแล้ว', cd_over:'เกิน {n} วัน', cd_today:'วันนี้!', cd_in:'อีก {n} วัน',
     greet_morning:'สวัสดีตอนเช้า', greet_afternoon:'สวัสดีตอนบ่าย', greet_evening:'สวัสดีตอนเย็น',
@@ -1387,7 +1387,7 @@ const I18N = {
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen', inbox_to_task:'Create task', inbox_from:'From request by', inbox_inprogress:'🔧 In progress', inbox_linked:'Linked to a task — closes automatically when the task is done', inbox_history:'Completed requests log', inbox_all_clear:'No pending requests — all clear! 🎉',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
-    search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines',
+    search_ph:'Search tasks...', clear:'Clear', notif:'Notifications', no_upcoming:'🎉 No upcoming deadlines', notif_enable:'Enable device notifications', notif_on:'Device notifications on', notif_blocked:'Notifications blocked — enable in browser settings',
     overdue_days:'Overdue by {n} days', due_today:'Due today', due_tomorrow:'Due tomorrow', in_days:'{n} days left',
     cd_done:'Done', cd_over:'{n}d over', cd_today:'Today!', cd_in:'{n} days left',
     greet_morning:'Good morning', greet_afternoon:'Good afternoon', greet_evening:'Good evening',
@@ -2532,6 +2532,11 @@ function TopbarClock() {
 function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy }) {
   const { t, lang, setLang } = useT();
   const [notifOpen, setNotifOpen] = React.useState(false);
+  const [notifPerm, setNotifPerm] = React.useState(('Notification' in window) ? Notification.permission : 'unsupported');
+  function enableNotif() {
+    if (!('Notification' in window)) return;
+    Notification.requestPermission().then((p) => setNotifPerm(p)).catch(() => {});
+  }
 
   const syncMeta = {
     local:   { dot:'#94a3b8', label: t('sync_local')   },
@@ -2631,6 +2636,17 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
                 <div className="notif-dropdown-header">
                   {t('notif')} {alerts.length > 0 && `(${alerts.length})`}
                 </div>
+                {notifPerm === 'default' && (
+                  <div style={{ padding:'10px 12px', borderBottom:'1px solid var(--border)' }}>
+                    <button className="btn btn-primary" style={{ width:'100%', fontSize:'0.78rem' }} onClick={enableNotif}>🔔 {t('notif_enable')}</button>
+                  </div>
+                )}
+                {notifPerm === 'granted' && (
+                  <div style={{ padding:'7px 12px', fontSize:'0.72rem', color:'var(--success)', borderBottom:'1px solid var(--border)' }}>✓ {t('notif_on')}</div>
+                )}
+                {notifPerm === 'denied' && (
+                  <div style={{ padding:'7px 12px', fontSize:'0.72rem', color:'var(--text-muted)', borderBottom:'1px solid var(--border)' }}>{t('notif_blocked')}</div>
+                )}
                 {alerts.length === 0 ? (
                   <div className="notif-empty">{t('no_upcoming')}</div>
                 ) : (
@@ -4602,6 +4618,42 @@ function App() {
     }, 6000);   // รอให้ข้อมูลโหลดเสร็จก่อน
     return () => clearTimeout(id);
   }, [isAuthed, isManager, autoBackup]);
+
+  // แจ้งเตือนบนเครื่อง (OS) — งานใกล้ครบกำหนด/เกินกำหนด (กันซ้ำต่อวัน)
+  function notifyDueSoon() {
+    if (!('Notification' in window) || Notification.permission !== 'granted' || !currentUser) return;
+    const all = tasksRef.current || tasks;
+    const scope = isManager ? all : all.filter(t => t.assignee === currentUser);
+    const due = scope.filter(t => t.status !== 'done' && daysDiff(t.deadline) <= 1);   // ครบใน 1 วัน หรือเกินกำหนด
+    if (!due.length) return;
+    const key = 'afflow_notified_' + TODAY;
+    let notified;
+    try { notified = new Set((localStorage.getItem(key) || '').split(',').filter(Boolean)); } catch (e) { notified = new Set(); }
+    const th = lang !== 'en';
+    let fired = 0;
+    due.forEach(t => {
+      if (notified.has(t.id)) return;
+      const dd = daysDiff(t.deadline);
+      const when = dd < 0 ? (th ? 'เกินกำหนด ' + Math.abs(dd) + ' วัน' : Math.abs(dd) + ' days overdue')
+        : dd === 0 ? (th ? 'ครบกำหนดวันนี้' : 'Due today')
+        : (th ? 'ครบกำหนดพรุ่งนี้' : 'Due tomorrow');
+      try {
+        new Notification(th ? 'AFFlow — งานใกล้ครบกำหนด' : 'AFFlow — Task due soon', {
+          body: '📋 ' + t.title + '\n' + when + (isManager ? ' • ' + t.assignee : ''),
+          icon: 'icon-192.png', badge: 'icon-192.png', tag: 'afflow-' + t.id,
+        });
+        fired++;
+      } catch (e) {}
+      notified.add(t.id);
+    });
+    if (fired) { try { localStorage.setItem(key, Array.from(notified).join(',')); } catch (e) {} }
+  }
+  useEffect(() => {
+    if (!currentUser) return;
+    const t0 = setTimeout(notifyDueSoon, 5000);             // หลังโหลดเสร็จ
+    const iv = setInterval(notifyDueSoon, 30 * 60 * 1000);  // ทุก 30 นาที
+    return () => { clearTimeout(t0); clearInterval(iv); };
+  }, [currentUser, isManager]);
 
   function handleEditSave(form) {
     updateTask({ ...editingTask, ...form });
