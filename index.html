@@ -3121,6 +3121,12 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
       t.assignee.toLowerCase().includes(search.toLowerCase())
     )) return false;
     return true;
+  }).sort((a, b) => {
+    // เรียงตามวันครบกำหนด: ใกล้สุดอยู่บน → ไกลสุดอยู่ล่าง (งานไม่มีกำหนดส่งไปท้ายสุด)
+    if (!a.deadline && !b.deadline) return 0;
+    if (!a.deadline) return 1;
+    if (!b.deadline) return -1;
+    return a.deadline.localeCompare(b.deadline);
   }), [scoped, mode, fStatus, fAssignee, fCat, search]);
 
   function clearFilters() { setFStatus(''); setFAssignee(''); setFCat(''); setSearch(''); }
