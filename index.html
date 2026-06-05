@@ -1294,7 +1294,7 @@ const I18N = {
     chart_team_active:'📊 งานตามทีม (Active)', chart_active_center:'งานที่ค้าง', chart_no_active:'ไม่มีงานที่ Active',
     chart_by_status:'📈 งานตามสถานะ', chart_my_summary:'📊 สรุปงานของฉัน', chart_done_center:'เสร็จแล้ว', no_tasks_yet:'ยังไม่มีงาน', unit_tasks:'งาน',
     week_timeline:'📅 Timeline สัปดาห์นี้',
-    tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ',
+    tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ', completed_sub:'เสร็จแล้ว {n} รายการ',
     filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด',
     clear_filters:'✕ ล้างตัวกรอง', found_n:'พบ {n} รายการ', no_match:'ไม่พบงานที่ตรงกับเงื่อนไข', clear_search:'ล้างคำค้นหา',
     view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ',
@@ -1350,7 +1350,7 @@ const I18N = {
     chart_team_active:'📊 Tasks by Team (Active)', chart_active_center:'Active', chart_no_active:'No active tasks',
     chart_by_status:'📈 Tasks by Status', chart_my_summary:'📊 My Summary', chart_done_center:'Done', no_tasks_yet:'No tasks yet', unit_tasks:'tasks',
     week_timeline:'📅 This Week',
-    tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks',
+    tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks', completed_sub:'{n} completed',
     filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories',
     clear_filters:'✕ Clear filters', found_n:'{n} found', no_match:'No matching tasks', clear_search:'Clear search',
     view_detail:'View details', edit:'Edit', delete:'Delete',
@@ -1625,9 +1625,13 @@ const sb = {
     const ql = String(query || '').toLowerCase().trim();
     if (!ql) return { results: [], query };
     const results = [];
-    let visited = 0; const MAX = 80;   // จำกัดจำนวนโฟลเดอร์ที่ไล่ (กันช้า/ลึกเกิน)
+    const seenFolders = new Set();   // กันไล่โฟลเดอร์ซ้ำ (กรณีมี shortcut/หลาย parent)
+    const seenFiles = new Set();     // กันผลลัพธ์ซ้ำ
+    let visited = 0; const MAX = 120;
+    let truncated = false;
     async function walk(folderId, path) {
-      if (visited >= MAX) return;
+      if (folderId) { if (seenFolders.has(folderId)) return; seenFolders.add(folderId); }
+      if (visited >= MAX) { truncated = true; return; }
       visited++;
       let data;
       try { data = await sb.driveList(cfg, folderId); } catch (e) { return; }
@@ -1635,13 +1639,15 @@ const sb = {
       const files = (data && data.files) || [];
       const subs = [];
       for (const f of files) {
-        if (String(f.name || '').toLowerCase().includes(ql)) results.push({ ...f, path: path.join(' / ') });
+        if (String(f.name || '').toLowerCase().includes(ql) && !seenFiles.has(f.id)) {
+          seenFiles.add(f.id); results.push({ ...f, path: path.join(' / ') });
+        }
         if (f.isFolder) subs.push(walk(f.id, [...path, f.name]));
       }
       await Promise.all(subs);
     }
     await walk(null, []);   // null = เริ่มจากโฟลเดอร์กลาง (ROOT)
-    return { results: results.slice(0, 50), query };
+    return { results: results.slice(0, 50), query, truncated };
   },
   // D2: อัปโหลดไฟล์ขึ้น Drive (ผ่าน Edge Function drive-write — service account ต้องเป็น Editor)
   async driveUpload(cfg, folderId, file) {
@@ -2861,7 +2867,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
       <div className="page-header" style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
         <div>
           <div className="page-title">{mode === 'completed' ? t('completed_title') : t('tasklist_title')}</div>
-          <div className="page-subtitle">{t('tasklist_sub_mgr', { n: tasks.length })}</div>
+          <div className="page-subtitle">{mode === 'completed' ? t('completed_sub', { n: tasks.length }) : t('tasklist_sub_mgr', { n: tasks.length })}</div>
         </div>
         {mode !== 'completed' && (
           <button className="btn btn-primary" style={{ marginTop:4 }} onClick={() => setCreateOpen(true)}>+ {isManager ? t('create_task') : t('create_my_task')}</button>
@@ -3407,6 +3413,14 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
   const fileRef = React.useRef(null);
   const inputRef = React.useRef(null);
 
+  // เปิดแชท AI → แจ้งให้แชททีมปิด (กันหน้าต่างทับกัน)
+  function openPanel() { setOpen(true); window.dispatchEvent(new CustomEvent('afflow-panel-open', { detail: 'ai' })); }
+  useEffect(() => {
+    const h = (e) => { if (e.detail !== 'ai') setOpen(false); };
+    window.addEventListener('afflow-panel-open', h);
+    return () => window.removeEventListener('afflow-panel-open', h);
+  }, []);
+
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [msgs, busy, open]);
@@ -3540,7 +3554,7 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
 
   if (!open) {
     return (
-      <button className="chat-fab" onClick={() => setOpen(true)} title={t('chat_open')}>
+      <button className="chat-fab" onClick={openPanel} title={t('chat_open')}>
         <span className="chat-fab-emoji">💬</span> {buddy}
       </button>
     );
@@ -3967,6 +3981,13 @@ function TeamChat({ sbCfg, currentUser, ready }) {
   const openRef = React.useRef(false);
   const emojiRef = React.useRef(null);
   React.useEffect(() => { openRef.current = open; }, [open]);
+  // เปิดแชททีม → แจ้งให้แชท AI ปิด (กันหน้าต่างทับกัน)
+  function openPanel() { setOpen(true); window.dispatchEvent(new CustomEvent('afflow-panel-open', { detail: 'team' })); }
+  React.useEffect(() => {
+    const h = (e) => { if (e.detail !== 'team') setOpen(false); };
+    window.addEventListener('afflow-panel-open', h);
+    return () => window.removeEventListener('afflow-panel-open', h);
+  }, []);
   // ปิดแผงอิโมจิเมื่อคลิกนอกแผง
   React.useEffect(() => {
     if (!emojiOpen) return;
@@ -4027,7 +4048,7 @@ function TeamChat({ sbCfg, currentUser, ready }) {
 
   if (!open) {
     return (
-      <button className="team-fab" onClick={() => setOpen(true)} title={t('teamchat_open')}>
+      <button className="team-fab" onClick={openPanel} title={t('teamchat_open')}>
         <span className="chat-fab-emoji">👥</span> {t('teamchat')}
         {unread > 0 && <span className="team-unread">{unread > 9 ? '9+' : unread}</span>}
       </button>
@@ -4317,6 +4338,16 @@ function App() {
     report:    tApp('nav_report'),
   };
 
+  // กันค้างหน้า Loading: ถ้าล็อกอินแล้วแต่ 6 วิยังไม่มีชื่อทีม (profiles.name ว่าง) → แจ้ง + ปุ่มออก
+  const [profileTimedOut, setProfileTimedOut] = useState(false);
+  useEffect(() => {
+    if (isSb && !!session && !currentUser && !recovery) {
+      const id = setTimeout(() => setProfileTimedOut(true), 6000);
+      return () => clearTimeout(id);
+    }
+    setProfileTimedOut(false);
+  }, [isSb, session, currentUser, recovery]);
+
   // ── gating: เลือกหน้าจอเริ่มต้น ──────────────────────────────────────────────
   // โหมด Supabase: session===undefined=กำลังโหลด, null=ยังไม่ล็อกอิน, มี=เข้าแอป
   // โหมด local (ยังไม่ตั้งค่า Supabase): ใช้ name-picker เดิม
@@ -4342,7 +4373,13 @@ function App() {
       {showLogin    && <LoginScreen cfg={sbCfg} onOpenSettings={() => setSettingsOpen(true)} />}
       {showLoader  && (
         <div className="welcome-overlay"><div className="welcome-card"><div className="welcome-logo"><img src={COMPANY_LOGO} alt="Hungry Hub" className="welcome-logo-img" /></div>
-          <div className="welcome-sub" style={{ marginTop:8 }}>{tApp('login_loading_app')}</div></div></div>
+          <div className="welcome-sub" style={profileTimedOut && !!session ? { marginTop:12, color:'var(--danger)', fontWeight:600 } : { marginTop:8 }}>
+            {profileTimedOut && !!session ? tApp('login_no_profile') : tApp('login_loading_app')}
+          </div>
+          {profileTimedOut && !!session && (
+            <button className="btn btn-outline" style={{ width:'100%', marginTop:14, fontSize:'0.85rem' }} onClick={handleLogout}>⎋ {tApp('login_logout')}</button>
+          )}
+        </div></div>
       )}
 
       <div className="app-shell">
