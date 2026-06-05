@@ -264,7 +264,29 @@
     .drive-search-x:hover { color: var(--danger); border-color: var(--danger); }
     .drive-search-count { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; padding: 2px 4px 12px; }
     /* body + grid */
-    .drive-body { flex: 1; overflow-y: auto; background: var(--card); padding: 18px; }
+    .drive-body { position: relative; flex: 1; overflow-y: auto; background: var(--card); padding: 18px; }
+    .drive-body.drag-over { outline: 3px dashed var(--primary); outline-offset: -10px; }
+    .drive-drop-overlay {
+      position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px; font-size: 2.2rem; font-weight: 700;
+      color: var(--primary); background: var(--primary-soft, rgba(99,102,241,0.12)); pointer-events: none;
+    }
+    .drive-drop-overlay div { font-size: 0.95rem; color: var(--text); }
+    .drive-upload-msg {
+      margin-bottom: 12px; padding: 8px 12px; border-radius: 9px; cursor: pointer; font-size: 0.82rem; font-weight: 600;
+      background: var(--primary-soft, rgba(99,102,241,0.12)); color: var(--primary); border: 1px solid var(--primary); text-align: center;
+    }
+    .drive-upload-btn {
+      flex-shrink: 0; border: 1px solid var(--primary); background: var(--primary); color: #fff; cursor: pointer;
+      padding: 5px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700;
+    }
+    .drive-upload-btn:disabled { opacity: 0.5; cursor: default; }
+    .drive-del {
+      flex-shrink: 0; border: 1px solid var(--border); background: var(--card); color: var(--text-muted);
+      cursor: pointer; width: 30px; height: 30px; border-radius: 8px; font-size: 0.9rem; opacity: 0.65; transition: opacity .12s, color .12s, border-color .12s;
+    }
+    .drive-li:hover .drive-del { opacity: 1; }
+    .drive-del:hover { color: var(--danger); border-color: var(--danger); }
     .drive-list { display: flex; flex-direction: column; gap: 2px; }
     .drive-li {
       display: flex; align-items: center; gap: 12px; padding: 9px 12px;
@@ -282,6 +304,12 @@
     .drive-li-meta { font-size: 0.74rem; color: var(--text-muted); flex-shrink: 0; }
     .drive-li-open { width: 16px; text-align: center; font-size: 0.95rem; color: var(--text-muted); opacity: 0; transition: opacity .12s; flex-shrink: 0; }
     .drive-li:hover .drive-li-open { opacity: 0.7; }
+    .drive-dl {
+      flex-shrink: 0; border: 1px solid var(--border); background: var(--card); color: var(--text-muted);
+      cursor: pointer; width: 30px; height: 30px; border-radius: 8px; font-size: 0.9rem; opacity: 0.65; transition: opacity .12s, color .12s, border-color .12s;
+    }
+    .drive-li:hover .drive-dl { opacity: 1; }
+    .drive-dl:hover { color: var(--primary); border-color: var(--primary); }
     /* states */
     .drive-state {
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
@@ -1248,7 +1276,7 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', nav_timeline:'Timeline', nav_report:'รายงาน',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', drive_download:'ดาวน์โหลด', drive_upload:'อัปโหลด', drive_uploading:'กำลังอัปโหลด...', drive_upload_done:'อัปโหลดเสร็จ — สำเร็จ {ok} · ล้มเหลว {fail}', drive_drop_hint:'วางไฟล์ที่นี่เพื่ออัปโหลดเข้าโฟลเดอร์นี้', drive_delete:'ลบ (ลงถังขยะ)', drive_delete_confirm:'ย้าย "{name}" ลงถังขยะ?\n(ยังกู้คืนได้ใน Google Drive)', drive_delete_fail:'ลบไม่สำเร็จ', nav_timeline:'Timeline', nav_report:'รายงาน',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่',
     menu_main:'เมนูหลัก', team:'ทีม', presence_online:'ออนไลน์แล้ว', presence_label:'ออนไลน์', create_task:'สร้างงานใหม่', create_my_task:'เพิ่มงานของฉัน', f_assignee_locked:'งานนี้เป็นของคุณ (ล็อกผู้รับผิดชอบ)', user_label:'ผู้ใช้งาน', select_user:'— เลือกผู้ใช้งาน —',
     training:'กำลังเทรน', menu:'เมนู', dark_mode:'โหมดมืด',
@@ -1304,7 +1332,7 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', nav_timeline:'Timeline', nav_report:'Reports',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', drive_download:'Download', drive_upload:'Upload', drive_uploading:'Uploading...', drive_upload_done:'Upload done — {ok} ok · {fail} failed', drive_drop_hint:'Drop files here to upload to this folder', drive_delete:'Delete (to Trash)', drive_delete_confirm:'Move "{name}" to Trash?\n(Recoverable in Google Drive)', drive_delete_fail:'Delete failed', nav_timeline:'Timeline', nav_report:'Reports',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen',
     menu_main:'Main Menu', team:'Team', presence_online:'is online', presence_label:'online', create_task:'New Task', create_my_task:'Add my task', f_assignee_locked:'This task is yours (assignee locked)', user_label:'User', select_user:'— Select user —',
     training:'Training', menu:'Menu', dark_mode:'Dark Mode',
@@ -1614,6 +1642,27 @@ const sb = {
     }
     await walk(null, []);   // null = เริ่มจากโฟลเดอร์กลาง (ROOT)
     return { results: results.slice(0, 50), query };
+  },
+  // D2: อัปโหลดไฟล์ขึ้น Drive (ผ่าน Edge Function drive-write — service account ต้องเป็น Editor)
+  async driveUpload(cfg, folderId, file) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const data = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(String(r.result).split(',')[1] || '');
+      r.onerror = rej; r.readAsDataURL(file);
+    });
+    const { data: out, error } = await c.functions.invoke('drive-write', {
+      body: { action: 'upload', folderId, name: file.name, mimeType: file.type || 'application/octet-stream', data },
+    });
+    if (error) { try { const j = await error.context.json(); if (j) return j; } catch (e) {} throw error; }
+    return out;
+  },
+  // D2: ลบไฟล์ (ย้ายลงถังขยะ Google Drive — กู้คืนได้)
+  async driveDelete(cfg, fileId) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const { data: out, error } = await c.functions.invoke('drive-write', { body: { action: 'delete', fileId } });
+    if (error) { try { const j = await error.context.json(); if (j) return j; } catch (e) {} throw error; }
+    return out;
   },
   // Phase 4: ลืมรหัสผ่าน — ส่งอีเมลลิงก์รีเซ็ต (เด้งกลับมาที่ redirectTo)
   async sendReset(cfg, email, redirectTo) {
@@ -3689,6 +3738,17 @@ function fmtDriveDate(iso, lang) {
     return d.toLocaleDateString(lang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short', year: '2-digit' });
   } catch (e) { return ''; }
 }
+// ลิงก์ดาวน์โหลดไฟล์จาก Drive (ไฟล์ไบนารีดาวน์โหลดตรง / ไฟล์ Google เปิดดู)
+function driveDownloadUrl(f) {
+  if (!f || f.isFolder) return null;
+  if ((f.mimeType || '').startsWith('application/vnd.google-apps')) return f.link;  // Google Docs/Sheets → เปิดดู (โหลดจากในนั้น)
+  return 'https://drive.google.com/uc?export=download&id=' + f.id;
+}
+function driveDownload(e, f) {
+  e.stopPropagation();
+  const u = driveDownloadUrl(f);
+  if (u) window.open(u, '_blank', 'noopener,noreferrer');
+}
 // ไอคอนไฟล์: ใช้รูปไอคอนจริงจาก Google Drive (บอกชนิดไฟล์ชัดเจน) — ถ้าโหลดไม่ขึ้นใช้ emoji สำรอง
 function DriveFileIcon({ f }) {
   const [err, setErr] = useState(false);
@@ -3699,7 +3759,7 @@ function DriveFileIcon({ f }) {
   }
   return <span className="drive-li-emoji">{driveIcon(f)}</span>;
 }
-function DriveModal({ cfg, onClose }) {
+function DriveModal({ cfg, onClose, isManager }) {
   const { t, lang } = useT();
   const m = (DRIVE_URL || '').match(/folders\/([^?/]+)/);
   const rootId = m ? m[1] : '';
@@ -3707,6 +3767,10 @@ function DriveModal({ cfg, onClose }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [uploadMsg, setUploadMsg] = useState('');
+  const uploadRef = React.useRef(null);
   const current = stack[stack.length - 1];
 
   async function load(folderId) {
@@ -3746,6 +3810,37 @@ function DriveModal({ cfg, onClose }) {
   const goTo = (idx) => { clearSearch(); setStack(s => s.slice(0, idx + 1)); };
   const openFile = (f) => window.open(f.link, '_blank', 'noopener,noreferrer');
 
+  // อัปโหลดไฟล์ (ลากวาง หรือกดปุ่มเลือก) → ขึ้นโฟลเดอร์ที่เปิดดูอยู่
+  async function uploadFiles(fileList) {
+    const arr = Array.from(fileList || []);
+    if (!arr.length || uploading) return;
+    if (results !== null) clearSearch();      // อัปโหลดไปยังโฟลเดอร์ที่กำลังเปิดดู
+    const target = current.id;
+    setUploading(true); setUploadMsg('');
+    let ok = 0, fail = 0;
+    for (const file of arr) {
+      if (file.size > 15 * 1024 * 1024) { fail++; continue; }   // จำกัด 15MB/ไฟล์
+      try { const res = await sb.driveUpload(cfg, target, file); if (res && res.error) fail++; else ok++; }
+      catch (e) { fail++; }
+    }
+    setUploading(false);
+    setUploadMsg(t('drive_upload_done', { ok, fail }));
+    load(target);
+  }
+  function onDrop(e) { e.preventDefault(); setDragOver(false); if (e.dataTransfer && e.dataTransfer.files) uploadFiles(e.dataTransfer.files); }
+
+  // ลบไฟล์ (ย้ายลงถังขยะ) — เฉพาะ Big Boss
+  async function onDelete(e, f) {
+    e.stopPropagation();
+    if (!window.confirm(t('drive_delete_confirm', { name: f.name }))) return;
+    try {
+      const res = await sb.driveDelete(cfg, f.id);
+      if (res && res.error) { window.alert(t('drive_delete_fail') + (res.detail ? '\n' + res.detail : '')); return; }
+      if (results !== null) setResults(rs => (rs || []).filter(x => x.id !== f.id));
+      setFiles(fs => fs.filter(x => x.id !== f.id));
+    } catch (e2) { window.alert(t('drive_delete_fail')); }
+  }
+
   return (
     <div className="drive-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="drive-panel">
@@ -3775,13 +3870,25 @@ function DriveModal({ cfg, onClose }) {
                 </button>
               </React.Fragment>
             ))}
+            <input type="file" ref={uploadRef} multiple style={{ display: 'none' }}
+                   onChange={e => { uploadFiles(e.target.files); e.target.value = ''; }} />
+            <button className="drive-upload-btn" onClick={() => uploadRef.current && uploadRef.current.click()} disabled={uploading} title={t('drive_upload')}>
+              {uploading ? '⏳' : '⬆'} {t('drive_upload')}
+            </button>
             <button className="drive-refresh" onClick={() => load(current.id)} disabled={loading} title={t('drive_refresh')}>↻</button>
           </div>
         )}
 
-        <div className="drive-body">
+        <div className={'drive-body' + (dragOver ? ' drag-over' : '')}
+             onDragOver={e => { e.preventDefault(); if (!dragOver) setDragOver(true); }}
+             onDragLeave={e => { if (e.currentTarget === e.target) setDragOver(false); }}
+             onDrop={onDrop}>
+          {dragOver && <div className="drive-drop-overlay">⬆<div>{t('drive_drop_hint')}</div></div>}
+          {uploadMsg && <div className="drive-upload-msg" onClick={() => setUploadMsg('')}>{uploadMsg} ✕</div>}
           {!rootId ? (
             <div className="drive-state">{t('drive_no_url')}</div>
+          ) : uploading ? (
+            <div className="drive-state"><div className="drive-spinner" />{t('drive_uploading')}</div>
           ) : searching ? (
             <div className="drive-state"><div className="drive-spinner" />{t('drive_searching')}</div>
           ) : results !== null ? (
@@ -3796,6 +3903,8 @@ function DriveModal({ cfg, onClose }) {
                     <DriveFileIcon f={f} />
                     <div className="drive-li-name">{f.name}</div>
                     <div className="drive-li-meta">📁 {f.path || t('nav_drive')}</div>
+                    {!f.isFolder && <button className="drive-dl" onClick={e => driveDownload(e, f)} title={t('drive_download')}>⬇</button>}
+                    {isManager && !f.isFolder && <button className="drive-del" onClick={e => onDelete(e, f)} title={t('drive_delete')}>🗑</button>}
                     <div className="drive-li-open">{f.isFolder ? '›' : '↗'}</div>
                   </div>
                 ))}
@@ -3820,6 +3929,8 @@ function DriveModal({ cfg, onClose }) {
                   <DriveFileIcon f={f} />
                   <div className="drive-li-name">{f.name}</div>
                   {f.modified && <div className="drive-li-meta">{fmtDriveDate(f.modified, lang)}</div>}
+                  {!f.isFolder && <button className="drive-dl" onClick={e => driveDownload(e, f)} title={t('drive_download')}>⬇</button>}
+                  {isManager && !f.isFolder && <button className="drive-del" onClick={e => onDelete(e, f)} title={t('drive_delete')}>🗑</button>}
                   <div className="drive-li-open">{f.isFolder ? '›' : '↗'}</div>
                 </div>
               ))}
@@ -4420,7 +4531,7 @@ function App() {
         </div>
       )}
       {/* Drive กลาง — หน้าต่างดูไฟล์ในแอป */}
-      {driveOpen && <DriveModal cfg={sbCfg} onClose={() => setDriveOpen(false)} />}
+      {driveOpen && <DriveModal cfg={sbCfg} isManager={isManager} onClose={() => setDriveOpen(false)} />}
       {settingsOpen && (
         <SettingsModal
           cfg={sbCfg}
