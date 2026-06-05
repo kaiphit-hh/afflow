@@ -2,8 +2,16 @@
 <html lang="th" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accounting &amp; Finance (Hungry Hub)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AFFlow — Hungry Hub Accounting</title>
+  <!-- PWA: ติดตั้งเป็นแอปบนมือถือได้ -->
+  <meta name="theme-color" content="#6366f1" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="AFFlow" />
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -4801,6 +4809,14 @@ function App() {
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+<script>
+  /* PWA: ลงทะเบียน service worker (ทำงานเฉพาะบน https/โดเมนจริง — บน preview จะเงียบ ๆ ไม่พัง) */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('service-worker.js').catch(function () {});
+    });
+  }
 </script>
 </body>
 </html>
