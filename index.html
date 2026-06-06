@@ -940,6 +940,20 @@
     }
     .week-pill:hover { opacity: 0.85; }
 
+    /* ─── KPI tiles & Performance cards ─── */
+    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .kpi-tile { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; transition: transform 0.15s, box-shadow 0.15s; }
+    .kpi-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.07); }
+    .kpi-val { font-size: 1.7rem; font-weight: 800; line-height: 1.05; }
+    .kpi-lbl { font-size: 0.78rem; color: var(--text-muted); margin-top: 3px; font-weight: 600; }
+    .kpi-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; }
+    .pbar { height: 8px; border-radius: 99px; background: var(--border); overflow: hidden; }
+    .pbar > span { display: block; height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+    .perf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+    .perf-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; transition: transform 0.15s, box-shadow 0.15s; }
+    .perf-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    .perf-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 0.73rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: var(--card); border: 1px solid var(--border); color: var(--text); }
+
     /* ─── Countdown ─── */
     .countdown-red   { color: var(--danger); font-weight: 700; font-size: 0.8rem; }
     .countdown-blue  { color: var(--primary); font-weight: 600; font-size: 0.8rem; }
@@ -1311,7 +1325,7 @@ function AiAvatar({ name, size = 36, ring = true }) {
               style={{ width: size, height: size, borderRadius: '50%', background: color + '22', border: ring ? ('2px solid ' + color) : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: Math.round(size * 0.58), lineHeight: 1, flexShrink: 0, userSelect: 'none' }}>{animal}</div>;
 }
 
-const CATEGORIES  = ['AR', 'AP', 'ภาษี', 'Admin', 'Gift Card', 'ลูกค้า/Line'];
+const BASE_CATEGORIES = ['AR', 'AP', 'ภาษี', 'Admin', 'Gift Card', 'ลูกค้า/Line'];   // ประเภทงานเริ่มต้น (ลบไม่ได้)
 const STATUSES    = ['pending', 'in_progress', 'review', 'done', 'blocked'];
 const PRIORITIES  = ['high', 'medium', 'low'];
 
@@ -1367,6 +1381,20 @@ const I18N = {
     th_title:'ชื่องาน', th_assignee:'ผู้รับผิดชอบ', th_category:'หมวด', th_status:'สถานะ', th_priority:'ความสำคัญ', th_deadline:'กำหนดส่ง', th_timeleft:'เวลาที่เหลือ', th_manage:'จัดการ',
     chart_team_active:'📊 งานตามทีม (Active)', chart_active_center:'งานที่ค้าง', chart_no_active:'ไม่มีงานที่ Active',
     chart_by_status:'📈 งานตามสถานะ', chart_my_summary:'📊 สรุปงานของฉัน', chart_done_center:'เสร็จแล้ว', no_tasks_yet:'ยังไม่มีงาน', unit_tasks:'งาน',
+    kpi_team:'KPI & ผลงานทีม', kpi_mine:'KPI & ผลงานของฉัน', kpi_completion:'อัตรางานเสร็จ', kpi_ontime:'ส่งงานตรงเวลา', kpi_ontime_sub:'ประเมินจากวันอัปเดตล่าสุด',
+    kpi_duesoon:'ใกล้ครบใน 3 วัน', kpi_thisweek:'เสร็จในสัปดาห์นี้', kpi_done_total:'เสร็จ {d}/{n} งาน', kpi_no_data:'—',
+    perf_title:'ผลงานรายคน', perf_sub:'อัปเดตอัตโนมัติจากงานจริง', perf_completion:'ความคืบหน้า (เสร็จ/ทั้งหมด)', perf_workload:'ภาระงานที่ยังค้าง',
+    perf_inprogress:'ทำอยู่', perf_pending:'รอ/รีวิว', perf_done:'เสร็จ', perf_overdue:'เกิน', perf_duesoon:'ใกล้ครบ', perf_ontime:'ส่งตรงเวลา', perf_est:'ประเมิน',
+    perf_health:'สถานะสุขภาพงาน', perf_training:'กำลังเทรน', perf_no_tasks:'ยังไม่มีงานที่รับผิดชอบ',
+    catsum_title:'งานตามประเภท', catsum_sub:'งานที่ยังไม่เสร็จ แยกตามประเภท', catsum_empty:'ยังไม่มีงานค้าง', catsum_manage:'จัดการประเภท',
+    cat_manage_title:'จัดการประเภทงาน', cat_manage_sub:'ทีมเสนอประเภทใหม่ได้ — ผู้จัดการเป็นผู้อนุมัติ',
+    cat_add_label:'เสนอประเภทงานใหม่', cat_add_ph:'พิมพ์ชื่อประเภทงาน เช่น เงินเดือน, Reconcile...', cat_submit:'ส่งให้อนุมัติ', cat_submit_mgr:'เพิ่มเลย',
+    cat_section_active:'ประเภทที่ใช้งานได้', cat_section_pending:'รออนุมัติ', cat_base_tag:'ค่าเริ่มต้น', cat_pending_tag:'รออนุมัติ',
+    cat_approve:'อนุมัติ', cat_reject:'ปฏิเสธ', cat_remove:'ลบ', cat_by:'เสนอโดย {name}', cat_none_pending:'ไม่มีประเภทที่รออนุมัติ',
+    cat_req_sent:'✓ ส่งคำขอแล้ว — รอผู้จัดการอนุมัติ', cat_added:'✓ เพิ่มประเภทงานแล้ว', cat_approved_done:'✓ อนุมัติแล้ว', cat_rejected_done:'ปฏิเสธคำขอแล้ว', cat_removed:'ลบประเภทแล้ว',
+    cat_exists:'มีประเภทนี้อยู่แล้ว', cat_empty_name:'กรุณาพิมพ์ชื่อประเภท', cat_save_fail:'บันทึกไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง task_categories แล้วหรือยัง',
+    cat_propose:'+ เสนอประเภทงานใหม่', cat_pending_banner:'มีประเภทงานรออนุมัติ {n} รายการ', cat_review_btn:'ตรวจสอบ',
+    cat_notif_section:'ประเภทงานรออนุมัติ', cat_toast_new:'เสนอประเภทงานใหม่',
     week_timeline:'📅 Timeline สัปดาห์นี้',
     tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ', completed_sub:'เสร็จแล้ว {n} รายการ',
     filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด', scope_mine:'งานของฉัน', scope_all:'ทั้งทีม',
@@ -1425,6 +1453,20 @@ const I18N = {
     th_title:'Task', th_assignee:'Assignee', th_category:'Category', th_status:'Status', th_priority:'Priority', th_deadline:'Due', th_timeleft:'Time left', th_manage:'Actions',
     chart_team_active:'📊 Tasks by Team (Active)', chart_active_center:'Active', chart_no_active:'No active tasks',
     chart_by_status:'📈 Tasks by Status', chart_my_summary:'📊 My Summary', chart_done_center:'Done', no_tasks_yet:'No tasks yet', unit_tasks:'tasks',
+    kpi_team:'Team KPIs & Performance', kpi_mine:'My KPIs & Performance', kpi_completion:'Completion rate', kpi_ontime:'On-time delivery', kpi_ontime_sub:'Estimated from last update',
+    kpi_duesoon:'Due within 3 days', kpi_thisweek:'Done this week', kpi_done_total:'{d}/{n} done', kpi_no_data:'—',
+    perf_title:'Performance by person', perf_sub:'Auto-updated from live tasks', perf_completion:'Progress (done/total)', perf_workload:'Active workload',
+    perf_inprogress:'Active', perf_pending:'Queue/Review', perf_done:'Done', perf_overdue:'Overdue', perf_duesoon:'Due soon', perf_ontime:'On-time', perf_est:'est.',
+    perf_health:'Work health', perf_training:'Training', perf_no_tasks:'No tasks assigned yet',
+    catsum_title:'Tasks by Category', catsum_sub:'Open tasks grouped by category', catsum_empty:'No open tasks', catsum_manage:'Manage categories',
+    cat_manage_title:'Manage Task Categories', cat_manage_sub:'Team proposes new types — manager approves',
+    cat_add_label:'Propose a new category', cat_add_ph:'Type a category name, e.g. Payroll, Reconcile...', cat_submit:'Submit for approval', cat_submit_mgr:'Add now',
+    cat_section_active:'Active categories', cat_section_pending:'Pending approval', cat_base_tag:'Default', cat_pending_tag:'Pending',
+    cat_approve:'Approve', cat_reject:'Reject', cat_remove:'Remove', cat_by:'by {name}', cat_none_pending:'No categories awaiting approval',
+    cat_req_sent:'✓ Request sent — awaiting manager approval', cat_added:'✓ Category added', cat_approved_done:'✓ Approved', cat_rejected_done:'Request rejected', cat_removed:'Category removed',
+    cat_exists:'This category already exists', cat_empty_name:'Please enter a category name', cat_save_fail:'Save failed — did you run the task_categories SQL?',
+    cat_propose:'+ Propose new category', cat_pending_banner:'{n} categories awaiting approval', cat_review_btn:'Review',
+    cat_notif_section:'Categories to approve', cat_toast_new:'proposed a new category',
     week_timeline:'📅 This Week',
     tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks', completed_sub:'{n} completed',
     filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories', scope_mine:'My tasks', scope_all:'Team (all)',
@@ -1467,6 +1509,12 @@ const I18N = {
 };
 
 const LangContext = React.createContext({ lang:'th', setLang:()=>{} });
+// ประเภทงาน (dynamic): ค่าเริ่มต้น + ที่ทีมเสนอแล้วผู้จัดการอนุมัติ — แจกผ่าน Context
+const CatContext = React.createContext({
+  categories: BASE_CATEGORIES, catRows: [], pendingCats: [], baseSet: new Set(BASE_CATEGORIES),
+  requestCategory: () => {}, decideCategory: () => {}, deleteCategory: () => {}, openManage: () => {},
+});
+function useCats() { return React.useContext(CatContext); }
 function useT() {
   const { lang, setLang } = React.useContext(LangContext);
   const t = (k, v) => {
@@ -1950,6 +1998,37 @@ const sb = {
       .subscribe();
     return () => { try { c.removeChannel(ch); } catch (e) {} };
   },
+  // ── ประเภทงานที่ทีมเสนอเพิ่ม (ดู supabase/add_task_categories.sql) ──
+  async loadCategories(cfg) {
+    const c = getSb(cfg); if (!c) return [];
+    const { data, error } = await c.from('task_categories').select('*').order('created_at', { ascending: true });
+    if (error) throw error;
+    return data || [];
+  },
+  async requestCategory(cfg, name, by, approved) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const row = { name, requested_by: by || null, status: approved ? 'approved' : 'pending' };
+    if (approved) { row.decided_by = by || null; row.decided_at = nowISO(); }
+    const { error } = await c.from('task_categories').insert(row);
+    if (error) throw error;
+  },
+  async decideCategory(cfg, id, status, by) {
+    const c = getSb(cfg); if (!c) return;
+    const { error } = await c.from('task_categories').update({ status, decided_by: by || null, decided_at: nowISO() }).eq('id', id);
+    if (error) throw error;
+  },
+  async deleteCategory(cfg, id) {
+    const c = getSb(cfg); if (!c) return;
+    const { error } = await c.from('task_categories').delete().eq('id', id);
+    if (error) throw error;
+  },
+  subscribeCategories(cfg, onChange) {
+    const c = getSb(cfg); if (!c) return null;
+    const ch = c.channel('afflow-cat-' + Math.floor(Math.random() * 1e9))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'task_categories' }, () => onChange())
+      .subscribe();
+    return () => { try { c.removeChannel(ch); } catch (e) {} };
+  },
 };
 
 // สร้างสรุปข้อมูลงาน (context) ส่งให้ AI — จำกัดจำนวนเพื่อคุม token
@@ -2228,6 +2307,7 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
   const [thinking, setThinking]   = React.useState(false);
   const debounceRef = React.useRef(null);
   const { t, lang } = useT();
+  const { categories, openManage } = useCats();
 
   function set(k, v) { setForm(f => ({ ...f, [k]: v })); }
 
@@ -2337,8 +2417,9 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
             <div className="form-group">
               <label className="form-label">{t('f_category')}</label>
               <select className="form-select" value={form.category} onChange={e => set('category', e.target.value)}>
-                {CATEGORIES.map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
+                {[...new Set([...categories, form.category].filter(Boolean))].map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
               </select>
+              <div onClick={() => openManage()} style={{ fontSize:'0.74rem', color:'var(--primary)', cursor:'pointer', marginTop:6, fontWeight:600 }}>{t('cat_propose')}</div>
             </div>
             <div className="form-group">
               <label className="form-label">{t('f_priority')}</label>
@@ -2408,6 +2489,98 @@ function DeleteModal({ task, onClose, onConfirm }) {
           <div style={{ display:'flex', gap:10, justifyContent:'flex-end' }}>
             <button className="btn btn-outline" onClick={onClose}>{t('cancel')}</button>
             <button className="btn btn-danger" onClick={onConfirm}>{t('del_btn')}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── CategoryModal: จัดการประเภทงาน (เสนอ / อนุมัติ / ปฏิเสธ) ──────────────────
+function CategoryModal({ currentUser, isManager, onClose }) {
+  const { t, lang } = useT();
+  const { catRows, baseSet, requestCategory, decideCategory, deleteCategory } = useCats();
+  const [name, setName] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err,  setErr]  = useState('');
+
+  const approvedCustom = catRows.filter(r => r.status === 'approved');
+  const pending        = catRows.filter(r => r.status === 'pending');
+  const existingLc     = new Set([...baseSet, ...catRows.map(r => r.name)].map(s => (s || '').trim().toLowerCase()));
+
+  async function add(e) {
+    if (e) e.preventDefault();
+    setErr('');
+    const nm = name.trim();
+    if (!nm) { setErr(t('cat_empty_name')); return; }
+    if (existingLc.has(nm.toLowerCase())) { setErr(t('cat_exists')); return; }
+    setBusy(true);
+    try { await requestCategory(nm); setName(''); } catch (e2) { setErr(t('cat_save_fail')); }
+    setBusy(false);
+  }
+
+  return (
+    <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal" style={{ maxWidth: 520 }}>
+        <div className="modal-header">
+          <div className="modal-title">📁 {t('cat_manage_title')}</div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: -4, marginBottom: 16 }}>{t('cat_manage_sub')}</p>
+
+          {/* เสนอประเภทใหม่ */}
+          <form onSubmit={add} style={{ marginBottom: 18 }}>
+            <label className="form-label">{t('cat_add_label')}</label>
+            <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <input className="form-input" value={name} onChange={e => setName(e.target.value)} placeholder={t('cat_add_ph')} style={{ flex: 1 }} />
+              <button className="btn btn-primary" type="submit" disabled={busy} style={{ whiteSpace: 'nowrap' }}>
+                {isManager ? t('cat_submit_mgr') : t('cat_submit')}
+              </button>
+            </div>
+            {err && <div style={{ color: 'var(--danger)', fontSize: '0.78rem', fontWeight: 600, marginTop: 6 }}>✕ {err}</div>}
+          </form>
+
+          {/* รออนุมัติ */}
+          <div className="card-title" style={{ fontSize: '0.85rem', marginBottom: 10 }}>
+            ⏳ {t('cat_section_pending')}
+            {pending.length > 0 && <span style={{ marginLeft: 8, fontSize: '0.7rem', background: 'var(--warning)', color: '#fff', borderRadius: 99, padding: '1px 8px', fontWeight: 700 }}>{pending.length}</span>}
+          </div>
+          {pending.length === 0
+            ? <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 16 }}>{t('cat_none_pending')}</div>
+            : <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 18 }}>
+                {pending.map(r => (
+                  <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '8px 12px' }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{r.name}</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{t('cat_by', { name: r.requested_by || '—' })}</div>
+                    </div>
+                    {isManager ? (
+                      <>
+                        <button className="btn btn-primary" style={{ padding: '4px 12px', fontSize: '0.78rem' }} onClick={() => decideCategory(r.id, 'approved')}>✓ {t('cat_approve')}</button>
+                        <button className="btn btn-outline" style={{ padding: '4px 12px', fontSize: '0.78rem' }} onClick={() => deleteCategory(r.id, 'reject')}>{t('cat_reject')}</button>
+                      </>
+                    ) : (
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--warning)' }}>{t('cat_pending_tag')}</span>
+                    )}
+                  </div>
+                ))}
+              </div>}
+
+          {/* ใช้งานได้ */}
+          <div className="card-title" style={{ fontSize: '0.85rem', marginBottom: 10 }}>✅ {t('cat_section_active')}</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {[...baseSet].map(c => (
+              <span key={'b-' + c} className="perf-chip" style={{ fontSize: '0.8rem' }}>
+                {tCat(c, lang)} <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginLeft: 2 }}>· {t('cat_base_tag')}</span>
+              </span>
+            ))}
+            {approvedCustom.map(r => (
+              <span key={r.id} className="perf-chip" style={{ fontSize: '0.8rem' }}>
+                {r.name}
+                {isManager && <span onClick={() => deleteCategory(r.id, 'remove')} title={t('cat_remove')} style={{ marginLeft: 6, color: 'var(--danger)', cursor: 'pointer', fontWeight: 700 }}>✕</span>}
+              </span>
+            ))}
           </div>
         </div>
       </div>
@@ -2558,7 +2731,7 @@ function TopbarClock() {
   );
 }
 
-function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy, commentNotifs = [], onOpenCommentNotif }) {
+function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy, commentNotifs = [], onOpenCommentNotif, pendingCats = [], onOpenCategories }) {
   const { t, lang, setLang } = useT();
   const [notifOpen, setNotifOpen] = React.useState(false);
   const [notifPerm, setNotifPerm] = React.useState(('Notification' in window) ? Notification.permission : 'unsupported');
@@ -2574,12 +2747,14 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
     syncing: { dot:'#f59e0b', label: t('sync_syncing') },
   }[syncStatus] || { dot:'#94a3b8', label: t('sync_local') };
 
-  // งานที่ใกล้ครบกำหนด/เกินกำหนด (ยังไม่เสร็จ และเหลือ ≤ 3 วัน) — ตามสิทธิ์ผู้ใช้
-  const scope  = isManager ? tasks : tasks.filter(t => t.assignee === currentUser);
+  // งานที่ใกล้ครบกำหนด/เกินกำหนด — เฉพาะงานที่ "ฉัน" รับผิดชอบเท่านั้น (ไม่เด้งงานคนอื่น แม้เป็นผู้จัดการ)
+  const scope  = tasks.filter(t => t.assignee === currentUser);
   const alerts = scope
     .filter(x => x.status !== 'done' && daysDiff(x.deadline) <= 3)
     .map(x => ({ ...x, dd: daysDiff(x.deadline) }))
     .sort((a, b) => a.dd - b.dd);
+  const catCount   = isManager ? pendingCats.length : 0;
+  const totalNotif = alerts.length + commentNotifs.length + catCount;
 
   function alertMeta(dd) {
     if (dd < 0)  return { cls: 'red',   text: t('overdue_days', { n: Math.abs(dd) }) };
@@ -2656,7 +2831,7 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
         <div className="topbar-notif-wrap">
           <div className="topbar-notif" title={t('notif')} onClick={() => setNotifOpen(o => !o)}>
             🔔
-            {(alerts.length + commentNotifs.length) > 0 && <div className="notif-badge">{(alerts.length + commentNotifs.length) > 9 ? '9+' : (alerts.length + commentNotifs.length)}</div>}
+            {totalNotif > 0 && <div className="notif-badge">{totalNotif > 9 ? '9+' : totalNotif}</div>}
           </div>
           {notifOpen && (
             <>
@@ -2675,6 +2850,20 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
                 )}
                 {notifPerm === 'denied' && (
                   <div style={{ padding:'7px 12px', fontSize:'0.72rem', color:'var(--text-muted)', borderBottom:'1px solid var(--border)' }}>{t('notif_blocked')}</div>
+                )}
+                {isManager && pendingCats.length > 0 && (
+                  <div className="notif-list" style={{ borderBottom:'1px solid var(--border)' }}>
+                    <div style={{ fontSize:'0.74rem', fontWeight:700, color:'var(--text-muted)', padding:'6px 10px 4px' }}>{t('cat_notif_section')}</div>
+                    {pendingCats.map(pc => (
+                      <div key={pc.id} className="notif-item" onClick={() => { onOpenCategories && onOpenCategories(); setNotifOpen(false); }}>
+                        <div className="notif-dot-ind amber" />
+                        <div style={{ minWidth:0, flex:1 }}>
+                          <div className="notif-item-title">📁 <b>{pc.name}</b></div>
+                          <div className="notif-item-meta">{t('cat_by', { name: pc.requested_by || '—' })}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
                 {commentNotifs.length > 0 && (
                   <div className="notif-list" style={{ borderBottom:'1px solid var(--border)' }}>
@@ -2706,7 +2895,7 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
                           <div style={{ minWidth: 0, flex: 1 }}>
                             <div className="notif-item-title">{x.title}</div>
                             <div className="notif-item-meta">
-                              {isManager ? `${x.assignee} • ` : ''}{m.text} • {formatDate(x.deadline, lang)}
+                              {m.text} • {formatDate(x.deadline, lang)}
                             </div>
                           </div>
                         </div>
@@ -2937,10 +3126,64 @@ function PersonalDonut({ tasks }) {
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 
+// ─── KPI / Performance helpers ────────────────────────────────────────────────
+function KpiTile({ value, label, sub, color, bar }) {
+  return (
+    <div className="kpi-tile">
+      <div className="kpi-val" style={{ color: color || 'var(--text)' }}>{value}</div>
+      <div className="kpi-lbl">{label}</div>
+      {typeof bar === 'number' && (
+        <div className="pbar" style={{ marginTop: 8 }}>
+          <span style={{ width: Math.max(0, Math.min(100, bar)) + '%', background: color || 'var(--primary)' }} />
+        </div>
+      )}
+      {sub && <div className="kpi-sub">{sub}</div>}
+    </div>
+  );
+}
+const HEALTH = { good: '🟢', warn: '🟡', bad: '🔴', idle: '⚪' };
+// คำนวณ KPI/ผลงานจากรายการงานที่ส่งเข้ามา (ใช้กับทั้งทีมและรายคน)
+function calcPerf(list, weekStart, weekEnd) {
+  const done   = list.filter(t => t.status === 'done');
+  const active = list.filter(t => t.status !== 'done');
+  const compDate = (t) => t.completedAt || t.updatedAt || null;           // วันที่เสร็จ (โดยประมาณ)
+  const dated  = done.filter(t => compDate(t));
+  const onTimeN = dated.filter(t => compDate(t).slice(0, 10) <= t.deadline).length;
+  const total  = list.length;
+  return {
+    total, done: done.length, active: active.length,
+    inProgress: list.filter(t => t.status === 'in_progress').length,
+    pending:    list.filter(t => t.status === 'pending').length,
+    review:     list.filter(t => t.status === 'review').length,
+    blocked:    list.filter(t => t.status === 'blocked').length,
+    overdue:    active.filter(t => daysDiff(t.deadline) < 0).length,
+    dueSoon:    active.filter(t => { const d = daysDiff(t.deadline); return d >= 0 && d <= 3; }).length,
+    compPct:    total ? Math.round(done.length / total * 100) : 0,
+    onTimePct:  dated.length ? Math.round(onTimeN / dated.length * 100) : null,
+    doneThisWeek: dated.filter(t => { const d = compDate(t).slice(0, 10); return d >= weekStart && d <= weekEnd; }).length,
+    get health() {
+      if (this.total === 0) return 'idle';
+      if (this.overdue > 0) return 'bad';
+      if (this.dueSoon > 0) return 'warn';
+      return 'good';
+    },
+  };
+}
+
 function Dashboard({ tasks, currentUser, onSelectTask }) {
   const { t, lang } = useT();
+  const { pendingCats, openManage } = useCats();
   const isManager = currentUser === 'Big Boss';
   const myTasks   = isManager ? tasks : tasks.filter(t => t.assignee === currentUser);
+
+  // สรุปงานที่ยังไม่เสร็จ แยกตามประเภท (รู้ว่าทีมกำลังเจองานประเภทไหนบ้าง)
+  const catSummary = React.useMemo(() => {
+    const m = {};
+    myTasks.filter(tk => tk.status !== 'done').forEach(tk => { const c = tk.category || '—'; m[c] = (m[c] || 0) + 1; });
+    return Object.entries(m).sort((a, b) => b[1] - a[1]);
+  }, [myTasks]);
+  const catMax = Math.max(1, ...catSummary.map(([, n]) => n));
+  const CAT_COLORS = ['#6366f1', '#f59e0b', '#10b981', '#ec4899', '#8b5cf6', '#06b6d4', '#ef4444', '#84cc16'];
 
   const stats = {
     total:      myTasks.length,
@@ -2951,13 +3194,6 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
   };
   const completionPct = stats.total > 0 ? Math.round((stats.done / stats.total) * 100) : 0;
   const activeCount   = stats.total - stats.done;
-
-  // ภาพรวมงานทั้งทีม — เรียงงานที่ยังไม่เสร็จ + ใกล้ครบ/เลยกำหนด ขึ้นก่อน (ช่วยกันเตือน)
-  const teamTasks = React.useMemo(() => [...tasks].sort((a, b) => {
-    const ad = a.status === 'done', bd = b.status === 'done';
-    if (ad !== bd) return ad ? 1 : -1;
-    return (a.deadline || '').localeCompare(b.deadline || '');
-  }), [tasks]);
 
   // ทักทายตามช่วงเวลา / time-based greeting
   const hr = new Date().getHours();
@@ -2974,6 +3210,19 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
     return d;
   });
   function isoDate(d) { return d.toISOString().slice(0, 10); }
+  const weekStart = isoDate(weekDays[0]);
+  const weekEnd   = isoDate(weekDays[6]);
+
+  // KPI ภาพรวม (ทีม = ผู้จัดการ / งานของฉัน = พนักงาน) + ผลงานรายคน
+  const headPerf = React.useMemo(() => calcPerf(myTasks, weekStart, weekEnd), [myTasks, weekStart, weekEnd]);
+  const people   = React.useMemo(
+    () => ASSIGNEES.map(name => ({
+      user: USERS.find(u => u.name === name) || { name, role: '', color: getUserColor(name) },
+      perf: calcPerf(tasks.filter(tk => tk.assignee === name), weekStart, weekEnd),
+    })),
+    [tasks, weekStart, weekEnd]
+  );
+  const maxActive = Math.max(1, ...people.map(p => p.perf.active));
 
   return (
     <div>
@@ -2981,6 +3230,15 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
         <div className="page-title">{greeting}, {currentUser}! 👋</div>
         <div className="page-subtitle">{t('dash_welcome', { date: thaiDateFull(TODAY, lang) })}</div>
       </div>
+
+      {/* แจ้งผู้จัดการเมื่อมีประเภทงานรออนุมัติ */}
+      {isManager && pendingCats.length > 0 && (
+        <div onClick={openManage} style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(245,158,11,0.12)', border: '1px solid var(--warning)', borderRadius: 12, padding: '12px 16px', marginBottom: 20, cursor: 'pointer' }}>
+          <span style={{ fontSize: '1.2rem' }}>🔔</span>
+          <span style={{ flex: 1, fontWeight: 600, fontSize: '0.9rem' }}>{t('cat_pending_banner', { n: pendingCats.length })}</span>
+          <button className="btn btn-primary" style={{ padding: '5px 14px', fontSize: '0.8rem' }}>{t('cat_review_btn')}</button>
+        </div>
+      )}
 
       {/* Stat cards */}
       <div className="stat-grid">
@@ -3016,6 +3274,24 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
         </div>
       </div>
 
+      {/* KPI summary — quality metrics (team for manager / mine for member) */}
+      <div className="card" style={{ marginBottom: 20 }}>
+        <div className="card-title">🎯 {isManager ? t('kpi_team') : t('kpi_mine')}
+          <span style={{ marginLeft: 'auto', fontSize: '0.72rem', fontWeight: 500, color: 'var(--text-muted)' }}>{t('perf_sub')}</span>
+        </div>
+        <div className="kpi-row">
+          <KpiTile value={headPerf.compPct + '%'} label={t('kpi_completion')}
+                   sub={t('kpi_done_total', { d: headPerf.done, n: headPerf.total })}
+                   color="var(--success)" bar={headPerf.compPct} />
+          <KpiTile value={headPerf.onTimePct == null ? t('kpi_no_data') : headPerf.onTimePct + '%'} label={t('kpi_ontime')}
+                   sub={t('kpi_ontime_sub')} color="var(--primary)"
+                   bar={headPerf.onTimePct == null ? undefined : headPerf.onTimePct} />
+          <KpiTile value={headPerf.dueSoon} label={t('kpi_duesoon')}
+                   color={headPerf.dueSoon > 0 ? 'var(--warning)' : 'var(--text)'} />
+          <KpiTile value={headPerf.doneThisWeek} label={t('kpi_thisweek')} color="var(--success)" />
+        </div>
+      </div>
+
       {/* Charts row */}
       <div className="chart-row">
         {isManager
@@ -3024,52 +3300,87 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
         <StatusBarChart tasks={myTasks} />
       </div>
 
-      {/* Task table */}
-      <div className="card" style={{ marginBottom:20 }}>
-        <div className="card-title">
-          👥 {t('card_team_overview')}
-          <span style={{ marginLeft:'auto', fontSize:'0.75rem', fontWeight:500, color:'var(--text-muted)' }}>
-            {t('items_n', { n: teamTasks.length })}
+      {/* งานตามประเภท — ทีมกำลังเจองานประเภทไหนบ้าง */}
+      <div className="card" style={{ marginBottom: 20 }}>
+        <div className="card-title">📁 {t('catsum_title')}
+          <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: '0.72rem', fontWeight: 500, color: 'var(--text-muted)' }}>{t('catsum_sub')}</span>
+            <span onClick={openManage} style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--primary)', cursor: 'pointer', whiteSpace: 'nowrap' }}>⚙️ {t('catsum_manage')}</span>
           </span>
         </div>
-        {teamTasks.length === 0 ? (
-          <div className="empty-state"><div className="empty-icon">🎉</div><div className="empty-text">{t('no_tasks_now')}</div></div>
+        {catSummary.length === 0 ? (
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', padding: '6px 2px' }}>{t('catsum_empty')}</div>
         ) : (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>{t('th_title')}</th>
-                  <th>{t('th_assignee')}</th>
-                  <th>{t('th_category')}</th>
-                  <th>{t('th_status')}</th>
-                  <th>{t('th_priority')}</th>
-                  <th>{t('th_deadline')}</th>
-                  <th>{t('th_timeleft')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teamTasks.map(task => (
-                  <tr key={task.id} className={rowClass(task.deadline, task.status)} style={{ borderLeft: '4px solid ' + getUserColor(task.assignee) }} onClick={() => onSelectTask(task)}>
-                    <td style={{ maxWidth:240, fontWeight:500 }}>{task.title}</td>
-                    <td>
-                      <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                        <Avatar name={task.assignee} size="sm" />
-                        <span>{task.assignee}</span>
-                      </div>
-                    </td>
-                    <td><span style={{ fontSize:'0.8rem', color:'var(--text-muted)' }}>{tCat(task.category, lang)}</span></td>
-                    <td><StatusBadge status={task.status} /></td>
-                    <td><PriorityBadge priority={task.priority} /></td>
-                    <td style={{ fontSize:'0.85rem' }}>{formatDate(task.deadline, lang)}</td>
-                    <td><Countdown deadline={task.deadline} status={task.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {catSummary.map(([cat, n], i) => (
+              <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 110, flexShrink: 0, fontSize: '0.82rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{tCat(cat, lang)}</div>
+                <div className="pbar" style={{ flex: 1, height: 18 }}>
+                  <span style={{ width: Math.round(n / catMax * 100) + '%', background: CAT_COLORS[i % CAT_COLORS.length], minWidth: 2 }} />
+                </div>
+                <div style={{ width: 28, textAlign: 'right', fontWeight: 700, fontSize: '0.85rem' }}>{n}</div>
+              </div>
+            ))}
           </div>
         )}
       </div>
+
+      {/* Performance by person — manager only (วัด KPI + ผลงานรายคน) */}
+      {isManager && (
+        <div className="card" style={{ marginBottom: 20 }}>
+          <div className="card-title">🏆 {t('perf_title')}
+            <span style={{ marginLeft: 'auto', fontSize: '0.72rem', fontWeight: 500, color: 'var(--text-muted)' }}>{t('perf_sub')}</span>
+          </div>
+          <div className="perf-grid">
+            {people.map(({ user, perf }) => (
+              <div className="perf-card" key={user.name}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                  <Avatar name={user.name} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      {user.name}
+                      {user.training && <span style={{ fontSize: '0.6rem', padding: '1px 6px', borderRadius: 99, background: 'var(--warning)', color: '#fff', fontWeight: 700 }}>{t('perf_training')}</span>}
+                    </div>
+                    <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)' }}>{tRole(user.role, lang)}</div>
+                  </div>
+                  <span title={t('perf_health')} style={{ fontSize: '0.95rem' }}>{HEALTH[perf.health]}</span>
+                </div>
+
+                {/* completion */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', marginBottom: 4 }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{t('perf_completion')}</span>
+                  <span style={{ fontWeight: 700 }}>{perf.done}/{perf.total} · {perf.compPct}%</span>
+                </div>
+                <div className="pbar"><span style={{ width: perf.compPct + '%', background: 'var(--success)' }} /></div>
+
+                {/* workload */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.74rem', margin: '12px 0 4px' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>{t('perf_workload')}</span>
+                  <span style={{ fontWeight: 700 }}>{perf.active} {t('unit_tasks')}</span>
+                </div>
+                <div className="pbar"><span style={{ width: Math.round(perf.active / maxActive * 100) + '%', background: user.color }} /></div>
+
+                {/* chips */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 14 }}>
+                  <span className="perf-chip">⚙️ {t('perf_inprogress')} {perf.inProgress}</span>
+                  <span className="perf-chip">⏳ {t('perf_pending')} {perf.pending + perf.review}</span>
+                  <span className="perf-chip">✅ {t('perf_done')} {perf.done}</span>
+                  {perf.overdue > 0 && <span className="perf-chip" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }}>🔴 {t('perf_overdue')} {perf.overdue}</span>}
+                  {perf.dueSoon > 0 && <span className="perf-chip" style={{ color: '#d97706', borderColor: 'var(--warning)' }}>🟡 {t('perf_duesoon')} {perf.dueSoon}</span>}
+                </div>
+
+                {perf.total === 0
+                  ? <div style={{ marginTop: 12, fontSize: '0.73rem', color: 'var(--text-muted)' }}>{t('perf_no_tasks')}</div>
+                  : perf.onTimePct != null && (
+                    <div style={{ marginTop: 12, fontSize: '0.73rem', color: 'var(--text-muted)' }}>
+                      {t('perf_ontime')}: <b style={{ color: 'var(--text)' }}>{perf.onTimePct}%</b> <span style={{ opacity: 0.7 }}>({t('perf_est')})</span>
+                    </div>
+                  )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Week timeline */}
       <div className="card">
@@ -3107,6 +3418,7 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
 
 function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, onDuplicate, setCreateOpen, search, setSearch, mode }) {
   const { t, lang } = useT();
+  const { categories } = useCats();
   const isManager = currentUser === 'Big Boss';
   const canEdit   = (task) => isManager || task.assignee === currentUser || task.createdBy === currentUser;
 
@@ -3179,7 +3491,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
         )}
         <select className="filter-select" value={fCat} onChange={e => setFCat(e.target.value)}>
           <option value="">{t('filter_all_cat')}</option>
-          {CATEGORIES.map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
+          {[...new Set([...categories, ...tasks.map(tk => tk.category)].filter(Boolean))].map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
         </select>
         {hasFilter && (
           <button className="btn btn-outline" style={{ fontSize:'0.8rem', padding:'7px 12px' }} onClick={clearFilters}>{t('clear_filters')}</button>
@@ -3937,6 +4249,7 @@ function ChatWidget({ sbCfg, currentUser, tasks, isManager, ready }) {
 // ─── ชุด C (#5): ฟอร์มส่งงานสาธารณะ (เปิดผ่าน ?form=request — ไม่ต้องล็อกอิน) ─────
 function RequestForm({ cfg }) {
   const { t, lang, setLang } = useT();
+  const { categories } = useCats();
   const [form, setForm] = useState(() => {
     let me = {};
     try { me = JSON.parse(localStorage.getItem('afflow_req_me') || '{}'); } catch (e) {}
@@ -3993,7 +4306,7 @@ function RequestForm({ cfg }) {
           <div className="form-group"><label className="form-label">{t('req_category')}</label>
             <select className="form-input" value={form.category} onChange={e => set('category', e.target.value)}>
               <option value="">{t('req_category_any')}</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
+              {categories.map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
             </select></div>
           <div className="form-group"><label className="form-label">{t('req_details')}</label>
             <textarea className="form-input" rows={3} value={form.details} onChange={e => set('details', e.target.value)} placeholder={t('req_details_ph')} /></div>
@@ -4716,6 +5029,56 @@ function App() {
     return () => { alive = false; if (unsub) unsub(); };
   }, [isAuthed, sbCfg.url, sbCfg.key]);
 
+  // ── ประเภทงาน (dynamic + อนุมัติโดยผู้จัดการ) — โหลดเมื่อมี Supabase แม้ยังไม่ล็อกอิน (ฟอร์มสาธารณะใช้ได้) ──
+  const [catRows, setCatRows] = useState([]);
+  const [catModalOpen, setCatModalOpen] = useState(false);
+  useEffect(() => {
+    if (!isSb) { setCatRows([]); return; }
+    let alive = true;
+    const load = () => sb.loadCategories(sbCfg).then(d => { if (alive) setCatRows(d || []); }).catch(() => { if (alive) setCatRows([]); });
+    load();
+    const unsub = sb.subscribeCategories(sbCfg, load);
+    return () => { alive = false; if (unsub) unsub(); };
+  }, [isSb, sbCfg.url, sbCfg.key]);
+
+  const approvedCustomNames = catRows.filter(r => r.status === 'approved').map(r => r.name).filter(Boolean);
+  const activeCategories    = [...BASE_CATEGORIES, ...approvedCustomNames.filter(n => !BASE_CATEGORIES.includes(n))];
+  const pendingCats         = catRows.filter(r => r.status === 'pending');
+
+  async function handleRequestCategory(name) {
+    const approved = currentUser === 'Big Boss';            // ผู้จัดการเพิ่มเอง = อนุมัติทันที
+    await sb.requestCategory(sbCfg, name, currentUser || 'ทีม', approved);
+    sb.loadCategories(sbCfg).then(d => setCatRows(d || [])).catch(() => {});
+    pushToast(approved ? tApp('cat_added') : tApp('cat_req_sent'));
+  }
+  async function handleDecideCategory(id, status) {
+    await sb.decideCategory(sbCfg, id, status, currentUser);
+    sb.loadCategories(sbCfg).then(d => setCatRows(d || [])).catch(() => {});
+    pushToast(tApp('cat_approved_done'));
+  }
+  async function handleDeleteCategory(id, kind) {
+    await sb.deleteCategory(sbCfg, id);
+    sb.loadCategories(sbCfg).then(d => setCatRows(d || [])).catch(() => {});
+    pushToast(tApp(kind === 'reject' ? 'cat_rejected_done' : 'cat_removed'));
+  }
+  const catCtxValue = {
+    categories: activeCategories, catRows, pendingCats, baseSet: new Set(BASE_CATEGORIES),
+    requestCategory: handleRequestCategory, decideCategory: handleDecideCategory,
+    deleteCategory: handleDeleteCategory, openManage: () => setCatModalOpen(true),
+  };
+
+  // แจ้งผู้จัดการแบบ realtime เมื่อมีคนเสนอประเภทงานใหม่ (toast) — baseline แรกไม่เด้ง
+  const pendingKey = pendingCats.map(p => p.id).join(',');
+  const prevPendingRef = React.useRef(null);
+  useEffect(() => {
+    if (currentUser !== 'Big Boss') { prevPendingRef.current = null; return; }
+    const cur = new Set(pendingCats.map(p => p.id));
+    if (prevPendingRef.current === null) { prevPendingRef.current = cur; return; }
+    const fresh = pendingCats.filter(p => !prevPendingRef.current.has(p.id));
+    prevPendingRef.current = cur;
+    fresh.forEach(p => pushToast('📁 ' + (p.requested_by || 'ทีม') + ' ' + tApp('cat_toast_new') + ' "' + p.name + '"'));
+  }, [pendingKey, currentUser]);
+
   function handleCreate(form) {
     const t = {
       id: uid(), title: form.title, description: form.description,
@@ -4780,7 +5143,7 @@ function App() {
   function notifyDueSoon() {
     if (!('Notification' in window) || Notification.permission !== 'granted' || !currentUser) return;
     const all = tasksRef.current || tasks;
-    const scope = isManager ? all : all.filter(t => t.assignee === currentUser);
+    const scope = all.filter(t => t.assignee === currentUser);   // เฉพาะงานของฉัน (ไม่เด้งงานคนอื่น แม้เป็นผู้จัดการ)
     const due = scope.filter(t => t.status !== 'done' && daysDiff(t.deadline) <= 1);   // ครบใน 1 วัน หรือเกินกำหนด
     if (!due.length) return;
     const key = 'afflow_notified_' + TODAY;
@@ -4796,7 +5159,7 @@ function App() {
         : (th ? 'ครบกำหนดพรุ่งนี้' : 'Due tomorrow');
       try {
         new Notification(th ? 'AFFlow — งานใกล้ครบกำหนด' : 'AFFlow — Task due soon', {
-          body: '📋 ' + t.title + '\n' + when + (isManager ? ' • ' + t.assignee : ''),
+          body: '📋 ' + t.title + '\n' + when,
           icon: 'icon-192.png', badge: 'icon-192.png', tag: 'afflow-' + t.id,
         });
         fired++;
@@ -4891,13 +5254,16 @@ function App() {
   if (requestMode) {
     return (
       <LangContext.Provider value={{ lang, setLang }}>
-        <RequestForm cfg={sbCfg} />
+        <CatContext.Provider value={catCtxValue}>
+          <RequestForm cfg={sbCfg} />
+        </CatContext.Provider>
       </LangContext.Provider>
     );
   }
 
   return (
     <LangContext.Provider value={{ lang, setLang }}>
+     <CatContext.Provider value={catCtxValue}>
       {showWelcome  && <WelcomeScreen onSelect={handleUserChange} />}
       {showRecovery && <ResetPasswordScreen cfg={sbCfg} onDone={() => setRecovery(false)} />}
       {showLogin    && <LoginScreen cfg={sbCfg} onOpenSettings={() => setSettingsOpen(true)} />}
@@ -5012,6 +5378,8 @@ function App() {
             onTogglePrivacy={() => setPrivacyMode(p => !p)}
             commentNotifs={commentNotifs}
             onOpenCommentNotif={openCommentNotif}
+            pendingCats={pendingCats}
+            onOpenCategories={() => setCatModalOpen(true)}
           />
 
           {/* Page content */}
@@ -5129,6 +5497,10 @@ function App() {
           lastBackup={lastBackup}
         />
       )}
+      {catModalOpen && (
+        <CategoryModal currentUser={currentUser} isManager={isManager} onClose={() => setCatModalOpen(false)} />
+      )}
+     </CatContext.Provider>
     </LangContext.Provider>
   );
 }
