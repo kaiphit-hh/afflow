@@ -1399,7 +1399,7 @@ const I18N = {
     cat_notif_section:'ประเภทงานรออนุมัติ', cat_toast_new:'เสนอประเภทงานใหม่',
     week_timeline:'📅 Timeline สัปดาห์นี้',
     tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ', completed_sub:'เสร็จแล้ว {n} รายการ',
-    filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด', scope_mine:'งานของฉัน', scope_all:'ทั้งทีม',
+    filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด', scope_mine:'งานของฉัน', scope_all:'ทั้งทีม', filter_people:'กรองรายคน', filter_clear_people:'ล้างที่เลือก', filter_people_n:'เลือก {n} คน',
     clear_filters:'✕ ล้างตัวกรอง', found_n:'พบ {n} รายการ', no_match:'ไม่พบงานที่ตรงกับเงื่อนไข', clear_search:'ล้างคำค้นหา',
     view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ', duplicate:'ทำซ้ำงานนี้',
     timeline_title:'Timeline รายเดือน 📅', timeline_sub:'งานตามวันกำหนดส่ง', prev:'← ก่อนหน้า', next:'ถัดไป →', legend:'สัญลักษณ์:', today:'วันนี้', legend_holiday:'วันหยุดไทย', legend_weekend:'เสาร์-อาทิตย์ (หยุด)',
@@ -1427,7 +1427,7 @@ const I18N = {
     settings_key:'Anon public key', settings_key_ph:'eyJhbGci... (anon / public key)',
     settings_test:'ทดสอบการเชื่อมต่อ', settings_test_ok:'✓ เชื่อมต่อสำเร็จ', settings_test_fail:'✕ เชื่อมต่อไม่ได้ — ตรวจ URL/Key หรือยังไม่ได้รัน schema', settings_testing:'กำลังทดสอบ...',
     settings_push:'⬆️ นำข้อมูลในเครื่องขึ้น Supabase', settings_push_done:'✓ อัปโหลดแล้ว {n} งาน', settings_push_fail:'✕ อัปโหลดไม่สำเร็จ (ต้องล็อกอินก่อน)', settings_pushing:'กำลังอัปโหลด...',
-    backup_title:'สำรองข้อมูลขึ้น Google Drive', backup_intro:'สำรองงาน + คำขอ + แชททีม ทั้งหมดเป็นไฟล์ JSON เก็บไว้ใน Drive กลาง (เฉพาะหัวหน้า)', backup_now:'สำรองตอนนี้', backup_running:'กำลังสำรอง...', backup_done:'✓ สำรองแล้ว: {name}', backup_fail:'✕ สำรองไม่สำเร็จ', backup_auto:'สำรองอัตโนมัติทุกวัน (ตอนเปิดแอป)', backup_last:'สำรองล่าสุด', save_failed:'บันทึกขึ้น Supabase ไม่สำเร็จ', task_created:'สร้างงานแล้ว', assigned_to:'มอบให้',
+    backup_title:'สำรองข้อมูล (Backup)', backup_intro:'สำรองงาน + คำขอ + แชททีม เป็นไฟล์ JSON เก็บใน Supabase Storage อัตโนมัติ หรือกดดาวน์โหลดเก็บเอง/วางใน Google Drive ก็ได้ (เฉพาะหัวหน้า)', backup_now:'สำรองขึ้นระบบ', backup_running:'กำลังสำรอง...', backup_done:'✓ สำรองขึ้นระบบแล้ว: {name}', backup_download:'ดาวน์โหลด .json', backup_downloaded:'✓ ดาวน์โหลดแล้ว: {name}', backup_fail:'✕ สำรองไม่สำเร็จ', backup_auto:'สำรองอัตโนมัติทุกวัน (ตอนเปิดแอป)', backup_last:'สำรองล่าสุด', save_failed:'บันทึกขึ้น Supabase ไม่สำเร็จ', task_created:'สร้างงานแล้ว', assigned_to:'มอบให้',
     settings_push_warn:'⚠️ จะแทนที่ข้อมูลทั้งหมดใน Supabase ด้วยข้อมูลในเครื่องนี้ — ต้องล็อกอินและบันทึกการตั้งค่าก่อน', settings_save:'บันทึก', settings_disconnect:'ยกเลิกการเชื่อมต่อ', settings_save_first:'กรุณาบันทึกการตั้งค่าก่อน',
     login_title:'เข้าสู่ระบบ', login_sub:'ระบบจัดการงาน Accounting & Finance', login_email:'อีเมล', login_email_ph:'you@hungryhub.com', login_password:'รหัสผ่าน', login_password_ph:'รหัสผ่านของคุณ',
     login_btn:'เข้าสู่ระบบ', login_loading:'กำลังเข้าสู่ระบบ...', login_error:'อีเมลหรือรหัสผ่านไม่ถูกต้อง', login_logout:'ออกจากระบบ', login_loading_app:'กำลังโหลด...', login_no_profile:'บัญชีนี้ยังไม่ได้กำหนดชื่อทีม — ติดต่อหัวหน้า', login_forgot:'ลืมรหัสผ่าน?', reset_title:'รีเซ็ตรหัสผ่าน', reset_desc:'กรอกอีเมลของคุณ เราจะส่งลิงก์ตั้งรหัสใหม่ไปให้', reset_send:'ส่งลิงก์รีเซ็ต', reset_sending:'กำลังส่ง...', reset_sent:'ส่งลิงก์ไปที่อีเมลแล้ว ✓ เช็คกล่องจดหมาย (และโฟลเดอร์ Junk/Spam)', reset_back:'← กลับไปเข้าสู่ระบบ', reset_email_required:'กรุณากรอกอีเมลก่อน', reset_fail:'ส่งไม่สำเร็จ — อาจส่งบ่อยเกินไป ลองใหม่ภายหลัง', newpass_title:'ตั้งรหัสผ่านใหม่', newpass_label:'รหัสผ่านใหม่', newpass_ph:'อย่างน้อย 6 ตัวอักษร', newpass_btn:'บันทึกรหัสผ่านใหม่', newpass_saving:'กำลังบันทึก...', newpass_done:'เปลี่ยนรหัสสำเร็จ! กำลังพาเข้าระบบ...', newpass_short:'รหัสผ่านสั้นไป (อย่างน้อย 6 ตัว)', newpass_fail:'บันทึกไม่สำเร็จ — ลิงก์อาจหมดอายุ ลองขอลิงก์ใหม่',
@@ -1473,7 +1473,7 @@ const I18N = {
     cat_notif_section:'Categories to approve', cat_toast_new:'proposed a new category',
     week_timeline:'📅 This Week',
     tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks', completed_sub:'{n} completed',
-    filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories', scope_mine:'My tasks', scope_all:'Team (all)',
+    filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories', scope_mine:'My tasks', scope_all:'Team (all)', filter_people:'Filter by person', filter_clear_people:'Clear', filter_people_n:'{n} selected',
     clear_filters:'✕ Clear filters', found_n:'{n} found', no_match:'No matching tasks', clear_search:'Clear search',
     view_detail:'View details', edit:'Edit', delete:'Delete', duplicate:'Duplicate task',
     timeline_title:'Monthly Timeline 📅', timeline_sub:'Tasks by due date', prev:'← Prev', next:'Next →', legend:'Legend:', today:'Today', legend_holiday:'Thai holiday', legend_weekend:'Weekend (off)',
@@ -1501,7 +1501,7 @@ const I18N = {
     settings_key:'Anon public key', settings_key_ph:'eyJhbGci... (anon / public key)',
     settings_test:'Test connection', settings_test_ok:'✓ Connected', settings_test_fail:'✕ Cannot connect — check URL/Key or run schema first', settings_testing:'Testing...',
     settings_push:'⬆️ Upload local data to Supabase', settings_push_done:'✓ Uploaded {n} tasks', settings_push_fail:'✕ Upload failed (must be logged in)', settings_pushing:'Uploading...',
-    backup_title:'Backup to Google Drive', backup_intro:'Back up all tasks + requests + team chat as a JSON file in the Central Drive (manager only)', backup_now:'Back up now', backup_running:'Backing up...', backup_done:'✓ Backed up: {name}', backup_fail:'✕ Backup failed', backup_auto:'Auto-backup daily (on app open)', backup_last:'Last backup', save_failed:'Failed to save to Supabase', task_created:'Task created', assigned_to:'assigned to',
+    backup_title:'Backup', backup_intro:'Back up all tasks + requests + team chat as JSON to Supabase Storage automatically — or download a copy to keep / drop into Google Drive (manager only)', backup_now:'Back up now', backup_running:'Backing up...', backup_done:'✓ Backed up: {name}', backup_download:'Download .json', backup_downloaded:'✓ Downloaded: {name}', backup_fail:'✕ Backup failed', backup_auto:'Auto-backup daily (on app open)', backup_last:'Last backup', save_failed:'Failed to save to Supabase', task_created:'Task created', assigned_to:'assigned to',
     settings_push_warn:'⚠️ This replaces ALL data in Supabase with this device\'s data — you must be logged in and have saved the config.', settings_save:'Save', settings_disconnect:'Disconnect', settings_save_first:'Please save the config first',
     login_title:'Sign in', login_sub:'Accounting & Finance task system', login_email:'Email', login_email_ph:'you@hungryhub.com', login_password:'Password', login_password_ph:'Your password',
     login_btn:'Sign in', login_loading:'Signing in...', login_error:'Incorrect email or password', login_logout:'Sign out', login_loading_app:'Loading...', login_no_profile:'This account has no team name set — contact your manager', login_forgot:'Forgot password?', reset_title:'Reset password', reset_desc:'Enter your email and we will send you a reset link', reset_send:'Send reset link', reset_sending:'Sending...', reset_sent:'Reset link sent ✓ Check your inbox (and Junk/Spam folder)', reset_back:'← Back to sign in', reset_email_required:'Please enter your email first', reset_fail:'Could not send — possibly too many requests. Try again later', newpass_title:'Set a new password', newpass_label:'New password', newpass_ph:'At least 6 characters', newpass_btn:'Save new password', newpass_saving:'Saving...', newpass_done:'Password changed! Signing you in...', newpass_short:'Password too short (min 6)', newpass_fail:'Could not save — the link may have expired. Request a new one',
@@ -1680,6 +1680,15 @@ function uid() {
 }
 
 function nowISO() { return new Date().toISOString(); }
+// สร้างเนื้อหา backup (ใช้ทั้งอัปขึ้น Storage และดาวน์โหลด)
+function buildBackupJson(payload) {
+  const body = {
+    app: 'AFFlow', version: 1, exportedAt: nowISO(),
+    tasks: payload.tasks || [], requests: payload.requests || [], teamMessages: payload.teamMessages || [],
+  };
+  const stamp = nowISO().slice(0, 16).replace('T', '_').replace(/:/g, '');
+  return { json: JSON.stringify(body, null, 2), name: 'AFFlow_backup_' + stamp + '.json' };
+}
 
 function loadTasks() {
   try { const r = localStorage.getItem('afflow_tasks_v3'); if (r) return JSON.parse(r); } catch(e){}
@@ -1886,6 +1895,15 @@ const sb = {
     const { data, error } = await c.functions.invoke('drive-write', { body: { action: 'upload', name, mimeType: 'application/json', data: b64 } });
     if (error) { try { const j = await error.context.json(); if (j) return j; } catch (e) {} throw error; }
     return { ...(data || {}), name };
+  },
+  // สำรองขึ้น Supabase Storage (bucket 'backups') — ไม่ต้องพึ่ง Google Drive
+  async backupToStorage(cfg, payload) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const { json, name } = buildBackupJson(payload);
+    const blob = new Blob([json], { type: 'application/json' });
+    const { error } = await c.storage.from('backups').upload(name, blob, { contentType: 'application/json', upsert: true });
+    if (error) throw new Error(error.message || 'storage_upload_failed');
+    return { ok: true, name };
   },
   // Phase 4: ลืมรหัสผ่าน — ส่งอีเมลลิงก์รีเซ็ต (เด้งกลับมาที่ redirectTo)
   async sendReset(cfg, email, redirectTo) {
@@ -2594,7 +2612,7 @@ function CategoryModal({ currentUser, isManager, onClose }) {
 
 // ─── SettingsModal (Phase 2: เชื่อม Google Sheet) ──────────────────────────────
 
-function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal, isManager, onBackup, autoBackup, onToggleAutoBackup, lastBackup }) {
+function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal, isManager, onBackup, onDownload, autoBackup, onToggleAutoBackup, lastBackup }) {
   const { t, lang } = useT();
   const [url, setUrl] = useState(cfg.url || '');
   const [key, setKey] = useState(cfg.key || '');
@@ -2609,6 +2627,15 @@ function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal, isManager, o
     try {
       const res = await onBackup();
       setBackupState('done'); setBackupMsg(t('backup_done', { name: (res && res.name) || '' }));
+    } catch (e) {
+      setBackupState('fail'); setBackupMsg(t('backup_fail') + (e && e.message ? ' (' + String(e.message).slice(0, 120) + ')' : ''));
+    }
+  }
+  async function downloadNow() {
+    setBackupState('backing'); setBackupMsg('');
+    try {
+      const res = await onDownload();
+      setBackupState('done'); setBackupMsg(t('backup_downloaded', { name: (res && res.name) || '' }));
     } catch (e) {
       setBackupState('fail'); setBackupMsg(t('backup_fail') + (e && e.message ? ' (' + String(e.message).slice(0, 120) + ')' : ''));
     }
@@ -2684,9 +2711,12 @@ function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal, isManager, o
               <div style={{ borderTop:'1px solid var(--border)', margin:'16px 0' }} />
               <div style={{ fontWeight:700, fontSize:'0.92rem', marginBottom:6 }}>💾 {t('backup_title')}</div>
               <p style={{ fontSize:'0.78rem', color:'var(--text-muted)', marginBottom:10, lineHeight:1.6 }}>{t('backup_intro')}</p>
-              <div style={{ display:'flex', alignItems:'center', gap:12, flexWrap:'wrap', marginBottom:10 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:10 }}>
                 <button className="btn btn-primary" onClick={backupNow} disabled={backupState === 'backing'}>
                   {backupState === 'backing' ? t('backup_running') : '💾 ' + t('backup_now')}
+                </button>
+                <button className="btn btn-outline" onClick={downloadNow} disabled={backupState === 'backing'}>
+                  ⬇️ {t('backup_download')}
                 </button>
                 {backupMsg && <span style={{ fontSize:'0.8rem', fontWeight:600, color: backupState === 'done' ? 'var(--success)' : 'var(--danger)' }}>{backupMsg}</span>}
               </div>
@@ -3426,18 +3456,27 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
   const isManager = currentUser === 'Big Boss';
   const canEdit   = (task) => isManager || task.assignee === currentUser || task.createdBy === currentUser;
 
-  const [myOnly,    setMyOnly]    = useState(mode !== 'completed' && !isManager);   // #2: เริ่มต้นเห็นงานตัวเอง
-  const [fStatus,   setFStatus]   = useState('');
-  const [fAssignee, setFAssignee] = useState('');
-  const [fCat,      setFCat]      = useState('');
+  const [myOnly,     setMyOnly]     = useState(mode !== 'completed' && !isManager);   // #2: เริ่มต้นเห็นงานตัวเอง
+  const [fStatus,    setFStatus]    = useState('');
+  const [fAssignees, setFAssignees] = useState([]);   // กรองรายคน — เลือกได้หลายคน (เจาะจง)
+  const [fCat,       setFCat]       = useState('');
+  const [asgOpen,    setAsgOpen]    = useState(false);   // เปิด/ปิด dropdown ติ๊กหลายคน
 
   const scoped = useMemo(() => myOnly ? tasks.filter(t => t.assignee === currentUser) : tasks, [tasks, myOnly, currentUser]);
+
+  // รายชื่อคนที่ "เห็นได้" จากงานที่มีจริง (พนักงานจะไม่มี Big Boss เพราะถูกกรองออกตั้งแต่ visibleTasks)
+  const peopleInView = useMemo(() => {
+    const order = [...ASSIGNEES, 'Big Boss'];
+    return [...new Set(tasks.map(t => t.assignee).filter(Boolean))]
+      .sort((a, b) => (order.indexOf(a) < 0 ? 99 : order.indexOf(a)) - (order.indexOf(b) < 0 ? 99 : order.indexOf(b)));
+  }, [tasks]);
+  const toggleAssignee = (name) => setFAssignees(s => s.includes(name) ? s.filter(n => n !== name) : [...s, name]);
 
   const filtered = useMemo(() => scoped.filter(t => {
     // #4: หน้า "งานทั้งหมด" ซ่อนงานเสร็จแล้ว เฉพาะตอนไม่ได้กรองสถานะ (พอกรองสถานะ = เห็นครบทุกสถานะ)
     if (mode !== 'completed' && !fStatus && t.status === 'done') return false;
     if (fStatus   && t.status   !== fStatus)    return false;
-    if (fAssignee && t.assignee !== fAssignee)  return false;
+    if (fAssignees.length && !fAssignees.includes(t.assignee))  return false;
     if (fCat      && t.category !== fCat)       return false;
     if (search    && !(
       t.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -3452,10 +3491,10 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
     if (!a.deadline) return 1;
     if (!b.deadline) return -1;
     return a.deadline.localeCompare(b.deadline);
-  }), [scoped, mode, fStatus, fAssignee, fCat, search]);
+  }), [scoped, mode, fStatus, fAssignees, fCat, search]);
 
-  function clearFilters() { setFStatus(''); setFAssignee(''); setFCat(''); setSearch(''); }
-  const hasFilter = fStatus || fAssignee || fCat || search;
+  function clearFilters() { setFStatus(''); setFAssignees([]); setFCat(''); setSearch(''); }
+  const hasFilter = fStatus || fAssignees.length || fCat || search;
   const headerCount = mode === 'completed' ? scoped.length : scoped.filter(t => t.status !== 'done').length;
 
   return (
@@ -3479,7 +3518,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
         )}
         {mode !== 'completed' && (
           <button className={'filter-toggle' + (myOnly ? ' active' : '')}
-                  onClick={() => setMyOnly(m => { const nv = !m; if (nv) setFAssignee(''); return nv; })}>
+                  onClick={() => setMyOnly(m => { const nv = !m; if (nv) setFAssignees([]); return nv; })}>
             {myOnly ? '👤 ' + t('scope_mine') : '👥 ' + t('scope_all')} ⇄
           </button>
         )}
@@ -3487,11 +3526,45 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
           <option value="">{t('filter_all_status')}</option>
           {STATUSES.map(s => <option key={s} value={s}>{tStatus(s, lang)}</option>)}
         </select>
-        {!myOnly && (
-          <select className="filter-select" value={fAssignee} onChange={e => setFAssignee(e.target.value)}>
-            <option value="">{t('filter_all_assignee')}</option>
-            {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
-          </select>
+        {!myOnly && peopleInView.length > 0 && (
+          <div style={{ position:'relative', display:'inline-block' }}>
+            <button type="button" className="filter-select" onClick={() => setAsgOpen(o => !o)}
+              style={{ cursor:'pointer', display:'inline-flex', alignItems:'center', gap:8, minWidth:160, justifyContent:'space-between' }}>
+              <span style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                {fAssignees.length === 0 ? t('filter_all_assignee')
+                  : fAssignees.length <= 2 ? fAssignees.join(', ')
+                  : t('filter_people_n', { n: fAssignees.length })}
+              </span>
+              <span style={{ fontSize:'0.65rem', opacity:0.6, flexShrink:0 }}>▾</span>
+            </button>
+            {asgOpen && (
+              <>
+                <div onClick={() => setAsgOpen(false)} style={{ position:'fixed', inset:0, zIndex:40 }} />
+                <div style={{ position:'absolute', top:'calc(100% + 5px)', left:0, zIndex:41, background:'var(--card)', border:'1px solid var(--border)', borderRadius:10, boxShadow:'0 10px 30px rgba(0,0,0,0.18)', padding:6, minWidth:200, maxHeight:300, overflowY:'auto' }}>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'4px 8px 6px' }}>
+                    <span style={{ fontSize:'0.74rem', fontWeight:700, color:'var(--text-muted)' }}>{t('filter_people')}</span>
+                    {fAssignees.length > 0 && (
+                      <button type="button" onClick={() => setFAssignees([])}
+                        style={{ fontSize:'0.72rem', color:'var(--primary)', background:'none', border:'none', cursor:'pointer', fontWeight:600 }}>
+                        {t('filter_clear_people')}
+                      </button>
+                    )}
+                  </div>
+                  {peopleInView.map(name => {
+                    const on = fAssignees.includes(name);
+                    const col = getUserColor(name);
+                    return (
+                      <label key={name} style={{ display:'flex', alignItems:'center', gap:9, padding:'7px 9px', borderRadius:8, cursor:'pointer', fontSize:'0.86rem', fontWeight: on ? 700 : 500, background: on ? 'var(--bg)' : 'transparent' }}>
+                        <input type="checkbox" checked={on} onChange={() => toggleAssignee(name)} style={{ accentColor: col, width:15, height:15, cursor:'pointer' }} />
+                        <span style={{ width:9, height:9, borderRadius:'50%', background: col, flexShrink:0 }} />
+                        {name}
+                      </label>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
         )}
         <select className="filter-select" value={fCat} onChange={e => setFCat(e.target.value)}>
           <option value="">{t('filter_all_cat')}</option>
@@ -5144,19 +5217,31 @@ function App() {
   }
 
   // สำรองข้อมูลทั้งหมดขึ้น Google Drive (ใช้ข้อมูลล่าสุดจาก ref)
-  async function handleBackup() {
+  async function gatherBackupPayload() {
     const tk = tasksRef.current || tasks;
     if (!tk.length) throw new Error('no_data');
     const [requests, teamMessages] = await Promise.all([
       sb.loadRequests(sbCfg).catch(() => []),
       sb.loadTeamMessages(sbCfg).catch(() => []),
     ]);
-    const res = await sb.backupToDrive(sbCfg, { tasks: tk, requests, teamMessages });
+    return { tasks: tk, requests, teamMessages };
+  }
+  async function handleBackup() {
+    const res = await sb.backupToStorage(sbCfg, await gatherBackupPayload());
     if (res && res.error) throw new Error(res.message || res.detail || res.error);
     const now = nowISO();
     setLastBackup(now);
     try { localStorage.setItem('afflow_last_backup', now); } catch (e) {}
     return res;
+  }
+  // ดาวน์โหลดไฟล์ backup เก็บเอง (เอาไปวางใน Google Drive / ที่ปลอดภัยอื่น)
+  async function handleDownloadBackup() {
+    const { json, name } = buildBackupJson(await gatherBackupPayload());
+    const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click();
+    a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+    return { ok: true, name };
   }
   function toggleAutoBackup(on) {
     setAutoBackup(on);
@@ -5526,6 +5611,7 @@ function App() {
           onPushLocal={() => sb.pushAll(sbCfg, tasks)}
           isManager={isManager}
           onBackup={handleBackup}
+          onDownload={handleDownloadBackup}
           autoBackup={autoBackup}
           onToggleAutoBackup={toggleAutoBackup}
           lastBackup={lastBackup}
