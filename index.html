@@ -1401,7 +1401,7 @@ const I18N = {
     tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ', completed_sub:'เสร็จแล้ว {n} รายการ',
     filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด', scope_mine:'งานของฉัน', scope_all:'ทั้งทีม', filter_people:'กรองรายคน', filter_clear_people:'ล้างที่เลือก', filter_people_n:'เลือก {n} คน',
     clear_filters:'✕ ล้างตัวกรอง', found_n:'พบ {n} รายการ', no_match:'ไม่พบงานที่ตรงกับเงื่อนไข', clear_search:'ล้างคำค้นหา',
-    view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ', duplicate:'ทำซ้ำงานนี้',
+    view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ', duplicate:'ทำซ้ำงานนี้', edit_limited_note:'งานนี้ไม่ใช่ของคุณ — แก้ได้เฉพาะประเภทงาน + วันกำหนดส่ง',
     timeline_title:'Timeline รายเดือน 📅', timeline_sub:'งานตามวันกำหนดส่ง', prev:'← ก่อนหน้า', next:'ถัดไป →', legend:'สัญลักษณ์:', today:'วันนี้', legend_holiday:'วันหยุดไทย', legend_weekend:'เสาร์-อาทิตย์ (หยุด)',
     report_title:'รายงานสรุปประจำเดือน 📈', report_sub:'ภาพรวมความคืบหน้า — {month}', export_csv:'⬇️ Export CSV',
     assistant:'ผู้ช่วย', progress:'ความคืบหน้า', tasks_word:'งาน',
@@ -1475,7 +1475,7 @@ const I18N = {
     tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks', completed_sub:'{n} completed',
     filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories', scope_mine:'My tasks', scope_all:'Team (all)', filter_people:'Filter by person', filter_clear_people:'Clear', filter_people_n:'{n} selected',
     clear_filters:'✕ Clear filters', found_n:'{n} found', no_match:'No matching tasks', clear_search:'Clear search',
-    view_detail:'View details', edit:'Edit', delete:'Delete', duplicate:'Duplicate task',
+    view_detail:'View details', edit:'Edit', delete:'Delete', duplicate:'Duplicate task', edit_limited_note:'Not your task — you can only edit category + due date',
     timeline_title:'Monthly Timeline 📅', timeline_sub:'Tasks by due date', prev:'← Prev', next:'Next →', legend:'Legend:', today:'Today', legend_holiday:'Thai holiday', legend_weekend:'Weekend (off)',
     report_title:'Monthly Summary Report 📈', report_sub:'Progress overview — {month}', export_csv:'⬇️ Export CSV',
     assistant:'Assistant', progress:'Progress', tasks_word:'tasks',
@@ -2318,7 +2318,7 @@ function mabelzRecommend(title, description, category, tasks, lang) {
 
 // ─── CreateTaskModal ──────────────────────────────────────────────────────────
 
-function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, selfOnly, prefill }) {
+function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, selfOnly, prefill, limitedEdit }) {
   const editing = !!initialTask;
   const [form, setForm] = useState(
     editing
@@ -2384,13 +2384,18 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
+          {limitedEdit && (
+            <div style={{ display:'flex', alignItems:'center', gap:8, background:'rgba(99,102,241,0.10)', border:'1px solid var(--primary)', borderRadius:10, padding:'9px 12px', marginBottom:14, fontSize:'0.8rem', fontWeight:600, color:'var(--text)' }}>
+              <span>✏️</span><span>{t('edit_limited_note')}</span>
+            </div>
+          )}
           <div className="form-group">
             <label className="form-label">{t('f_title')}</label>
-            <input className="form-input" value={form.title} onChange={e => set('title', e.target.value)} placeholder={t('f_title_ph')} autoFocus />
+            <input className="form-input" value={form.title} onChange={e => set('title', e.target.value)} placeholder={t('f_title_ph')} autoFocus={!limitedEdit} disabled={limitedEdit} />
           </div>
           <div className="form-group">
             <label className="form-label">{t('f_desc')}</label>
-            <textarea className="form-textarea" value={form.description} onChange={e => set('description', e.target.value)} placeholder={t('f_desc_ph')} />
+            <textarea className="form-textarea" value={form.description} onChange={e => set('description', e.target.value)} placeholder={t('f_desc_ph')} disabled={limitedEdit} />
           </div>
 
           {/* Mabelz Auto-assign Card */}
@@ -2428,7 +2433,9 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
           <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label">{t('f_assignee')}</label>
-              {selfOnly ? (
+              {limitedEdit ? (
+                <input className="form-input" value={form.assignee} disabled readOnly />
+              ) : selfOnly ? (
                 <input className="form-input" value={currentUser} disabled readOnly title={t('f_assignee_locked')} />
               ) : (
                 <select className="form-select" value={form.assignee} onChange={e => set('assignee', e.target.value)}>
@@ -2445,13 +2452,13 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
             </div>
             <div className="form-group">
               <label className="form-label">{t('f_priority')}</label>
-              <select className="form-select" value={form.priority} onChange={e => set('priority', e.target.value)}>
+              <select className="form-select" value={form.priority} onChange={e => set('priority', e.target.value)} disabled={limitedEdit}>
                 {PRIORITIES.map(p => <option key={p} value={p}>{tPriority(p, lang)}</option>)}
               </select>
             </div>
             <div className="form-group">
               <label className="form-label">{t('f_status')}</label>
-              <select className="form-select" value={form.status} onChange={e => set('status', e.target.value)}>
+              <select className="form-select" value={form.status} onChange={e => set('status', e.target.value)} disabled={limitedEdit}>
                 {STATUSES.map(s => <option key={s} value={s}>{tStatus(s, lang)}</option>)}
               </select>
             </div>
@@ -2463,7 +2470,7 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
             </div>
             <div className="form-group">
               <label className="form-label">🔁 {t('recur_label')}</label>
-              <select className="form-select" value={recSelectValue} onChange={e => onRecChange(e.target.value)}>
+              <select className="form-select" value={recSelectValue} onChange={e => onRecChange(e.target.value)} disabled={limitedEdit}>
                 {['none','daily','weekly','monthly','quarterly','yearly'].map(rc => <option key={rc} value={rc}>{t('recur_' + rc)}</option>)}
                 <optgroup label={t('recur_tax_group')}>
                   {TAX_FORM_ORDER.map(fc => <option key={fc} value={'tax:' + fc}>{TAX_FORMS[fc].label} — {TAX_FORMS[fc].desc}</option>)}
@@ -3618,10 +3625,12 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
                     <td style={{ whiteSpace:'nowrap' }}>
                       <button className="btn-icon" title={t('view_detail')} onClick={() => onSelectTask(task)}>👁️</button>
                       {onDuplicate && <button className="btn-icon" title={t('duplicate')} onClick={e => { e.stopPropagation(); onDuplicate(task); }}>📋</button>}
-                      {canEdit(task) && <>
+                      {(canEdit(task) || task.status !== 'done') && (
                         <button className="btn-icon" title={t('edit')} onClick={e => { e.stopPropagation(); onEditTask(task); }}>✏️</button>
+                      )}
+                      {canEdit(task) && (
                         <button className="btn-icon danger" title={t('delete')} onClick={e => { e.stopPropagation(); onDeleteTask(task); }}>🗑️</button>
-                      </>}
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -5563,6 +5572,7 @@ function App() {
           initialTask={editingTask || null}
           tasks={tasks}
           selfOnly={!isManager}
+          limitedEdit={!!editingTask && !(isManager || editingTask.assignee === currentUser || editingTask.createdBy === currentUser)}
           prefill={convertReq ? {
             title: convertReq.title,
             description: (convertReq.details || '') + '\n\n— ' + tApp('inbox_from') + ': ' + convertReq.requester_name + (convertReq.requester_contact ? ' (' + convertReq.requester_contact + ')' : ''),
