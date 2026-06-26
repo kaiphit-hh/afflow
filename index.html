@@ -1308,7 +1308,7 @@
     var boot=document.getElementById('boot-fallback'); if(!boot) return;
     boot.innerHTML='<div style="font-size:42px;margin-bottom:14px;">⚠️</div>'
       +'<div style="font-size:16px;font-weight:600;margin-bottom:6px;color:#e2e8f0;">ระบบโหลดนานผิดปกติ</div>'
-      +'<div style="font-size:14px;color:#94a3b8;max-width:320px;line-height:1.6;margin-bottom:18px;">อาจมีปัญหาชั่วคราว ลองรีเฟรชหน้าใหม่ — ถ้ายังไม่หาย แจ้งแอดมิน</div>'
+      +'<div style="font-size:14px;color:#94a3b8;max-width:320px;line-height:1.6;margin-bottom:18px;">อาจมีปัญหาชั่วคราว ลองรีเฟรชหน้าใหม่ — ถ้ายังไม่หาย แจ้งคุณ ไกรพิชญ์(เบิร์ท)</div>'
       +'<button onclick="location.reload()" style="background:#6366f1;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:15px;font-weight:600;cursor:pointer;">รีเฟรช</button>';
   }
   function stillBooting(){ var b=document.getElementById('boot-fallback'); var r=document.getElementById('root'); return b && r && r.contains(b); }
@@ -5769,7 +5769,7 @@ class ErrorBoundary extends React.Component {
         <div style={{ position:'fixed', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"'Sarabun',sans-serif", background:'#0f172a', color:'#e2e8f0', textAlign:'center', padding:24 }}>
           <div style={{ fontSize:42, marginBottom:14 }}>⚠️</div>
           <div style={{ fontSize:16, fontWeight:600, marginBottom:6 }}>ระบบขัดข้องชั่วคราว</div>
-          <div style={{ fontSize:14, color:'#94a3b8', maxWidth:320, lineHeight:1.6, marginBottom:18 }}>ลองรีเฟรชหน้าใหม่ — ถ้ายังไม่หาย แจ้งแอดมิน</div>
+          <div style={{ fontSize:14, color:'#94a3b8', maxWidth:320, lineHeight:1.6, marginBottom:18 }}>ลองรีเฟรชหน้าใหม่ — ถ้ายังไม่หาย แจ้งคุณ ไกรพิชญ์(เบิร์ท)</div>
           <button onClick={() => location.reload()} style={{ background:'#6366f1', color:'#fff', border:'none', borderRadius:8, padding:'10px 22px', fontSize:15, fontWeight:600, cursor:'pointer' }}>รีเฟรช</button>
         </div>
       );
