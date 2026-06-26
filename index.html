@@ -953,6 +953,15 @@
     .perf-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; transition: transform 0.15s, box-shadow 0.15s; }
     .perf-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
     .perf-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 0.73rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: var(--card); border: 1px solid var(--border); color: var(--text); }
+    /* ─── โน้ตส่วนตัว ─── */
+    .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .note-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px 12px; display: flex; flex-direction: column; transition: box-shadow 0.15s; }
+    .note-card.pinned { border-color: var(--warning); }
+    .note-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
+    .note-card-head { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+    .note-time { flex: 1; text-align: center; font-size: 0.68rem; color: var(--text-muted); }
+    .note-textarea { width: 100%; border: none; background: transparent; resize: vertical; min-height: 130px; font-family: inherit; font-size: 0.9rem; line-height: 1.6; color: var(--text); outline: none; padding: 0; }
+    .note-textarea::placeholder { color: var(--text-muted); }
 
     /* ─── Countdown ─── */
     .countdown-red   { color: var(--danger); font-weight: 700; font-size: 0.8rem; }
@@ -1364,7 +1373,8 @@ const AI_ROLE_EN = {
 const I18N = {
   th: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', drive_download:'ดาวน์โหลด', drive_upload:'อัปโหลด', drive_uploading:'กำลังอัปโหลด...', drive_upload_done:'อัปโหลดเสร็จ — สำเร็จ {ok} · ล้มเหลว {fail}', drive_drop_hint:'วางไฟล์ที่นี่เพื่ออัปโหลดเข้าโฟลเดอร์นี้', drive_delete:'ลบ (ลงถังขยะ)', drive_delete_confirm:'ย้าย "{name}" ลงถังขยะ?\n(ยังกู้คืนได้ใน Google Drive)', drive_delete_fail:'ลบไม่สำเร็จ', nav_timeline:'Timeline', nav_report:'รายงาน',
+    nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', drive_download:'ดาวน์โหลด', drive_upload:'อัปโหลด', drive_uploading:'กำลังอัปโหลด...', drive_upload_done:'อัปโหลดเสร็จ — สำเร็จ {ok} · ล้มเหลว {fail}', drive_drop_hint:'วางไฟล์ที่นี่เพื่ออัปโหลดเข้าโฟลเดอร์นี้', drive_delete:'ลบ (ลงถังขยะ)', drive_delete_confirm:'ย้าย "{name}" ลงถังขยะ?\n(ยังกู้คืนได้ใน Google Drive)', drive_delete_fail:'ลบไม่สำเร็จ', nav_timeline:'Timeline', nav_report:'รายงาน', nav_notes:'โน้ตของฉัน',
+    notes_title:'โน้ตของฉัน', notes_sub:'โน้ตส่วนตัว เห็นเฉพาะคุณคนเดียว ซิงค์ทุกอุปกรณ์', notes_add:'เพิ่มโน้ต', notes_empty:'ยังไม่มีโน้ต — กด "เพิ่มโน้ต" เพื่อเริ่ม', notes_ph:'พิมพ์โน้ตที่นี่...', notes_pin:'ปักหมุด', notes_del_confirm:'ลบโน้ตนี้?', notes_save_fail:'บันทึกไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง', notes_load_fail:'โหลดโน้ตไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_category:'เรื่องเกี่ยวกับ (ถ้าทราบ)', req_category_any:'— ไม่แน่ใจ / อื่นๆ —', req_needed_by:'ต้องการภายในวันที่ (ไม่บังคับ)', req_remembered:'💾 เราจำชื่อ+ช่องทางติดต่อของคุณไว้ในเครื่องนี้ ครั้งหน้าไม่ต้องพิมพ์ใหม่', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่', inbox_to_task:'สร้างเป็นงาน', inbox_from:'จากคำขอของ', inbox_inprogress:'🔧 กำลังทำ', inbox_linked:'เชื่อมกับงานแล้ว — จะปิดเองเมื่องานเสร็จ', inbox_history:'ประวัติคำขอที่เสร็จแล้ว', inbox_all_clear:'ไม่มีคำขอค้าง — เคลียร์หมดแล้ว! 🎉',
     inbox_type_label:'ประเภท', inbox_type_all:'ทุกประเภท', inbox_type_help:'🙋 ขอความช่วยเหลือ/มอบงาน', inbox_type_expense:'🧾 เบิกค่าใช้จ่าย', inbox_type_other:'📨 อื่นๆ',
     inbox_badge_expense:'🧾 เบิกค่าใช้จ่าย', inbox_badge_help:'🙋 ขอความช่วยเหลือ', inbox_amount:'จำนวนเงิน', inbox_approved_by:'อนุมัติโดย', inbox_type_empty:'ไม่มีคำขอประเภทนี้',
@@ -1438,7 +1448,8 @@ const I18N = {
   },
   en: {
     brand:'Accounting & Finance', company:'Hungry Hub',
-    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', drive_download:'Download', drive_upload:'Upload', drive_uploading:'Uploading...', drive_upload_done:'Upload done — {ok} ok · {fail} failed', drive_drop_hint:'Drop files here to upload to this folder', drive_delete:'Delete (to Trash)', drive_delete_confirm:'Move "{name}" to Trash?\n(Recoverable in Google Drive)', drive_delete_fail:'Delete failed', nav_timeline:'Timeline', nav_report:'Reports',
+    nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', drive_download:'Download', drive_upload:'Upload', drive_uploading:'Uploading...', drive_upload_done:'Upload done — {ok} ok · {fail} failed', drive_drop_hint:'Drop files here to upload to this folder', drive_delete:'Delete (to Trash)', drive_delete_confirm:'Move "{name}" to Trash?\n(Recoverable in Google Drive)', drive_delete_fail:'Delete failed', nav_timeline:'Timeline', nav_report:'Reports', nav_notes:'My Notes',
+    notes_title:'My Notes', notes_sub:'Private notes — only you can see them, synced across devices', notes_add:'Add note', notes_empty:'No notes yet — tap "Add note" to start', notes_ph:'Type your note here...', notes_pin:'Pin', notes_del_confirm:'Delete this note?', notes_save_fail:'Save failed — did you run the notes table SQL?', notes_load_fail:'Could not load notes — did you run the notes table SQL?',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_category:'Topic (if known)', req_category_any:'— Not sure / Other —', req_needed_by:'Needed by (optional)', req_remembered:'💾 We saved your name & contact on this device — no need to retype next time', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen', inbox_to_task:'Create task', inbox_from:'From request by', inbox_inprogress:'🔧 In progress', inbox_linked:'Linked to a task — closes automatically when the task is done', inbox_history:'Completed requests log', inbox_all_clear:'No pending requests — all clear! 🎉',
     inbox_type_label:'Type', inbox_type_all:'All types', inbox_type_help:'🙋 Help / task request', inbox_type_expense:'🧾 Expense claim', inbox_type_other:'📨 Other',
     inbox_badge_expense:'🧾 Expense', inbox_badge_help:'🙋 Help', inbox_amount:'Amount', inbox_approved_by:'Approved by', inbox_type_empty:'No requests of this type',
@@ -2050,6 +2061,29 @@ const sb = {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'task_categories' }, () => onChange())
       .subscribe();
     return () => { try { c.removeChannel(ch); } catch (e) {} };
+  },
+  // ── โน้ตส่วนตัว (RLS เห็นเฉพาะของตัวเอง — ดู supabase/add_notes.sql) ──
+  async loadNotes(cfg) {
+    const c = getSb(cfg); if (!c) return [];
+    const { data, error } = await c.from('notes').select('*').order('pinned', { ascending: false }).order('updated_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+  async addNote(cfg, body) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const { data, error } = await c.from('notes').insert({ body: body || '' }).select().single();
+    if (error) throw error;
+    return data;
+  },
+  async updateNote(cfg, id, fields) {
+    const c = getSb(cfg); if (!c) return;
+    const { error } = await c.from('notes').update({ ...fields, updated_at: nowISO() }).eq('id', id);
+    if (error) throw error;
+  },
+  async deleteNote(cfg, id) {
+    const c = getSb(cfg); if (!c) return;
+    const { error } = await c.from('notes').delete().eq('id', id);
+    if (error) throw error;
   },
 };
 
@@ -4892,6 +4926,71 @@ function TeamChat({ sbCfg, currentUser, ready }) {
   );
 }
 
+// ─── NotesView: โน้ตส่วนตัวของแต่ละคน (เห็นเฉพาะตัวเอง) ─────────────────────────
+function NotesView({ cfg, currentUser }) {
+  const { t, lang } = useT();
+  const [notes, setNotes]   = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [busy, setBusy]     = useState(false);
+  const [err, setErr]       = useState('');
+  useEffect(() => {
+    let alive = true;
+    sb.loadNotes(cfg).then(d => { if (alive) { setNotes(d); setLoaded(true); } })
+      .catch(() => { if (alive) { setLoaded(true); setErr(t('notes_load_fail')); } });
+    return () => { alive = false; };
+  }, [cfg.url, cfg.key]);
+
+  async function addNote() {
+    setBusy(true); setErr('');
+    try { const n = await sb.addNote(cfg, ''); setNotes(ns => [n, ...ns]); }
+    catch (e) { setErr(t('notes_save_fail')); }
+    setBusy(false);
+  }
+  function saveBody(id, body) {
+    setNotes(ns => ns.map(n => n.id === id ? { ...n, body, updated_at: nowISO() } : n));
+    sb.updateNote(cfg, id, { body }).catch(() => setErr(t('notes_save_fail')));
+  }
+  function togglePin(id, pinned) {
+    setNotes(ns => ns.map(n => n.id === id ? { ...n, pinned } : n)
+      .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (b.updated_at || '').localeCompare(a.updated_at || '')));
+    sb.updateNote(cfg, id, { pinned }).catch(() => {});
+  }
+  function del(id) {
+    if (!confirm(t('notes_del_confirm'))) return;
+    setNotes(ns => ns.filter(n => n.id !== id));
+    sb.deleteNote(cfg, id).catch(() => {});
+  }
+
+  return (
+    <div>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <div className="page-title">📝 {t('notes_title')}</div>
+          <div className="page-subtitle">{t('notes_sub')}</div>
+        </div>
+        <button className="btn btn-primary" style={{ marginTop: 4 }} onClick={addNote} disabled={busy}>+ {t('notes_add')}</button>
+      </div>
+      {err && <div style={{ color: 'var(--danger)', fontSize: '0.82rem', fontWeight: 600, marginBottom: 12 }}>✕ {err}</div>}
+      {loaded && notes.length === 0 && !err && (
+        <div className="card"><div className="empty-state"><div className="empty-icon">📝</div><div className="empty-text">{t('notes_empty')}</div></div></div>
+      )}
+      <div className="notes-grid">
+        {notes.map(n => (
+          <div key={n.id} className={'note-card' + (n.pinned ? ' pinned' : '')}>
+            <div className="note-card-head">
+              <button className="btn-icon" title={t('notes_pin')} style={{ color: n.pinned ? 'var(--warning)' : 'var(--text-muted)' }} onClick={() => togglePin(n.id, !n.pinned)}>📌</button>
+              <span className="note-time">{formatDateTime(n.updated_at, lang)}</span>
+              <button className="btn-icon danger" title={t('delete')} onClick={() => del(n.id)}>🗑️</button>
+            </div>
+            <textarea className="note-textarea" defaultValue={n.body || ''} placeholder={t('notes_ph')}
+              onBlur={e => { if (e.target.value !== (n.body || '')) saveBody(n.id, e.target.value); }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [tasks,        setTasks]        = useState(() => loadTasks());
   const [currentUser,  setCurrentUser]  = useState(() => loadUser());
@@ -5348,6 +5447,7 @@ function App() {
     { id: 'completed', label: tApp('nav_completed'), icon: '✅' },
     { id: 'timeline',  label: tApp('nav_timeline'),  icon: '📅' },
     { id: 'report',    label: tApp('nav_report'),    icon: '📈' },
+    { id: 'notes',     label: tApp('nav_notes'),     icon: '📝' },
   ];
 
   const VIEW_LABELS = {
@@ -5357,6 +5457,7 @@ function App() {
     completed: tApp('nav_completed'),
     timeline:  tApp('nav_timeline'),
     report:    tApp('nav_report'),
+    notes:     tApp('nav_notes'),
   };
 
   // กันค้างหน้า Loading: ถ้าล็อกอินแล้วแต่ 6 วิยังไม่มีชื่อทีม (profiles.name ว่าง) → แจ้ง + ปุ่มออก
@@ -5550,6 +5651,9 @@ function App() {
             )}
             {view === 'report' && (
               <ReportView tasks={visibleTasks} currentUser={currentUser} onSelectTask={handleSelectTask} showManager={isManager && !privacyMode} />
+            )}
+            {view === 'notes' && (
+              <NotesView cfg={sbCfg} currentUser={currentUser} />
             )}
           </div>
         </div>
