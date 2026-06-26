@@ -5,8 +5,10 @@
 //  - ไลบรารี CDN (jsdelivr): stale-while-revalidate (ออฟไลน์ยังเปิดได้)
 //  - Supabase / Google / API อื่น ๆ: ปล่อยผ่าน ไม่ cache (กันข้อมูลค้าง)
 // ============================================================================
-const CACHE = 'afflow-v1';
-const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const CACHE = 'afflow-v2';
+const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png',
+  './vendor/react.production.min.js', './vendor/react-dom.production.min.js', './vendor/babel.min.js',
+  './vendor/chart.umd.min.js', './vendor/supabase.js'];
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();

@@ -12,11 +12,12 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="AFFlow" />
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ไลบรารี self-host ในเว็บเราเอง (ไม่พึ่ง CDN ภายนอก — กัน CDN เปลี่ยน/ล่ม) + React production build -->
+  <script src="./vendor/react.production.min.js"></script>
+  <script src="./vendor/react-dom.production.min.js"></script>
+  <script src="./vendor/babel.min.js"></script>
+  <script src="./vendor/chart.umd.min.js"></script>
+  <script src="./vendor/supabase.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1297,7 +1298,25 @@
   </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root"><div id="boot-fallback" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Sarabun',sans-serif;background:#0f172a;color:#e2e8f0;text-align:center;padding:24px;z-index:9999;">
+  <div style="font-size:42px;margin-bottom:14px;">📊</div>
+  <div id="boot-msg" style="font-size:15px;color:#94a3b8;">กำลังโหลด AFFlow...</div>
+</div></div>
+<script>
+(function(){
+  function showError(){
+    var boot=document.getElementById('boot-fallback'); if(!boot) return;
+    boot.innerHTML='<div style="font-size:42px;margin-bottom:14px;">⚠️</div>'
+      +'<div style="font-size:16px;font-weight:600;margin-bottom:6px;color:#e2e8f0;">ระบบโหลดนานผิดปกติ</div>'
+      +'<div style="font-size:14px;color:#94a3b8;max-width:320px;line-height:1.6;margin-bottom:18px;">อาจมีปัญหาชั่วคราว ลองรีเฟรชหน้าใหม่ — ถ้ายังไม่หาย แจ้งแอดมิน</div>'
+      +'<button onclick="location.reload()" style="background:#6366f1;color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:15px;font-weight:600;cursor:pointer;">รีเฟรช</button>';
+  }
+  function stillBooting(){ var b=document.getElementById('boot-fallback'); var r=document.getElementById('root'); return b && r && r.contains(b); }
+  setTimeout(function(){ if(stillBooting()) showError(); }, 12000);
+  // capture=true → ดักทั้ง script ที่ throw (เช่น compile พัง) และไฟล์โหลดไม่ขึ้น (404)
+  window.addEventListener('error', function(){ setTimeout(function(){ if(stillBooting()) showError(); }, 3000); }, true);
+})();
+</script>
 
 <script type="text/babel">
 const { useState, useEffect, useMemo } = React;
@@ -5740,7 +5759,25 @@ function App() {
 }
 
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+// กัน render crash หลัง mount — โชว์ข้อความแทนจอขาว แทนที่จะพังทั้งแอป
+class ErrorBoundary extends React.Component {
+  constructor(p) { super(p); this.state = { err: null }; }
+  static getDerivedStateFromError(err) { return { err }; }
+  render() {
+    if (this.state.err) {
+      return (
+        <div style={{ position:'fixed', inset:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"'Sarabun',sans-serif", background:'#0f172a', color:'#e2e8f0', textAlign:'center', padding:24 }}>
+          <div style={{ fontSize:42, marginBottom:14 }}>⚠️</div>
+          <div style={{ fontSize:16, fontWeight:600, marginBottom:6 }}>ระบบขัดข้องชั่วคราว</div>
+          <div style={{ fontSize:14, color:'#94a3b8', maxWidth:320, lineHeight:1.6, marginBottom:18 }}>ลองรีเฟรชหน้าใหม่ — ถ้ายังไม่หาย แจ้งแอดมิน</div>
+          <button onClick={() => location.reload()} style={{ background:'#6366f1', color:'#fff', border:'none', borderRadius:8, padding:'10px 22px', fontSize:15, fontWeight:600, cursor:'pointer' }}>รีเฟรช</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<ErrorBoundary><App /></ErrorBoundary>);
 </script>
 <script>
   /* PWA: ลงทะเบียน service worker (ทำงานเฉพาะบน https/โดเมนจริง — บน preview จะเงียบ ๆ ไม่พัง) */
