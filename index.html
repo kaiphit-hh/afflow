@@ -1439,7 +1439,7 @@ const I18N = {
     modal_edit:'✏️ แก้ไขงาน', modal_create:'+ สร้างงานใหม่',
     f_title:'ชื่องาน *', f_title_ph:'ระบุชื่องาน...', f_desc:'คำอธิบาย', f_desc_ph:'รายละเอียดงาน (ไม่บังคับ)',
     mabelz_analyzing:'มาเบลกำลังวิเคราะห์...', mabelz_finding:'กำลังดูว่าใครเหมาะสมที่สุดค่ะ',
-    mabelz_assign:'👩‍💼 มาเบลมอบหมายให้', mabelz_runner:'ตัวเลือกสำรอง: {name}', mabelz_hint:'พิมพ์ชื่องาน มาเบลจะเลือกผู้รับผิดชอบให้อัตโนมัติค่ะ',
+    mabelz_assign:'👩‍💼 มาเบลมอบหมายให้', mabelz_runner:'ตัวเลือกสำรอง: {name}', mabelz_hint:'พิมพ์ชื่องาน มาเบลจะเลือกผู้รับผิดชอบให้อัตโนมัติค่ะ', mabelz_pick_self:'งานนี้มาเบลยังจับคู่อัตโนมัติไม่ได้ — เลือกผู้รับผิดชอบเองได้เลยค่ะ',
     f_assignee:'ผู้รับผิดชอบ', f_category:'หมวดหมู่', f_priority:'ความสำคัญ', f_status:'สถานะ', f_deadline:'กำหนดส่ง *',
     recur_label:'ทำซ้ำ', recur_none:'ไม่ซ้ำ (ครั้งเดียว)', recur_daily:'ทุกวัน', recur_weekly:'ทุกสัปดาห์', recur_monthly:'ทุกเดือน', recur_quarterly:'ทุกไตรมาส', recur_yearly:'ทุกปี', recur_hint:'พอกดงานนี้ "เสร็จแล้ว" ระบบจะสร้างงานรอบถัดไปให้อัตโนมัติ', recur_spawned:'สร้างงานประจำรอบถัดไปแล้ว — กำหนดส่ง {date}', recur_badge:'🔁 งานประจำ', recur_tax_group:'📅 ภาษีสรรพากร (ยื่นรายเดือน)', recur_efile:'ยื่นออนไลน์ (e-Filing) — ขยายเวลายื่น', recur_tax_note:'กำหนดยื่นถัดไป: {date} (อิงปฏิทินสรรพากร)', recur_tax_ref:'ดูปฏิทินสรรพากร ↗', recur_tax_warn:'เลื่อนวันเสาร์-อาทิตย์ + วันหยุดราชการไทยให้อัตโนมัติ — วันหยุดพิเศษบางปีโปรดเช็กกับสรรพากร',
     cancel:'ยกเลิก', save_edit:'บันทึกการแก้ไข', create_btn:'สร้างงาน',
@@ -1514,7 +1514,7 @@ const I18N = {
     modal_edit:'✏️ Edit Task', modal_create:'+ New Task',
     f_title:'Task name *', f_title_ph:'Enter task name...', f_desc:'Description', f_desc_ph:'Task details (optional)',
     mabelz_analyzing:'Mabelz is analyzing...', mabelz_finding:'Finding the best person...',
-    mabelz_assign:'👩‍💼 Mabelz assigns to', mabelz_runner:'Backup: {name}', mabelz_hint:'Type a task name and Mabelz will auto-assign.',
+    mabelz_assign:'👩‍💼 Mabelz assigns to', mabelz_runner:'Backup: {name}', mabelz_hint:'Type a task name and Mabelz will auto-assign.', mabelz_pick_self:'Mabelz can’t auto-match this one — pick an assignee yourself.',
     f_assignee:'Assignee', f_category:'Category', f_priority:'Priority', f_status:'Status', f_deadline:'Due date *',
     recur_label:'Repeat', recur_none:'No repeat (once)', recur_daily:'Daily', recur_weekly:'Weekly', recur_monthly:'Monthly', recur_quarterly:'Quarterly', recur_yearly:'Yearly', recur_hint:'When you mark this task done, the next occurrence is created automatically', recur_spawned:'Next recurring task created — due {date}', recur_badge:'🔁 Recurring', recur_tax_group:'📅 Revenue Dept tax (monthly)', recur_efile:'File online (e-Filing) — extended deadline', recur_tax_note:'Next filing due: {date} (per Revenue Dept calendar)', recur_tax_ref:'View RD calendar ↗', recur_tax_warn:'Weekends & Thai public holidays auto-shifted — please verify special holidays with the Revenue Dept',
     cancel:'Cancel', save_edit:'Save changes', create_btn:'Create task',
@@ -2323,6 +2323,9 @@ function mabelzRecommend(title, description, category, tasks, lang) {
   // 2) region override — งาน SG/MY ให้Issanเด่นชัด (weight 6)
   if (/singapore|malaysia|สิงคโปร|มาเลเซีย|sgd|myr/.test(text)) scores['Issan'] += 6;
 
+  // มั่นใจไหม? = มี keyword/region จับคู่จริง (ถ้าไม่มี = เดาจาก workload เฉย ๆ — ไม่ควร force ผู้รับผิดชอบ)
+  const confident = Math.max(scores['Ple'], scores['Pang'], scores['Nam'], scores['Issan']) > 0;
+
   // 3) Workload penalty (งานในมือน้อย = ได้เปรียบ)
   ASSIGNEES.forEach(name => {
     const active = tasks.filter(t => t.assignee === name && ACTIVE.includes(t.status)).length;
@@ -2365,6 +2368,7 @@ function mabelzRecommend(title, description, category, tasks, lang) {
     runner: sorted[1] ? sorted[1][0] : null,
     reasons,
     category: suggestedCat,
+    confident,
     aiBuddy: USERS.find(u => u.name === name)?.ai || null,
   };
 }
@@ -2381,6 +2385,9 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
   const [mabelzTip, setMabelzTip] = React.useState(null);
   const [thinking, setThinking]   = React.useState(false);
   const debounceRef = React.useRef(null);
+  // ถ้าผู้ใช้เลือกผู้รับผิดชอบ/หมวดเอง → Mabelz จะไม่ override ทับ (มี prefill ก็ถือว่าเลือกแล้ว)
+  const userPickedAssignee = React.useRef(!!(prefill && prefill.assignee != null));
+  const userPickedCategory = React.useRef(!!(prefill && prefill.category));
   const { t, lang } = useT();
   const { categories, openManage } = useCats();
 
@@ -2397,8 +2404,9 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
       setMabelzTip(result);
       setForm(f => ({
         ...f,
-        assignee: result.recommended,
-        category: result.category || f.category,
+        // auto-assign เฉพาะตอนมั่นใจ (มี keyword จับคู่) + ผู้ใช้ยังไม่เลือกเอง — ไม่งั้นปล่อยให้เลือกอิสระ
+        assignee: (result.confident && !userPickedAssignee.current) ? result.recommended : f.assignee,
+        category: (result.confident && !userPickedCategory.current && result.category) ? result.category : f.category,
       }));
       setThinking(false);
     }, 600);
@@ -2453,11 +2461,16 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
 
           {/* Mabelz Auto-assign Card */}
           {!editing && (
-            <div style={{ marginBottom:14, borderRadius:12, border: mabelzTip ? '2px solid #bfdbfe' : '2px dashed #cbd5e1', background: mabelzTip ? '#eff6ff' : '#f8fafc', padding:'12px 14px', minHeight:64, display:'flex', alignItems:'center', gap:12 }}>
+            <div style={{ marginBottom:14, borderRadius:12, border: (mabelzTip && mabelzTip.confident) ? '2px solid #bfdbfe' : '2px dashed #cbd5e1', background: (mabelzTip && mabelzTip.confident) ? '#eff6ff' : '#f8fafc', padding:'12px 14px', minHeight:64, display:'flex', alignItems:'center', gap:12 }}>
               {thinking ? (
                 <div style={{ display:'flex', alignItems:'center', gap:10, color:'#64748b', fontSize:'0.88rem' }}>
                   <span style={{ fontSize:'1.2rem' }}>🤔</span>
                   <div><strong style={{ color:'#1e3a5f' }}>{t('mabelz_analyzing')}</strong><br/><span style={{ fontSize:'0.8rem' }}>{t('mabelz_finding')}</span></div>
+                </div>
+              ) : (mabelzTip && !mabelzTip.confident) ? (
+                <div style={{ display:'flex', alignItems:'center', gap:10, color:'#64748b', fontSize:'0.86rem' }}>
+                  <span style={{ fontSize:'1.2rem' }}>👩‍💼</span>
+                  <span>{t('mabelz_pick_self')}</span>
                 </div>
               ) : mabelzTip ? (
                 <div style={{ width:'100%' }}>
@@ -2491,14 +2504,15 @@ function CreateTaskModal({ onClose, onSave, currentUser, initialTask, tasks, sel
               ) : selfOnly ? (
                 <input className="form-input" value={currentUser} disabled readOnly title={t('f_assignee_locked')} />
               ) : (
-                <select className="form-select" value={form.assignee} onChange={e => set('assignee', e.target.value)}>
+                <select className="form-select" value={form.assignee} onChange={e => { userPickedAssignee.current = true; set('assignee', e.target.value); }}>
+                  <option value="">— {t('f_assignee')} —</option>
                   {['Big Boss'].concat(ASSIGNEES).map(a => <option key={a} value={a}>{a}</option>)}
                 </select>
               )}
             </div>
             <div className="form-group">
               <label className="form-label">{t('f_category')}</label>
-              <select className="form-select" value={form.category} onChange={e => set('category', e.target.value)}>
+              <select className="form-select" value={form.category} onChange={e => { userPickedCategory.current = true; set('category', e.target.value); }}>
                 {[...new Set([...categories, form.category].filter(Boolean))].map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
               </select>
               <div onClick={() => openManage()} style={{ fontSize:'0.74rem', color:'var(--primary)', cursor:'pointer', marginTop:6, fontWeight:600 }}>{t('cat_propose')}</div>
