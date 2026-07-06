@@ -1414,6 +1414,8 @@ const I18N = {
     chart_by_status:'📈 งานตามสถานะ', chart_my_summary:'📊 สรุปงานของฉัน', chart_done_center:'เสร็จแล้ว', no_tasks_yet:'ยังไม่มีงาน', unit_tasks:'งาน',
     kpi_team:'KPI & ผลงานทีม', kpi_mine:'KPI & ผลงานของฉัน', kpi_completion:'อัตรางานเสร็จ', kpi_ontime:'ส่งงานตรงเวลา', kpi_ontime_sub:'ประเมินจากวันอัปเดตล่าสุด',
     kpi_duesoon:'ใกล้ครบใน 3 วัน', kpi_thisweek:'เสร็จในสัปดาห์นี้', kpi_done_total:'เสร็จ {d}/{n} งาน', kpi_no_data:'—',
+    range_month:'รายเดือน', range_all:'ทั้งหมด', range_back_current:'กลับเดือนนี้',
+    range_hint_month:'แสดงงานและผลงานเฉพาะเดือนที่เลือก', range_hint_all:'แสดงผลงานรวมทั้งหมดตั้งแต่เริ่มใช้ระบบ',
     perf_title:'ผลงานรายคน', perf_sub:'อัปเดตอัตโนมัติจากงานจริง', perf_completion:'ความคืบหน้า (เสร็จ/ทั้งหมด)', perf_workload:'ภาระงานที่ยังค้าง',
     perf_inprogress:'ทำอยู่', perf_pending:'รอ/รีวิว', perf_done:'เสร็จ', perf_overdue:'เกิน', perf_duesoon:'ใกล้ครบ', perf_ontime:'ส่งตรงเวลา', perf_est:'ประเมิน',
     perf_health:'สถานะสุขภาพงาน', perf_training:'กำลังเทรน', perf_no_tasks:'ยังไม่มีงานที่รับผิดชอบ',
@@ -1489,6 +1491,8 @@ const I18N = {
     chart_by_status:'📈 Tasks by Status', chart_my_summary:'📊 My Summary', chart_done_center:'Done', no_tasks_yet:'No tasks yet', unit_tasks:'tasks',
     kpi_team:'Team KPIs & Performance', kpi_mine:'My KPIs & Performance', kpi_completion:'Completion rate', kpi_ontime:'On-time delivery', kpi_ontime_sub:'Estimated from last update',
     kpi_duesoon:'Due within 3 days', kpi_thisweek:'Done this week', kpi_done_total:'{d}/{n} done', kpi_no_data:'—',
+    range_month:'Monthly', range_all:'All time', range_back_current:'Back to this month',
+    range_hint_month:'Showing tasks & performance for the selected month only', range_hint_all:'Showing overall performance since the beginning',
     perf_title:'Performance by person', perf_sub:'Auto-updated from live tasks', perf_completion:'Progress (done/total)', perf_workload:'Active workload',
     perf_inprogress:'Active', perf_pending:'Queue/Review', perf_done:'Done', perf_overdue:'Overdue', perf_duesoon:'Due soon', perf_ontime:'On-time', perf_est:'est.',
     perf_health:'Work health', perf_training:'Training', perf_no_tasks:'No tasks assigned yet',
@@ -3250,6 +3254,23 @@ function KpiTile({ value, label, sub, color, bar }) {
   );
 }
 const HEALTH = { good: '🟢', warn: '🟡', bad: '🔴', idle: '⚪' };
+// เดือนที่งานสังกัด: งานเสร็จนับตามเดือนที่ทำเสร็จ, งานค้างนับตามเดือนกำหนดส่ง (ไม่มีกำหนด = เดือนปัจจุบัน)
+function taskMonth(tk) {
+  if (tk.status === 'done') {
+    const cd = tk.completedAt || tk.updatedAt;
+    if (cd) return cd.slice(0, 7);
+  }
+  return tk.deadline ? tk.deadline.slice(0, 7) : TODAY.slice(0, 7);
+}
+function monthLabel(mk, lang) {
+  const [y, m] = mk.split('-').map(Number);
+  return lang === 'en' ? `${MONTH_EN[m - 1]} ${y}` : `${MONTH_TH[m - 1]} ${y + 543}`;
+}
+function shiftMonth(mk, delta) {
+  const [y, m] = mk.split('-').map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
 // คำนวณ KPI/ผลงานจากรายการงานที่ส่งเข้ามา (ใช้กับทั้งทีมและรายคน)
 function calcPerf(list, weekStart, weekEnd) {
   const done   = list.filter(t => t.status === 'done');
@@ -3282,7 +3303,16 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
   const { t, lang } = useT();
   const { pendingCats, openManage } = useCats();
   const isManager = currentUser === 'Big Boss';
-  const myTasks   = isManager ? tasks : tasks.filter(t => t.assignee === currentUser);
+
+  // ช่วงเวลาที่แสดงผล: ค่าเริ่มต้นดูรายเดือน (เดือนปัจจุบัน) — กดสลับดู "ทั้งหมด" ได้
+  const CUR_MONTH = TODAY.slice(0, 7);
+  const [scope,    setScope]    = useState('month');   // 'month' | 'all'
+  const [monthKey, setMonthKey] = useState(CUR_MONTH);
+  const scopedTasks = React.useMemo(
+    () => scope === 'all' ? tasks : tasks.filter(tk => taskMonth(tk) === monthKey),
+    [tasks, scope, monthKey]
+  );
+  const myTasks   = isManager ? scopedTasks : scopedTasks.filter(t => t.assignee === currentUser);
 
   // สรุปงานที่ยังไม่เสร็จ แยกตามประเภท (รู้ว่าทีมกำลังเจองานประเภทไหนบ้าง)
   const catSummary = React.useMemo(() => {
@@ -3326,9 +3356,9 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
   const people   = React.useMemo(
     () => ASSIGNEES.map(name => ({
       user: USERS.find(u => u.name === name) || { name, role: '', color: getUserColor(name) },
-      perf: calcPerf(tasks.filter(tk => tk.assignee === name), weekStart, weekEnd),
+      perf: calcPerf(scopedTasks.filter(tk => tk.assignee === name), weekStart, weekEnd),
     })),
-    [tasks, weekStart, weekEnd]
+    [scopedTasks, weekStart, weekEnd]
   );
   const maxActive = Math.max(1, ...people.map(p => p.perf.active));
 
@@ -3337,6 +3367,43 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
       <div className="page-header">
         <div className="page-title">{greeting}, {currentUser}! 👋</div>
         <div className="page-subtitle">{t('dash_welcome', { date: thaiDateFull(TODAY, lang) })}</div>
+      </div>
+
+      {/* ตัวเลือกช่วงเวลา — ค่าเริ่มต้นรายเดือน, กดดูภาพรวมทั้งหมดได้ */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 20 }}>
+        <div style={{ display: 'flex', background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, overflow: 'hidden', boxShadow: 'var(--shadow)' }}>
+          {['month', 'all'].map(s => (
+            <button key={s} onClick={() => setScope(s)}
+              style={{
+                padding: '7px 16px', fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', border: 'none',
+                fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',
+                background: scope === s ? 'var(--primary)' : 'transparent',
+                color: scope === s ? '#fff' : 'var(--text-muted)',
+              }}>
+              {s === 'month' ? '📅 ' + t('range_month') : '📈 ' + t('range_all')}
+            </button>
+          ))}
+        </div>
+
+        {scope === 'month' && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 10, padding: '3px 6px', boxShadow: 'var(--shadow)' }}>
+            <button onClick={() => setMonthKey(shiftMonth(monthKey, -1))} title="◀"
+              style={{ border: 'none', background: 'transparent', color: 'var(--text)', cursor: 'pointer', fontSize: '0.85rem', padding: '4px 8px', fontFamily: 'inherit' }}>◀</button>
+            <span style={{ fontWeight: 700, fontSize: '0.85rem', minWidth: 110, textAlign: 'center' }}>{monthLabel(monthKey, lang)}</span>
+            <button onClick={() => setMonthKey(shiftMonth(monthKey, 1))} title="▶"
+              style={{ border: 'none', background: 'transparent', color: 'var(--text)', cursor: 'pointer', fontSize: '0.85rem', padding: '4px 8px', fontFamily: 'inherit' }}>▶</button>
+            {monthKey !== CUR_MONTH && (
+              <button onClick={() => setMonthKey(CUR_MONTH)}
+                style={{ border: '1px solid var(--primary)', background: 'transparent', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px', borderRadius: 8, fontFamily: 'inherit', marginLeft: 4 }}>
+                {t('range_back_current')}
+              </button>
+            )}
+          </div>
+        )}
+
+        <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+          {scope === 'month' ? t('range_hint_month') : t('range_hint_all')}
+        </span>
       </div>
 
       {/* แจ้งผู้จัดการเมื่อมีประเภทงานรออนุมัติ */}
@@ -3403,7 +3470,7 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
       {/* Charts row */}
       <div className="chart-row">
         {isManager
-          ? <DonutChart tasks={tasks} />
+          ? <DonutChart tasks={scopedTasks} />
           : <PersonalDonut tasks={myTasks} />}
         <StatusBarChart tasks={myTasks} />
       </div>
