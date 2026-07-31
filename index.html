@@ -955,13 +955,22 @@
     .perf-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
     .perf-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 0.73rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: var(--card); border: 1px solid var(--border); color: var(--text); }
     /* ─── โน้ตส่วนตัว ─── */
-    .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-    .note-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px 12px; display: flex; flex-direction: column; transition: box-shadow 0.15s; }
-    .note-card.pinned { border-color: var(--warning); }
-    .note-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
-    .note-card-head { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
-    .note-time { flex: 1; text-align: center; font-size: 0.68rem; color: var(--text-muted); }
-    .note-textarea { width: 100%; border: none; background: transparent; resize: vertical; min-height: 130px; font-family: inherit; font-size: 0.9rem; line-height: 1.6; color: var(--text); outline: none; padding: 0; }
+    .notes-search { width: 100%; max-width: 360px; padding: 9px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--input-bg); color: var(--text); font-size: 0.85rem; outline: none; margin-bottom: 16px; }
+    .notes-search:focus { border-color: var(--primary); }
+    .notes-list { display: flex; flex-direction: column; gap: 8px; }
+    .note-row { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; }
+    .note-row.pinned { border-color: var(--warning); }
+    .note-row:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); }
+    .note-row-main { flex: 1; min-width: 0; }
+    .note-row-title { font-weight: 600; font-size: 0.92rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .note-row-title.untitled { color: var(--text-muted); font-weight: 500; font-style: italic; }
+    .note-row-preview { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .note-row-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .note-row-time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+    .note-row-badge { font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+    .note-modal-title { width: 100%; border: none; border-bottom: 1px solid var(--border); background: transparent; font-family: inherit; font-size: 1.05rem; font-weight: 700; color: var(--text); outline: none; padding: 0 0 8px; margin-bottom: 12px; }
+    .note-modal-title::placeholder { color: var(--text-muted); font-weight: 500; }
+    .note-textarea { width: 100%; border: none; background: transparent; resize: vertical; min-height: 200px; font-family: inherit; font-size: 0.9rem; line-height: 1.6; color: var(--text); outline: none; padding: 0; }
     .note-textarea::placeholder { color: var(--text-muted); }
     .note-attachments { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .note-attach-thumb { position: relative; width: 64px; height: 64px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--hover); cursor: pointer; }
@@ -1403,6 +1412,7 @@ const I18N = {
     nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', drive_download:'ดาวน์โหลด', drive_upload:'อัปโหลด', drive_uploading:'กำลังอัปโหลด...', drive_upload_done:'อัปโหลดเสร็จ — สำเร็จ {ok} · ล้มเหลว {fail}', drive_drop_hint:'วางไฟล์ที่นี่เพื่ออัปโหลดเข้าโฟลเดอร์นี้', drive_delete:'ลบ (ลงถังขยะ)', drive_delete_confirm:'ย้าย "{name}" ลงถังขยะ?\n(ยังกู้คืนได้ใน Google Drive)', drive_delete_fail:'ลบไม่สำเร็จ', nav_timeline:'Timeline', nav_report:'รายงาน', nav_notes:'โน้ตของฉัน',
     notes_title:'โน้ตของฉัน', notes_sub:'โน้ตส่วนตัว เห็นเฉพาะคุณคนเดียว ซิงค์ทุกอุปกรณ์', notes_add:'เพิ่มโน้ต', notes_empty:'ยังไม่มีโน้ต — กด "เพิ่มโน้ต" เพื่อเริ่ม', notes_ph:'พิมพ์โน้ตที่นี่...', notes_pin:'ปักหมุด', notes_del_confirm:'ลบโน้ตนี้?', notes_save_fail:'บันทึกไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง', notes_load_fail:'โหลดโน้ตไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง',
     notes_attach:'แนบไฟล์/รูปภาพ', notes_attach_uploading:'กำลังอัปโหลด...', notes_attach_fail:'แนบไฟล์ไม่สำเร็จ — ตรวจว่ารัน SQL bucket note-attachments แล้วหรือยัง', notes_attach_too_big:'ไฟล์ใหญ่เกิน 8MB', notes_attach_remove_confirm:'ลบไฟล์แนบนี้?', notes_attach_open_fail:'เปิดไฟล์ไม่สำเร็จ',
+    notes_search_ph:'ค้นหาโน้ต (หัวข้อ/เนื้อหา)...', notes_search_none:'ไม่พบโน้ตที่ตรงกับ "{q}"', notes_title_ph:'หัวข้อโน้ต...', notes_untitled:'(ไม่มีหัวข้อ)',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_category:'เรื่องเกี่ยวกับ (ถ้าทราบ)', req_category_any:'— ไม่แน่ใจ / อื่นๆ —', req_needed_by:'ต้องการภายในวันที่ (ไม่บังคับ)', req_remembered:'💾 เราจำชื่อ+ช่องทางติดต่อของคุณไว้ในเครื่องนี้ ครั้งหน้าไม่ต้องพิมพ์ใหม่', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่', inbox_to_task:'สร้างเป็นงาน', inbox_from:'จากคำขอของ', inbox_inprogress:'🔧 กำลังทำ', inbox_linked:'เชื่อมกับงานแล้ว — จะปิดเองเมื่องานเสร็จ', inbox_history:'ประวัติคำขอที่เสร็จแล้ว', inbox_all_clear:'ไม่มีคำขอค้าง — เคลียร์หมดแล้ว! 🎉',
     inbox_type_label:'ประเภท', inbox_type_all:'ทุกประเภท', inbox_type_help:'🙋 ขอความช่วยเหลือ/มอบงาน', inbox_type_expense:'🧾 เบิกค่าใช้จ่าย', inbox_type_other:'📨 อื่นๆ',
     inbox_badge_expense:'🧾 เบิกค่าใช้จ่าย', inbox_badge_help:'🙋 ขอความช่วยเหลือ', inbox_amount:'จำนวนเงิน', inbox_approved_by:'อนุมัติโดย', inbox_type_empty:'ไม่มีคำขอประเภทนี้',
@@ -1481,6 +1491,7 @@ const I18N = {
     nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', drive_download:'Download', drive_upload:'Upload', drive_uploading:'Uploading...', drive_upload_done:'Upload done — {ok} ok · {fail} failed', drive_drop_hint:'Drop files here to upload to this folder', drive_delete:'Delete (to Trash)', drive_delete_confirm:'Move "{name}" to Trash?\n(Recoverable in Google Drive)', drive_delete_fail:'Delete failed', nav_timeline:'Timeline', nav_report:'Reports', nav_notes:'My Notes',
     notes_title:'My Notes', notes_sub:'Private notes — only you can see them, synced across devices', notes_add:'Add note', notes_empty:'No notes yet — tap "Add note" to start', notes_ph:'Type your note here...', notes_pin:'Pin', notes_del_confirm:'Delete this note?', notes_save_fail:'Save failed — did you run the notes table SQL?', notes_load_fail:'Could not load notes — did you run the notes table SQL?',
     notes_attach:'Attach file/image', notes_attach_uploading:'Uploading...', notes_attach_fail:'Attach failed — did you run the note-attachments bucket SQL?', notes_attach_too_big:'File is over 8MB', notes_attach_remove_confirm:'Remove this attachment?', notes_attach_open_fail:'Could not open file',
+    notes_search_ph:'Search notes (title/body)...', notes_search_none:'No notes matching "{q}"', notes_title_ph:'Note title...', notes_untitled:'(Untitled)',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_category:'Topic (if known)', req_category_any:'— Not sure / Other —', req_needed_by:'Needed by (optional)', req_remembered:'💾 We saved your name & contact on this device — no need to retype next time', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen', inbox_to_task:'Create task', inbox_from:'From request by', inbox_inprogress:'🔧 In progress', inbox_linked:'Linked to a task — closes automatically when the task is done', inbox_history:'Completed requests log', inbox_all_clear:'No pending requests — all clear! 🎉',
     inbox_type_label:'Type', inbox_type_all:'All types', inbox_type_help:'🙋 Help / task request', inbox_type_expense:'🧾 Expense claim', inbox_type_other:'📨 Other',
     inbox_badge_expense:'🧾 Expense', inbox_badge_help:'🙋 Help', inbox_amount:'Amount', inbox_approved_by:'Approved by', inbox_type_empty:'No requests of this type',
@@ -5110,15 +5121,82 @@ function NoteAttachmentItem({ cfg, att, onRemove }) {
   );
 }
 
+// แสดง/แก้โน้ต 1 อันแบบเต็ม (เปิดจากลิสต์) — หัวข้อ, เนื้อหา, ปักหมุด, ไฟล์แนบ, ลบ
+function NoteDetailModal({ cfg, userId, note, onClose, onSave, onDelete }) {
+  const { t, lang } = useT();
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState('');
+  const fileInputRef = React.useRef(null);
+
+  function saveField(fields) { onSave(note.id, fields); }
+  function togglePin() { saveField({ pinned: !note.pinned }); }
+  function del() {
+    if (!confirm(t('notes_del_confirm'))) return;
+    onDelete(note.id);
+    onClose();
+  }
+  function pickAttach() { if (fileInputRef.current) fileInputRef.current.click(); }
+  async function onFileChosen(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    if (file.size > NOTE_ATTACH_MAX_BYTES) { alert(t('notes_attach_too_big')); return; }
+    setUploading(true);
+    try {
+      const att = await sb.uploadNoteAttachment(cfg, userId, note.id, file);
+      saveField({ attachments: [...(note.attachments || []), att] });
+    } catch (e) { setErr(t('notes_attach_fail')); }
+    setUploading(false);
+  }
+  function removeAttach(att) {
+    if (!confirm(t('notes_attach_remove_confirm'))) return;
+    saveField({ attachments: (note.attachments || []).filter(a => a.path !== att.path) });
+    sb.deleteNoteAttachment(cfg, att.path);
+  }
+
+  return (
+    <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal" style={{ maxWidth: 560 }}>
+        <div className="modal-header">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button className="btn-icon" title={t('notes_pin')} style={{ color: note.pinned ? 'var(--warning)' : 'var(--text-muted)' }} onClick={togglePin}>📌</button>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{formatDateTime(note.updated_at, lang)}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <button className="btn-icon danger" title={t('delete')} onClick={del}>🗑️</button>
+            <button className="modal-close" onClick={onClose}>✕</button>
+          </div>
+        </div>
+        <div className="modal-body">
+          {err && <div style={{ color: 'var(--danger)', fontSize: '0.82rem', fontWeight: 600, marginBottom: 10 }}>✕ {err}</div>}
+          <input className="note-modal-title" defaultValue={note.title || ''} placeholder={t('notes_title_ph')}
+            autoFocus={!note.title && !note.body}
+            onBlur={e => { if (e.target.value !== (note.title || '')) saveField({ title: e.target.value }); }} />
+          <textarea className="note-textarea" defaultValue={note.body || ''} placeholder={t('notes_ph')}
+            onBlur={e => { if (e.target.value !== (note.body || '')) saveField({ body: e.target.value }); }} />
+          <input ref={fileInputRef} type="file" style={{ display: 'none' }} onChange={onFileChosen} />
+          <div className="note-attachments">
+            {(note.attachments || []).map(att => (
+              <NoteAttachmentItem key={att.path} cfg={cfg} att={att} onRemove={() => removeAttach(att)} />
+            ))}
+            <button className="note-attach-add" title={t('notes_attach')} disabled={uploading} onClick={pickAttach}>
+              {uploading ? '…' : '📎'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function NotesView({ cfg, currentUser, userId }) {
   const { t, lang } = useT();
   const [notes, setNotes]   = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy]     = useState(false);
   const [err, setErr]       = useState('');
-  const [uploading, setUploading] = useState({}); // { [noteId]: true }
-  const fileInputRef = React.useRef(null);
-  const activeNoteId = React.useRef(null);
+  const [search, setSearch] = useState('');
+  const [openId, setOpenId] = useState(null);
   useEffect(() => {
     let alive = true;
     sb.loadNotes(cfg).then(d => { if (alive) { setNotes(d); setLoaded(true); } })
@@ -5128,61 +5206,28 @@ function NotesView({ cfg, currentUser, userId }) {
 
   async function addNote() {
     setBusy(true); setErr('');
-    try { const n = await sb.addNote(cfg, ''); setNotes(ns => [n, ...ns]); }
+    try { const n = await sb.addNote(cfg, ''); setNotes(ns => [n, ...ns]); setOpenId(n.id); }
     catch (e) { setErr(t('notes_save_fail')); }
     setBusy(false);
   }
-  function saveBody(id, body) {
-    setNotes(ns => ns.map(n => n.id === id ? { ...n, body, updated_at: nowISO() } : n));
-    sb.updateNote(cfg, id, { body }).catch(() => setErr(t('notes_save_fail')));
-  }
-  function togglePin(id, pinned) {
-    setNotes(ns => ns.map(n => n.id === id ? { ...n, pinned } : n)
-      .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (b.updated_at || '').localeCompare(a.updated_at || '')));
-    sb.updateNote(cfg, id, { pinned }).catch(() => {});
+  function saveFields(id, fields) {
+    setNotes(ns => ns.map(n => n.id === id ? { ...n, ...fields, updated_at: nowISO() } : n));
+    sb.updateNote(cfg, id, fields).catch(() => setErr(t('notes_save_fail')));
   }
   function del(id) {
-    if (!confirm(t('notes_del_confirm'))) return;
     setNotes(ns => ns.filter(n => n.id !== id));
     sb.deleteNote(cfg, id).catch(() => {});
   }
 
-  function pickAttach(noteId) {
-    activeNoteId.current = noteId;
-    if (fileInputRef.current) fileInputRef.current.click();
-  }
-  async function onFileChosen(e) {
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    const noteId = activeNoteId.current;
-    if (!file || !noteId) return;
-    if (file.size > NOTE_ATTACH_MAX_BYTES) { alert(t('notes_attach_too_big')); return; }
-    setUploading(u => ({ ...u, [noteId]: true }));
-    try {
-      const att = await sb.uploadNoteAttachment(cfg, userId, noteId, file);
-      setNotes(ns => ns.map(n => {
-        if (n.id !== noteId) return n;
-        const attachments = [...(n.attachments || []), att];
-        sb.updateNote(cfg, noteId, { attachments }).catch(() => setErr(t('notes_save_fail')));
-        return { ...n, attachments };
-      }));
-    } catch (e) { setErr(t('notes_attach_fail')); }
-    setUploading(u => ({ ...u, [noteId]: false }));
-  }
-  function removeAttach(noteId, att) {
-    if (!confirm(t('notes_attach_remove_confirm'))) return;
-    setNotes(ns => ns.map(n => {
-      if (n.id !== noteId) return n;
-      const attachments = (n.attachments || []).filter(a => a.path !== att.path);
-      sb.updateNote(cfg, noteId, { attachments }).catch(() => setErr(t('notes_save_fail')));
-      return { ...n, attachments };
-    }));
-    sb.deleteNoteAttachment(cfg, att.path);
-  }
+  const q = search.trim().toLowerCase();
+  const filtered = !q ? notes : notes.filter(n =>
+    (n.title || '').toLowerCase().includes(q) || (n.body || '').toLowerCase().includes(q));
+  const sorted = [...filtered].sort((a, b) =>
+    (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (b.updated_at || '').localeCompare(a.updated_at || ''));
+  const openNote = notes.find(n => n.id === openId) || null;
 
   return (
     <div>
-      <input ref={fileInputRef} type="file" style={{ display: 'none' }} onChange={onFileChosen} />
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <div className="page-title">📝 {t('notes_title')}</div>
@@ -5191,30 +5236,36 @@ function NotesView({ cfg, currentUser, userId }) {
         <button className="btn btn-primary" style={{ marginTop: 4 }} onClick={addNote} disabled={busy}>+ {t('notes_add')}</button>
       </div>
       {err && <div style={{ color: 'var(--danger)', fontSize: '0.82rem', fontWeight: 600, marginBottom: 12 }}>✕ {err}</div>}
+      {notes.length > 0 && (
+        <input className="notes-search" value={search} onChange={e => setSearch(e.target.value)} placeholder={t('notes_search_ph')} />
+      )}
       {loaded && notes.length === 0 && !err && (
         <div className="card"><div className="empty-state"><div className="empty-icon">📝</div><div className="empty-text">{t('notes_empty')}</div></div></div>
       )}
-      <div className="notes-grid">
-        {notes.map(n => (
-          <div key={n.id} className={'note-card' + (n.pinned ? ' pinned' : '')}>
-            <div className="note-card-head">
-              <button className="btn-icon" title={t('notes_pin')} style={{ color: n.pinned ? 'var(--warning)' : 'var(--text-muted)' }} onClick={() => togglePin(n.id, !n.pinned)}>📌</button>
-              <span className="note-time">{formatDateTime(n.updated_at, lang)}</span>
-              <button className="btn-icon danger" title={t('delete')} onClick={() => del(n.id)}>🗑️</button>
+      {loaded && notes.length > 0 && sorted.length === 0 && (
+        <div className="card"><div className="empty-state"><div className="empty-icon">🔍</div><div className="empty-text">{t('notes_search_none', { q: search })}</div></div></div>
+      )}
+      <div className="notes-list">
+        {sorted.map(n => (
+          <div key={n.id} className={'note-row' + (n.pinned ? ' pinned' : '')} onClick={() => setOpenId(n.id)}>
+            <button className="btn-icon" title={t('notes_pin')} style={{ color: n.pinned ? 'var(--warning)' : 'var(--text-muted)' }}
+              onClick={e => { e.stopPropagation(); saveFields(n.id, { pinned: !n.pinned }); }}>📌</button>
+            <div className="note-row-main">
+              <div className={'note-row-title' + (!n.title ? ' untitled' : '')}>{n.title || t('notes_untitled')}</div>
+              {n.body && <div className="note-row-preview">{n.body.replace(/\s+/g, ' ').slice(0, 120)}</div>}
             </div>
-            <textarea className="note-textarea" defaultValue={n.body || ''} placeholder={t('notes_ph')}
-              onBlur={e => { if (e.target.value !== (n.body || '')) saveBody(n.id, e.target.value); }} />
-            <div className="note-attachments">
-              {(n.attachments || []).map(att => (
-                <NoteAttachmentItem key={att.path} cfg={cfg} att={att} onRemove={() => removeAttach(n.id, att)} />
-              ))}
-              <button className="note-attach-add" title={t('notes_attach')} disabled={!!uploading[n.id]} onClick={() => pickAttach(n.id)}>
-                {uploading[n.id] ? '…' : '📎'}
-              </button>
+            <div className="note-row-meta">
+              {(n.attachments || []).length > 0 && <span className="note-row-badge">📎 {n.attachments.length}</span>}
+              <span className="note-row-time">{formatDateTime(n.updated_at, lang)}</span>
+              <button className="btn-icon danger" title={t('delete')} onClick={e => { e.stopPropagation(); if (confirm(t('notes_del_confirm'))) del(n.id); }}>🗑️</button>
             </div>
           </div>
         ))}
       </div>
+      {openNote && (
+        <NoteDetailModal cfg={cfg} userId={userId} note={openNote}
+          onClose={() => setOpenId(null)} onSave={saveFields} onDelete={del} />
+      )}
     </div>
   );
 }
