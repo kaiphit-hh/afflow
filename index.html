@@ -963,6 +963,14 @@
     .note-time { flex: 1; text-align: center; font-size: 0.68rem; color: var(--text-muted); }
     .note-textarea { width: 100%; border: none; background: transparent; resize: vertical; min-height: 130px; font-family: inherit; font-size: 0.9rem; line-height: 1.6; color: var(--text); outline: none; padding: 0; }
     .note-textarea::placeholder { color: var(--text-muted); }
+    .note-attachments { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .note-attach-thumb { position: relative; width: 64px; height: 64px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--hover); cursor: pointer; }
+    .note-attach-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .note-attach-file { position: relative; display: flex; align-items: center; gap: 6px; max-width: 160px; padding: 6px 22px 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--hover); font-size: 0.74rem; color: var(--text); cursor: pointer; }
+    .note-attach-file .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .note-attach-remove { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%; background: rgba(0,0,0,0.55); color: #fff; font-size: 0.7rem; }
+    .note-attach-add { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 8px; border: 1px dashed var(--border); color: var(--text-muted); font-size: 1.3rem; background: transparent; cursor: pointer; }
+    .note-attach-add:hover { border-color: var(--primary); color: var(--primary); }
 
     /* ─── Countdown ─── */
     .countdown-red   { color: var(--danger); font-weight: 700; font-size: 0.8rem; }
@@ -1394,6 +1402,7 @@ const I18N = {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', drive_download:'ดาวน์โหลด', drive_upload:'อัปโหลด', drive_uploading:'กำลังอัปโหลด...', drive_upload_done:'อัปโหลดเสร็จ — สำเร็จ {ok} · ล้มเหลว {fail}', drive_drop_hint:'วางไฟล์ที่นี่เพื่ออัปโหลดเข้าโฟลเดอร์นี้', drive_delete:'ลบ (ลงถังขยะ)', drive_delete_confirm:'ย้าย "{name}" ลงถังขยะ?\n(ยังกู้คืนได้ใน Google Drive)', drive_delete_fail:'ลบไม่สำเร็จ', nav_timeline:'Timeline', nav_report:'รายงาน', nav_notes:'โน้ตของฉัน',
     notes_title:'โน้ตของฉัน', notes_sub:'โน้ตส่วนตัว เห็นเฉพาะคุณคนเดียว ซิงค์ทุกอุปกรณ์', notes_add:'เพิ่มโน้ต', notes_empty:'ยังไม่มีโน้ต — กด "เพิ่มโน้ต" เพื่อเริ่ม', notes_ph:'พิมพ์โน้ตที่นี่...', notes_pin:'ปักหมุด', notes_del_confirm:'ลบโน้ตนี้?', notes_save_fail:'บันทึกไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง', notes_load_fail:'โหลดโน้ตไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง',
+    notes_attach:'แนบไฟล์/รูปภาพ', notes_attach_uploading:'กำลังอัปโหลด...', notes_attach_fail:'แนบไฟล์ไม่สำเร็จ — ตรวจว่ารัน SQL bucket note-attachments แล้วหรือยัง', notes_attach_too_big:'ไฟล์ใหญ่เกิน 8MB', notes_attach_remove_confirm:'ลบไฟล์แนบนี้?', notes_attach_open_fail:'เปิดไฟล์ไม่สำเร็จ',
     req_title:'ส่งงานให้ทีมบัญชี', req_sub:'กรอกข้อมูลเพื่อส่งคำขอ — ทีมจะได้รับใน Inbox', req_name:'ชื่อผู้ส่ง', req_name_ph:'ชื่อของคุณ / แผนก', req_contact:'ช่องทางติดต่อกลับ', req_contact_ph:'อีเมล / เบอร์ / LINE', req_what:'อยากให้ช่วยทำอะไร', req_what_ph:'เช่น ออกใบกำกับภาษีให้ลูกค้า A', req_details:'รายละเอียดเพิ่มเติม', req_details_ph:'ใส่รายละเอียด / เลขที่เอกสาร ฯลฯ', req_send:'ส่งคำขอ', req_sending:'กำลังส่ง...', req_thanks:'ส่งเรียบร้อยแล้ว! ทีมบัญชีจะรับเรื่องต่อ', req_again:'ส่งคำขออีกอัน', req_required:'กรุณากรอกชื่อ และสิ่งที่ต้องการ', req_fail:'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง', req_category:'เรื่องเกี่ยวกับ (ถ้าทราบ)', req_category_any:'— ไม่แน่ใจ / อื่นๆ —', req_needed_by:'ต้องการภายในวันที่ (ไม่บังคับ)', req_remembered:'💾 เราจำชื่อ+ช่องทางติดต่อของคุณไว้ในเครื่องนี้ ครั้งหน้าไม่ต้องพิมพ์ใหม่', req_del_confirm:'ลบคำขอนี้?', inbox_title:'กล่องงานเข้า', inbox_sub:'มีคำขอใหม่ {n} รายการ', inbox_empty:'ยังไม่มีคำขอเข้ามา', inbox_new:'ใหม่', inbox_done:'เสร็จแล้ว', inbox_mark_done:'ทำเสร็จแล้ว', inbox_reopen:'เปิดใหม่', inbox_to_task:'สร้างเป็นงาน', inbox_from:'จากคำขอของ', inbox_inprogress:'🔧 กำลังทำ', inbox_linked:'เชื่อมกับงานแล้ว — จะปิดเองเมื่องานเสร็จ', inbox_history:'ประวัติคำขอที่เสร็จแล้ว', inbox_all_clear:'ไม่มีคำขอค้าง — เคลียร์หมดแล้ว! 🎉',
     inbox_type_label:'ประเภท', inbox_type_all:'ทุกประเภท', inbox_type_help:'🙋 ขอความช่วยเหลือ/มอบงาน', inbox_type_expense:'🧾 เบิกค่าใช้จ่าย', inbox_type_other:'📨 อื่นๆ',
     inbox_badge_expense:'🧾 เบิกค่าใช้จ่าย', inbox_badge_help:'🙋 ขอความช่วยเหลือ', inbox_amount:'จำนวนเงิน', inbox_approved_by:'อนุมัติโดย', inbox_type_empty:'ไม่มีคำขอประเภทนี้',
@@ -1471,6 +1480,7 @@ const I18N = {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', drive_download:'Download', drive_upload:'Upload', drive_uploading:'Uploading...', drive_upload_done:'Upload done — {ok} ok · {fail} failed', drive_drop_hint:'Drop files here to upload to this folder', drive_delete:'Delete (to Trash)', drive_delete_confirm:'Move "{name}" to Trash?\n(Recoverable in Google Drive)', drive_delete_fail:'Delete failed', nav_timeline:'Timeline', nav_report:'Reports', nav_notes:'My Notes',
     notes_title:'My Notes', notes_sub:'Private notes — only you can see them, synced across devices', notes_add:'Add note', notes_empty:'No notes yet — tap "Add note" to start', notes_ph:'Type your note here...', notes_pin:'Pin', notes_del_confirm:'Delete this note?', notes_save_fail:'Save failed — did you run the notes table SQL?', notes_load_fail:'Could not load notes — did you run the notes table SQL?',
+    notes_attach:'Attach file/image', notes_attach_uploading:'Uploading...', notes_attach_fail:'Attach failed — did you run the note-attachments bucket SQL?', notes_attach_too_big:'File is over 8MB', notes_attach_remove_confirm:'Remove this attachment?', notes_attach_open_fail:'Could not open file',
     req_title:'Send a request to Accounting', req_sub:'Fill this in — the team gets it in their Inbox', req_name:'Your name', req_name_ph:'Your name / department', req_contact:'Contact', req_contact_ph:'email / phone / LINE', req_what:'What do you need?', req_what_ph:'e.g. issue a tax invoice for customer A', req_details:'More details', req_details_ph:'Add details / document numbers, etc.', req_send:'Send request', req_sending:'Sending...', req_thanks:'Sent! The accounting team will follow up.', req_again:'Send another', req_required:'Please enter your name and what you need', req_fail:'Could not send, please try again', req_category:'Topic (if known)', req_category_any:'— Not sure / Other —', req_needed_by:'Needed by (optional)', req_remembered:'💾 We saved your name & contact on this device — no need to retype next time', req_del_confirm:'Delete this request?', inbox_title:'Inbox', inbox_sub:'{n} new request(s)', inbox_empty:'No requests yet', inbox_new:'New', inbox_done:'Done', inbox_mark_done:'Mark done', inbox_reopen:'Reopen', inbox_to_task:'Create task', inbox_from:'From request by', inbox_inprogress:'🔧 In progress', inbox_linked:'Linked to a task — closes automatically when the task is done', inbox_history:'Completed requests log', inbox_all_clear:'No pending requests — all clear! 🎉',
     inbox_type_label:'Type', inbox_type_all:'All types', inbox_type_help:'🙋 Help / task request', inbox_type_expense:'🧾 Expense claim', inbox_type_other:'📨 Other',
     inbox_badge_expense:'🧾 Expense', inbox_badge_help:'🙋 Help', inbox_amount:'Amount', inbox_approved_by:'Approved by', inbox_type_empty:'No requests of this type',
@@ -2107,6 +2117,26 @@ const sb = {
     const c = getSb(cfg); if (!c) return;
     const { error } = await c.from('notes').delete().eq('id', id);
     if (error) throw error;
+  },
+  // ── ไฟล์แนบของโน้ต (bucket ส่วนตัว 'note-attachments' — ดู supabase/add_note_attachments.sql) ──
+  async uploadNoteAttachment(cfg, userId, noteId, file) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const safeName = (file.name || 'file').replace(/[^\w.\-ก-๙ ]/g, '_');
+    const path = `${userId}/${noteId}/${Date.now()}_${safeName}`;
+    const { error } = await c.storage.from('note-attachments')
+      .upload(path, file, { contentType: file.type || 'application/octet-stream', upsert: false });
+    if (error) throw error;
+    return { path, name: file.name || safeName, type: file.type || '', size: file.size || 0 };
+  },
+  async downloadNoteAttachment(cfg, path) {
+    const c = getSb(cfg); if (!c) throw new Error('not_configured');
+    const { data, error } = await c.storage.from('note-attachments').download(path);
+    if (error) throw error;
+    return data; // Blob
+  },
+  async deleteNoteAttachment(cfg, path) {
+    const c = getSb(cfg); if (!c) return;
+    await c.storage.from('note-attachments').remove([path]).catch(() => {});
   },
 };
 
@@ -5027,12 +5057,68 @@ function TeamChat({ sbCfg, currentUser, ready }) {
 }
 
 // ─── NotesView: โน้ตส่วนตัวของแต่ละคน (เห็นเฉพาะตัวเอง) ─────────────────────────
-function NotesView({ cfg, currentUser }) {
+const NOTE_ATTACH_MAX_BYTES = 8 * 1024 * 1024; // 8MB
+
+function humanFileSize(n) {
+  if (!n && n !== 0) return '';
+  if (n < 1024) return n + ' B';
+  if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+  return (n / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+// แสดงไฟล์แนบ 1 ชิ้น — รูปโหลด thumbnail ผ่าน storage.download (bucket ส่วนตัว), ไฟล์อื่นโชว์ชื่อ+ขนาด
+function NoteAttachmentItem({ cfg, att, onRemove }) {
+  const { t } = useT();
+  const isImage = (att.type || '').startsWith('image/');
+  const [thumbUrl, setThumbUrl] = useState(null);
+  useEffect(() => {
+    let alive = true; let url = null;
+    if (isImage) {
+      sb.downloadNoteAttachment(cfg, att.path).then(blob => {
+        if (!alive) return;
+        url = URL.createObjectURL(blob);
+        setThumbUrl(url);
+      }).catch(() => {});
+    }
+    return () => { alive = false; if (url) URL.revokeObjectURL(url); };
+  }, [att.path]);
+
+  async function open() {
+    try {
+      const blob = await sb.downloadNoteAttachment(cfg, att.path);
+      const url = URL.createObjectURL(blob);
+      if (isImage) { window.open(url, '_blank'); }
+      else {
+        const a = document.createElement('a');
+        a.href = url; a.download = att.name || 'file'; document.body.appendChild(a); a.click(); a.remove();
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+    } catch (e) { alert(t('notes_attach_open_fail')); }
+  }
+
+  return isImage ? (
+    <div className="note-attach-thumb" title={att.name} onClick={open}>
+      {thumbUrl && <img src={thumbUrl} alt={att.name || ''} />}
+      <span className="note-attach-remove" onClick={e => { e.stopPropagation(); onRemove(); }}>✕</span>
+    </div>
+  ) : (
+    <div className="note-attach-file" title={att.name} onClick={open}>
+      <span>📄</span>
+      <span className="name">{att.name}{att.size ? ` (${humanFileSize(att.size)})` : ''}</span>
+      <span className="note-attach-remove" onClick={e => { e.stopPropagation(); onRemove(); }}>✕</span>
+    </div>
+  );
+}
+
+function NotesView({ cfg, currentUser, userId }) {
   const { t, lang } = useT();
   const [notes, setNotes]   = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy]     = useState(false);
   const [err, setErr]       = useState('');
+  const [uploading, setUploading] = useState({}); // { [noteId]: true }
+  const fileInputRef = React.useRef(null);
+  const activeNoteId = React.useRef(null);
   useEffect(() => {
     let alive = true;
     sb.loadNotes(cfg).then(d => { if (alive) { setNotes(d); setLoaded(true); } })
@@ -5061,8 +5147,42 @@ function NotesView({ cfg, currentUser }) {
     sb.deleteNote(cfg, id).catch(() => {});
   }
 
+  function pickAttach(noteId) {
+    activeNoteId.current = noteId;
+    if (fileInputRef.current) fileInputRef.current.click();
+  }
+  async function onFileChosen(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    const noteId = activeNoteId.current;
+    if (!file || !noteId) return;
+    if (file.size > NOTE_ATTACH_MAX_BYTES) { alert(t('notes_attach_too_big')); return; }
+    setUploading(u => ({ ...u, [noteId]: true }));
+    try {
+      const att = await sb.uploadNoteAttachment(cfg, userId, noteId, file);
+      setNotes(ns => ns.map(n => {
+        if (n.id !== noteId) return n;
+        const attachments = [...(n.attachments || []), att];
+        sb.updateNote(cfg, noteId, { attachments }).catch(() => setErr(t('notes_save_fail')));
+        return { ...n, attachments };
+      }));
+    } catch (e) { setErr(t('notes_attach_fail')); }
+    setUploading(u => ({ ...u, [noteId]: false }));
+  }
+  function removeAttach(noteId, att) {
+    if (!confirm(t('notes_attach_remove_confirm'))) return;
+    setNotes(ns => ns.map(n => {
+      if (n.id !== noteId) return n;
+      const attachments = (n.attachments || []).filter(a => a.path !== att.path);
+      sb.updateNote(cfg, noteId, { attachments }).catch(() => setErr(t('notes_save_fail')));
+      return { ...n, attachments };
+    }));
+    sb.deleteNoteAttachment(cfg, att.path);
+  }
+
   return (
     <div>
+      <input ref={fileInputRef} type="file" style={{ display: 'none' }} onChange={onFileChosen} />
       <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div>
           <div className="page-title">📝 {t('notes_title')}</div>
@@ -5084,6 +5204,14 @@ function NotesView({ cfg, currentUser }) {
             </div>
             <textarea className="note-textarea" defaultValue={n.body || ''} placeholder={t('notes_ph')}
               onBlur={e => { if (e.target.value !== (n.body || '')) saveBody(n.id, e.target.value); }} />
+            <div className="note-attachments">
+              {(n.attachments || []).map(att => (
+                <NoteAttachmentItem key={att.path} cfg={cfg} att={att} onRemove={() => removeAttach(n.id, att)} />
+              ))}
+              <button className="note-attach-add" title={t('notes_attach')} disabled={!!uploading[n.id]} onClick={() => pickAttach(n.id)}>
+                {uploading[n.id] ? '…' : '📎'}
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -5753,7 +5881,7 @@ function App() {
               <ReportView tasks={visibleTasks} currentUser={currentUser} onSelectTask={handleSelectTask} showManager={isManager && !privacyMode} />
             )}
             {view === 'notes' && (
-              <NotesView cfg={sbCfg} currentUser={currentUser} />
+              <NotesView cfg={sbCfg} currentUser={currentUser} userId={session && session.user && session.user.id} />
             )}
           </div>
         </div>
