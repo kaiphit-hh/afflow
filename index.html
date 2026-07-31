@@ -1479,6 +1479,7 @@ const I18N = {
     settings_push:'⬆️ นำข้อมูลในเครื่องขึ้น Supabase', settings_push_done:'✓ อัปโหลดแล้ว {n} งาน', settings_push_fail:'✕ อัปโหลดไม่สำเร็จ (ต้องล็อกอินก่อน)', settings_pushing:'กำลังอัปโหลด...',
     backup_title:'สำรองข้อมูล (Backup)', backup_intro:'สำรองงาน + คำขอ + แชททีม เป็นไฟล์ JSON เก็บใน Supabase Storage อัตโนมัติ หรือกดดาวน์โหลดเก็บเอง/วางใน Google Drive ก็ได้ (เฉพาะหัวหน้า)', backup_now:'สำรองขึ้นระบบ', backup_running:'กำลังสำรอง...', backup_done:'✓ สำรองขึ้นระบบแล้ว: {name}', backup_download:'ดาวน์โหลด .json', backup_downloaded:'✓ ดาวน์โหลดแล้ว: {name}', backup_fail:'✕ สำรองไม่สำเร็จ', backup_auto:'สำรองอัตโนมัติทุกวัน (ตอนเปิดแอป)', backup_last:'สำรองล่าสุด', save_failed:'บันทึกขึ้น Supabase ไม่สำเร็จ', task_created:'สร้างงานแล้ว', assigned_to:'มอบให้',
     settings_push_warn:'⚠️ จะแทนที่ข้อมูลทั้งหมดใน Supabase ด้วยข้อมูลในเครื่องนี้ — ต้องล็อกอินและบันทึกการตั้งค่าก่อน', settings_save:'บันทึก', settings_disconnect:'ยกเลิกการเชื่อมต่อ', settings_save_first:'กรุณาบันทึกการตั้งค่าก่อน',
+    settings_push_confirm:'⚠️ การกดยืนยันจะลบข้อมูลทั้งหมดใน Supabase แล้วแทนที่ด้วยข้อมูลในเครื่องนี้ทันที — ย้อนกลับไม่ได้ (นอกจากกู้จาก backup) แน่ใจนะว่าจะทำ?',
     login_title:'เข้าสู่ระบบ', login_sub:'ระบบจัดการงาน Accounting & Finance', login_email:'อีเมล', login_email_ph:'you@hungryhub.com', login_password:'รหัสผ่าน', login_password_ph:'รหัสผ่านของคุณ',
     login_btn:'เข้าสู่ระบบ', login_loading:'กำลังเข้าสู่ระบบ...', login_error:'อีเมลหรือรหัสผ่านไม่ถูกต้อง', login_logout:'ออกจากระบบ', login_loading_app:'กำลังโหลด...', login_no_profile:'บัญชีนี้ยังไม่ได้กำหนดชื่อทีม — ติดต่อหัวหน้า', login_forgot:'ลืมรหัสผ่าน?', reset_title:'รีเซ็ตรหัสผ่าน', reset_desc:'กรอกอีเมลของคุณ เราจะส่งลิงก์ตั้งรหัสใหม่ไปให้', reset_send:'ส่งลิงก์รีเซ็ต', reset_sending:'กำลังส่ง...', reset_sent:'ส่งลิงก์ไปที่อีเมลแล้ว ✓ เช็คกล่องจดหมาย (และโฟลเดอร์ Junk/Spam)', reset_back:'← กลับไปเข้าสู่ระบบ', reset_email_required:'กรุณากรอกอีเมลก่อน', reset_fail:'ส่งไม่สำเร็จ — อาจส่งบ่อยเกินไป ลองใหม่ภายหลัง', newpass_title:'ตั้งรหัสผ่านใหม่', newpass_label:'รหัสผ่านใหม่', newpass_ph:'อย่างน้อย 6 ตัวอักษร', newpass_btn:'บันทึกรหัสผ่านใหม่', newpass_saving:'กำลังบันทึก...', newpass_done:'เปลี่ยนรหัสสำเร็จ! กำลังพาเข้าระบบ...', newpass_short:'รหัสผ่านสั้นไป (อย่างน้อย 6 ตัว)', newpass_fail:'บันทึกไม่สำเร็จ — ลิงก์อาจหมดอายุ ลองขอลิงก์ใหม่',
     chat_title:'ผู้ช่วย AI', chat_open:'คุยกับผู้ช่วย AI', chat_placeholder:'พิมพ์คำถาม...', chat_send:'ส่ง', chat_thinking:'กำลังคิด...', chat_clear:'ล้างแชท', chat_close:'ปิด',
@@ -1558,6 +1559,7 @@ const I18N = {
     settings_push:'⬆️ Upload local data to Supabase', settings_push_done:'✓ Uploaded {n} tasks', settings_push_fail:'✕ Upload failed (must be logged in)', settings_pushing:'Uploading...',
     backup_title:'Backup', backup_intro:'Back up all tasks + requests + team chat as JSON to Supabase Storage automatically — or download a copy to keep / drop into Google Drive (manager only)', backup_now:'Back up now', backup_running:'Backing up...', backup_done:'✓ Backed up: {name}', backup_download:'Download .json', backup_downloaded:'✓ Downloaded: {name}', backup_fail:'✕ Backup failed', backup_auto:'Auto-backup daily (on app open)', backup_last:'Last backup', save_failed:'Failed to save to Supabase', task_created:'Task created', assigned_to:'assigned to',
     settings_push_warn:'⚠️ This replaces ALL data in Supabase with this device\'s data — you must be logged in and have saved the config.', settings_save:'Save', settings_disconnect:'Disconnect', settings_save_first:'Please save the config first',
+    settings_push_confirm:'⚠️ Confirming will immediately delete ALL data in Supabase and replace it with this device\'s data — this cannot be undone (except by restoring a backup). Are you sure?',
     login_title:'Sign in', login_sub:'Accounting & Finance task system', login_email:'Email', login_email_ph:'you@hungryhub.com', login_password:'Password', login_password_ph:'Your password',
     login_btn:'Sign in', login_loading:'Signing in...', login_error:'Incorrect email or password', login_logout:'Sign out', login_loading_app:'Loading...', login_no_profile:'This account has no team name set — contact your manager', login_forgot:'Forgot password?', reset_title:'Reset password', reset_desc:'Enter your email and we will send you a reset link', reset_send:'Send reset link', reset_sending:'Sending...', reset_sent:'Reset link sent ✓ Check your inbox (and Junk/Spam folder)', reset_back:'← Back to sign in', reset_email_required:'Please enter your email first', reset_fail:'Could not send — possibly too many requests. Try again later', newpass_title:'Set a new password', newpass_label:'New password', newpass_ph:'At least 6 characters', newpass_btn:'Save new password', newpass_saving:'Saving...', newpass_done:'Password changed! Signing you in...', newpass_short:'Password too short (min 6)', newpass_fail:'Could not save — the link may have expired. Request a new one',
     chat_title:'AI Assistant', chat_open:'Chat with AI assistant', chat_placeholder:'Type your question...', chat_send:'Send', chat_thinking:'Thinking...', chat_clear:'Clear chat', chat_close:'Close',
@@ -2776,6 +2778,7 @@ function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal, isManager, o
 
   async function pushAll() {
     if (!saved || !cfg.url) { setPushState('fail'); setPushMsg(t('settings_save_first')); return; }
+    if (!window.confirm(t('settings_push_confirm'))) return;
     setPushState('pushing'); setPushMsg('');
     try {
       const n = await onPushLocal();          // ใช้ไคลเอนต์ที่ล็อกอินแล้วจาก App
@@ -2810,8 +2813,8 @@ function SettingsModal({ cfg, authed, onClose, onSave, onPushLocal, isManager, o
             {testState === 'fail' && <span style={{ color:'var(--danger)',  fontSize:'0.85rem', fontWeight:600 }}>{t('settings_test_fail')}</span>}
           </div>
 
-          {/* ปุ่มอัปโหลดข้อมูลในเครื่องขึ้น Supabase — เห็นเฉพาะตอนล็อกอินแล้ว + บันทึก config แล้ว */}
-          {authed && cfg.url && (
+          {/* ปุ่มอัปโหลดข้อมูลในเครื่องขึ้น Supabase — เห็นเฉพาะหัวหน้า + ล็อกอินแล้ว + บันทึก config แล้ว (ป้องกันข้อมูลทั้งทีมหายจากการกดพลาด) */}
+          {authed && isManager && cfg.url && (
             <>
               <div style={{ borderTop:'1px solid var(--border)', margin:'16px 0' }} />
               <div style={{ display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' }}>
