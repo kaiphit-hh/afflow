@@ -1828,7 +1828,7 @@ function taskToRow(t) {
 const sb = {
   async listTasks(cfg) {
     const c = getSb(cfg); if (!c) return [];
-    const { data, error } = await c.from(SB_TABLE).select('*').order('created_at', { ascending: true });
+    const { data, error } = await c.from(SB_TABLE).select('*').order('created_at', { ascending: true }).limit(5000);
     if (error) throw error;
     return (data || []).map(taskFromRow);
   },
@@ -2051,6 +2051,7 @@ const sb = {
     const { error } = await c.from('requests').insert({
       requester_name: req.name, requester_contact: req.contact || null,
       title: req.title, details: req.details || null, category: req.category || null,
+      honeypot: req.honeypot || null,
     });
     if (error) throw error;
   },
@@ -4517,7 +4518,7 @@ function RequestForm({ cfg }) {
   const [form, setForm] = useState(() => {
     let me = {};
     try { me = JSON.parse(localStorage.getItem('afflow_req_me') || '{}'); } catch (e) {}
-    return { name: me.name || '', contact: me.contact || '', title: '', details: '', category: '', neededBy: '' };
+    return { name: me.name || '', contact: me.contact || '', title: '', details: '', category: '', neededBy: '', company: '' };
   });
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
@@ -4528,6 +4529,8 @@ function RequestForm({ cfg }) {
     if (e) e.preventDefault();
     setErr('');
     if (!form.name.trim() || !form.title.trim()) { setErr(t('req_required')); return; }
+    // honeypot: ช่อง "company" ซ่อนไว้ด้วย CSS — คนจริงมองไม่เห็นจึงไม่กรอก, บอตมักกรอกทุกช่อง
+    if (form.company.trim()) { setDone(true); return; }
     setBusy(true);
     try {
       const details = form.neededBy
@@ -4560,20 +4563,26 @@ function RequestForm({ cfg }) {
           </div>
         ) : (
         <form onSubmit={submit} style={{ marginTop:16, textAlign:'left' }}>
+          {/* honeypot กันบอต — ซ่อนจากคนจริงด้วย CSS (ไม่ใช้ display:none เพราะบอตบางตัวข้าม) */}
+          <div style={{ position:'absolute', left:'-9999px', width:1, height:1, overflow:'hidden' }} aria-hidden="true">
+            <label htmlFor="company">Company</label>
+            <input id="company" name="company" tabIndex={-1} autoComplete="off"
+              value={form.company} onChange={e => set('company', e.target.value)} />
+          </div>
           <div className="form-group"><label className="form-label">{t('req_name')} *</label>
-            <input className="form-input" value={form.name} onChange={e => set('name', e.target.value)} placeholder={t('req_name_ph')} /></div>
+            <input className="form-input" value={form.name} onChange={e => set('name', e.target.value)} placeholder={t('req_name_ph')} maxLength={200} /></div>
           <div className="form-group"><label className="form-label">{t('req_contact')}</label>
-            <input className="form-input" value={form.contact} onChange={e => set('contact', e.target.value)} placeholder={t('req_contact_ph')} />
+            <input className="form-input" value={form.contact} onChange={e => set('contact', e.target.value)} placeholder={t('req_contact_ph')} maxLength={200} />
             {remembered && <div style={{ fontSize:'0.72rem', color:'var(--text-muted)', marginTop:5 }}>{t('req_remembered')}</div>}</div>
           <div className="form-group"><label className="form-label">{t('req_what')} *</label>
-            <input className="form-input" value={form.title} onChange={e => set('title', e.target.value)} placeholder={t('req_what_ph')} /></div>
+            <input className="form-input" value={form.title} onChange={e => set('title', e.target.value)} placeholder={t('req_what_ph')} maxLength={500} /></div>
           <div className="form-group"><label className="form-label">{t('req_category')}</label>
             <select className="form-input" value={form.category} onChange={e => set('category', e.target.value)}>
               <option value="">{t('req_category_any')}</option>
               {categories.map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
             </select></div>
           <div className="form-group"><label className="form-label">{t('req_details')}</label>
-            <textarea className="form-input" rows={3} value={form.details} onChange={e => set('details', e.target.value)} placeholder={t('req_details_ph')} /></div>
+            <textarea className="form-input" rows={3} value={form.details} onChange={e => set('details', e.target.value)} placeholder={t('req_details_ph')} maxLength={5000} /></div>
           <div className="form-group"><label className="form-label">{t('req_needed_by')}</label>
             <input className="form-input" type="date" value={form.neededBy} onChange={e => set('neededBy', e.target.value)} /></div>
           {err && <div style={{ color:'var(--danger)', fontSize:'0.82rem', fontWeight:600, marginBottom:10 }}>✕ {err}</div>}
