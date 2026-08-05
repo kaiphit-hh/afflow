@@ -1450,7 +1450,7 @@ const I18N = {
     cat_notif_section:'ประเภทงานรออนุมัติ', cat_toast_new:'เสนอประเภทงานใหม่',
     week_timeline:'📅 Timeline สัปดาห์นี้',
     tasklist_title:'งานทั้งหมด', tasklist_sub_mgr:'งานทั้งหมด {n} รายการ', tasklist_sub_user:'งานของ {name} — {n} รายการ', completed_sub:'เสร็จแล้ว {n} รายการ',
-    filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด', scope_mine:'งานของฉัน', scope_all:'ทั้งทีม', filter_people:'กรองรายคน', filter_clear_people:'ล้างที่เลือก', filter_people_n:'เลือก {n} คน',
+    filter_all_status:'สถานะทั้งหมด', filter_all_assignee:'ผู้รับผิดชอบทั้งหมด', filter_all_cat:'หมวดทั้งหมด', filter_all_month:'ทุกเดือน', scope_mine:'งานของฉัน', scope_all:'ทั้งทีม', filter_people:'กรองรายคน', filter_clear_people:'ล้างที่เลือก', filter_people_n:'เลือก {n} คน',
     clear_filters:'✕ ล้างตัวกรอง', found_n:'พบ {n} รายการ', no_match:'ไม่พบงานที่ตรงกับเงื่อนไข', clear_search:'ล้างคำค้นหา',
     view_detail:'ดูรายละเอียด', edit:'แก้ไข', delete:'ลบ', duplicate:'ทำซ้ำงานนี้', edit_limited_note:'งานนี้ไม่ใช่ของคุณ — แก้ได้เฉพาะประเภทงาน + วันกำหนดส่ง',
     timeline_title:'Timeline รายเดือน 📅', timeline_sub:'งานตามวันกำหนดส่ง', prev:'← ก่อนหน้า', next:'ถัดไป →', legend:'สัญลักษณ์:', today:'วันนี้', legend_holiday:'วันหยุดไทย', legend_weekend:'เสาร์-อาทิตย์ (หยุด)',
@@ -1531,7 +1531,7 @@ const I18N = {
     cat_notif_section:'Categories to approve', cat_toast_new:'proposed a new category',
     week_timeline:'📅 This Week',
     tasklist_title:'All Tasks', tasklist_sub_mgr:'{n} tasks total', tasklist_sub_user:'{name} — {n} tasks', completed_sub:'{n} completed',
-    filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories', scope_mine:'My tasks', scope_all:'Team (all)', filter_people:'Filter by person', filter_clear_people:'Clear', filter_people_n:'{n} selected',
+    filter_all_status:'All statuses', filter_all_assignee:'All assignees', filter_all_cat:'All categories', filter_all_month:'All months', scope_mine:'My tasks', scope_all:'Team (all)', filter_people:'Filter by person', filter_clear_people:'Clear', filter_people_n:'{n} selected',
     clear_filters:'✕ Clear filters', found_n:'{n} found', no_match:'No matching tasks', clear_search:'Clear search',
     view_detail:'View details', edit:'Edit', delete:'Delete', duplicate:'Duplicate task', edit_limited_note:'Not your task — you can only edit category + due date',
     timeline_title:'Monthly Timeline 📅', timeline_sub:'Tasks by due date', prev:'← Prev', next:'Next →', legend:'Legend:', today:'Today', legend_holiday:'Thai holiday', legend_weekend:'Weekend (off)',
@@ -3648,7 +3648,13 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
   const [fStatus,    setFStatus]    = useState('');
   const [fAssignees, setFAssignees] = useState([]);   // กรองรายคน — เลือกได้หลายคน (เจาะจง)
   const [fCat,       setFCat]       = useState('');
+  const [fMonth,     setFMonth]     = useState('');   // กรองเดือน/ปี — '' = ทุกเดือน (YYYY-MM)
   const [asgOpen,    setAsgOpen]    = useState(false);   // เปิด/ปิด dropdown ติ๊กหลายคน
+
+  // เดือนที่มีงานจริง — เรียงล่าสุดอยู่บน (ใช้ taskMonth เดียวกับ Dashboard: เสร็จแล้วนับเดือนที่เสร็จ, ค้างนับเดือนกำหนดส่ง)
+  const monthsInView = useMemo(() => {
+    return [...new Set(tasks.map(taskMonth))].sort((a, b) => b.localeCompare(a));
+  }, [tasks]);
 
   const scoped = useMemo(() => myOnly ? tasks.filter(t => t.assignee === currentUser) : tasks, [tasks, myOnly, currentUser]);
 
@@ -3666,6 +3672,7 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
     if (fStatus   && t.status   !== fStatus)    return false;
     if (fAssignees.length && !fAssignees.includes(t.assignee))  return false;
     if (fCat      && t.category !== fCat)       return false;
+    if (fMonth    && taskMonth(t) !== fMonth)    return false;
     if (search    && !(
       t.title.toLowerCase().includes(search.toLowerCase()) ||
       (t.description || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -3679,10 +3686,10 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
     if (!a.deadline) return 1;
     if (!b.deadline) return -1;
     return a.deadline.localeCompare(b.deadline);
-  }), [scoped, mode, fStatus, fAssignees, fCat, search]);
+  }), [scoped, mode, fStatus, fAssignees, fCat, fMonth, search]);
 
-  function clearFilters() { setFStatus(''); setFAssignees([]); setFCat(''); setSearch(''); }
-  const hasFilter = fStatus || fAssignees.length || fCat || search;
+  function clearFilters() { setFStatus(''); setFAssignees([]); setFCat(''); setFMonth(''); setSearch(''); }
+  const hasFilter = fStatus || fAssignees.length || fCat || fMonth || search;
   const headerCount = mode === 'completed' ? scoped.length : scoped.filter(t => t.status !== 'done').length;
 
   return (
@@ -3758,6 +3765,12 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
           <option value="">{t('filter_all_cat')}</option>
           {[...new Set([...categories, ...tasks.map(tk => tk.category)].filter(Boolean))].map(c => <option key={c} value={c}>{tCat(c, lang)}</option>)}
         </select>
+        {monthsInView.length > 0 && (
+          <select className="filter-select" value={fMonth} onChange={e => setFMonth(e.target.value)}>
+            <option value="">{t('filter_all_month')}</option>
+            {monthsInView.map(mk => <option key={mk} value={mk}>{monthLabel(mk, lang)}</option>)}
+          </select>
+        )}
         {hasFilter && (
           <button className="btn btn-outline" style={{ fontSize:'0.8rem', padding:'7px 12px' }} onClick={clearFilters}>{t('clear_filters')}</button>
         )}
