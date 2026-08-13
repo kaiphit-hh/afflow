@@ -3841,8 +3841,8 @@ function TaskList({ tasks, currentUser, onSelectTask, onEditTask, onDeleteTask, 
 
 function TimelineView({ tasks, currentUser, onSelectTask }) {
   const { t, lang } = useT();
-  const [year,  setYear]  = useState(2026);
-  const [month, setMonth] = useState(5); // 0-indexed June
+  const [year,  setYear]  = useState(() => Number(TODAY.slice(0, 4)));
+  const [month, setMonth] = useState(() => Number(TODAY.slice(5, 7)) - 1); // 0-indexed เดือนปัจจุบัน
 
   function prevMonth() { if (month === 0) { setYear(y => y-1); setMonth(11); } else setMonth(m => m-1); }
   function nextMonth() { if (month === 11) { setYear(y => y+1); setMonth(0); } else setMonth(m => m+1); }
