@@ -1411,6 +1411,9 @@ const I18N = {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'งานทั้งหมด', nav_completed:'เสร็จแล้ว', completed_title:'✅ งานที่เสร็จแล้ว', nav_inbox:'กล่องงานเข้า', nav_drive:'Drive กลาง', drive_open_external:'เปิดใน Google Drive', drive_hint:'🔍 พิมพ์ในช่องค้นหาด้านบนเพื่อหาไฟล์ทุกโฟลเดอร์ • คลิกโฟลเดอร์เข้าไปดู • คลิกไฟล์เพื่อเปิด', drive_no_url:'ยังไม่ได้ตั้งลิงก์ Drive', drive_loading:'กำลังโหลด...', drive_empty_folder:'โฟลเดอร์นี้ว่างเปล่า', drive_error:'โหลด Drive ไม่สำเร็จ', drive_retry:'ลองใหม่', drive_refresh:'รีเฟรช', drive_search_ph:'ค้นหาไฟล์ทุกโฟลเดอร์ใน Drive...', drive_search_go:'ค้นหา', drive_search_clear:'ล้างการค้นหา', drive_searching:'กำลังค้นหาทุกโฟลเดอร์...', drive_search_count:'เจอ {n} รายการที่ตรงกับ "{q}"', drive_search_none:'ไม่เจอไฟล์ที่ตรงกับ "{q}" — ลองพิมพ์สั้นลงหรือสะกดใหม่', drive_download:'ดาวน์โหลด', drive_upload:'อัปโหลด', drive_uploading:'กำลังอัปโหลด...', drive_upload_done:'อัปโหลดเสร็จ — สำเร็จ {ok} · ล้มเหลว {fail}', drive_drop_hint:'วางไฟล์ที่นี่เพื่ออัปโหลดเข้าโฟลเดอร์นี้', drive_delete:'ลบ (ลงถังขยะ)', drive_delete_confirm:'ย้าย "{name}" ลงถังขยะ?\n(ยังกู้คืนได้ใน Google Drive)', drive_delete_fail:'ลบไม่สำเร็จ', nav_timeline:'Timeline', nav_report:'รายงาน', nav_notes:'โน้ตของฉัน', nav_unassigned:'งานค้าง (ยังไม่มอบหมาย)',
     unassigned_title:'📌 งานที่ยังไม่มอบหมาย', unassigned_sub:'รายการงานที่ทีมทราบเบื้องต้น แต่ยังไม่ได้แบ่งว่าใครทำ — ทุกคนเพิ่ม/แก้ไขได้ ถ้าเกี่ยวกับตัวเองกด "สร้างเป็นงานของฉัน" ได้เลย', unassigned_add:'+ เพิ่มรายการ', unassigned_empty:'ยังไม่มีงานค้าง 🎉', unassigned_title_ph:'หัวข้องาน...', unassigned_body_ph:'รายละเอียดเพิ่มเติม (ถ้ามี)...', unassigned_untitled:'(ไม่มีหัวข้อ)', unassigned_by:'เพิ่มโดย {name}', unassigned_edited_by:'แก้ไขล่าสุดโดย {name}', unassigned_claim:'➕ สร้างเป็นงานของฉัน', unassigned_del_confirm:'ลบรายการนี้?', unassigned_save_fail:'บันทึกไม่สำเร็จ — ตรวจว่ารัน SQL unassigned_notes แล้วหรือยัง', unassigned_load_fail:'โหลดไม่สำเร็จ — ตรวจว่ารัน SQL unassigned_notes แล้วหรือยัง',
+    unassigned_save:'บันทึก', unassigned_assigned_badge:'👤 มอบหมายให้ {name} · รอรับงาน', unassigned_accept:'🙋 รับงาน',
+    assign_choice_title:'งานนี้เกี่ยวข้องกับใคร?', assign_choice_sub:'บันทึกโน้ตแล้ว — เลือกได้ว่าจะสร้างเป็นงานของตัวเองเลย มอบหมายให้คนอื่น หรือปล่อยไว้ในกระดานนี้ก่อนก็ได้ (กด ✕ ปิด)',
+    assign_pick_ph:'— เลือกคน —', assign_confirm:'มอบหมาย', assign_toast:'📌 {by} มอบหมายงานนี้ให้คุณ: {title}', assign_notif_title:'📌 มีงานมอบหมายให้คุณ', assign_notif_section:'งานที่มอบหมายให้คุณ',
     notes_title:'โน้ตของฉัน', notes_sub:'โน้ตส่วนตัว เห็นเฉพาะคุณคนเดียว ซิงค์ทุกอุปกรณ์', notes_add:'เพิ่มโน้ต', notes_empty:'ยังไม่มีโน้ต — กด "เพิ่มโน้ต" เพื่อเริ่ม', notes_ph:'พิมพ์โน้ตที่นี่...', notes_pin:'ปักหมุด', notes_del_confirm:'ลบโน้ตนี้?', notes_save_fail:'บันทึกไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง', notes_load_fail:'โหลดโน้ตไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง',
     notes_attach:'แนบไฟล์/รูปภาพ', notes_attach_uploading:'กำลังอัปโหลด...', notes_attach_fail:'แนบไฟล์ไม่สำเร็จ — ตรวจว่ารัน SQL bucket note-attachments แล้วหรือยัง', notes_attach_too_big:'ไฟล์ใหญ่เกิน 8MB', notes_attach_remove_confirm:'ลบไฟล์แนบนี้?', notes_attach_open_fail:'เปิดไฟล์ไม่สำเร็จ',
     notes_search_ph:'ค้นหาโน้ต (หัวข้อ/เนื้อหา)...', notes_search_none:'ไม่พบโน้ตที่ตรงกับ "{q}"', notes_title_ph:'หัวข้อโน้ต...', notes_untitled:'(ไม่มีหัวข้อ)',
@@ -1493,6 +1496,9 @@ const I18N = {
     brand:'Accounting & Finance', company:'Hungry Hub',
     nav_dashboard:'Dashboard', nav_tasks:'All Tasks', nav_completed:'Completed', completed_title:'✅ Completed Tasks', nav_inbox:'Inbox', nav_drive:'Central Drive', drive_open_external:'Open in Google Drive', drive_hint:'🔍 Use the search box above to find files across all folders • click a folder to open it • click a file to open', drive_no_url:'No Drive link set', drive_loading:'Loading...', drive_empty_folder:'This folder is empty', drive_error:'Could not load Drive', drive_retry:'Retry', drive_refresh:'Refresh', drive_search_ph:'Search files across all folders...', drive_search_go:'Search', drive_search_clear:'Clear search', drive_searching:'Searching all folders...', drive_search_count:'{n} result(s) for "{q}"', drive_search_none:'No files matching "{q}" — try a shorter or different spelling', drive_download:'Download', drive_upload:'Upload', drive_uploading:'Uploading...', drive_upload_done:'Upload done — {ok} ok · {fail} failed', drive_drop_hint:'Drop files here to upload to this folder', drive_delete:'Delete (to Trash)', drive_delete_confirm:'Move "{name}" to Trash?\n(Recoverable in Google Drive)', drive_delete_fail:'Delete failed', nav_timeline:'Timeline', nav_report:'Reports', nav_notes:'My Notes', nav_unassigned:'Unassigned',
     unassigned_title:'📌 Unassigned Work', unassigned_sub:'Things the team knows need doing but haven\'t been assigned to anyone yet — anyone can add or edit. If one relates to you, turn it into your own task.', unassigned_add:'+ Add item', unassigned_empty:'Nothing unassigned right now 🎉', unassigned_title_ph:'What needs doing...', unassigned_body_ph:'More details (optional)...', unassigned_untitled:'(Untitled)', unassigned_by:'Added by {name}', unassigned_edited_by:'Last edited by {name}', unassigned_claim:'➕ Make it my task', unassigned_del_confirm:'Delete this item?', unassigned_save_fail:'Save failed — did you run the unassigned_notes SQL?', unassigned_load_fail:'Could not load — did you run the unassigned_notes SQL?',
+    unassigned_save:'Save', unassigned_assigned_badge:'👤 Assigned to {name} · awaiting acceptance', unassigned_accept:'🙋 Accept task',
+    assign_choice_title:'Who is this for?', assign_choice_sub:'Note saved — you can make it your own task now, assign it to someone else, or just leave it on this board (tap ✕ to close).',
+    assign_pick_ph:'— choose someone —', assign_confirm:'Assign', assign_toast:'📌 {by} assigned this to you: {title}', assign_notif_title:'📌 You were assigned a task', assign_notif_section:'Assigned to you',
     notes_title:'My Notes', notes_sub:'Private notes — only you can see them, synced across devices', notes_add:'Add note', notes_empty:'No notes yet — tap "Add note" to start', notes_ph:'Type your note here...', notes_pin:'Pin', notes_del_confirm:'Delete this note?', notes_save_fail:'Save failed — did you run the notes table SQL?', notes_load_fail:'Could not load notes — did you run the notes table SQL?',
     notes_attach:'Attach file/image', notes_attach_uploading:'Uploading...', notes_attach_fail:'Attach failed — did you run the note-attachments bucket SQL?', notes_attach_too_big:'File is over 8MB', notes_attach_remove_confirm:'Remove this attachment?', notes_attach_open_fail:'Could not open file',
     notes_search_ph:'Search notes (title/body)...', notes_search_none:'No notes matching "{q}"', notes_title_ph:'Note title...', notes_untitled:'(Untitled)',
@@ -2924,7 +2930,7 @@ function TopbarClock() {
   );
 }
 
-function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy, commentNotifs = [], onOpenCommentNotif, pendingCats = [], onOpenCategories }) {
+function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, search, onSearch, tasks, onToggleSidebar, onSelectTask, syncStatus, onOpenSettings, privacyMode, onTogglePrivacy, commentNotifs = [], onOpenCommentNotif, pendingCats = [], onOpenCategories, assignNotifs = [], onOpenAssignNotif }) {
   const { t, lang, setLang } = useT();
   const [notifOpen, setNotifOpen] = React.useState(false);
   const [notifPerm, setNotifPerm] = React.useState(('Notification' in window) ? Notification.permission : 'unsupported');
@@ -2947,7 +2953,7 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
     .map(x => ({ ...x, dd: daysDiff(x.deadline) }))
     .sort((a, b) => a.dd - b.dd);
   const catCount   = isManager ? pendingCats.length : 0;
-  const totalNotif = alerts.length + commentNotifs.length + catCount;
+  const totalNotif = alerts.length + commentNotifs.length + catCount + assignNotifs.length;
 
   function alertMeta(dd) {
     if (dd < 0)  return { cls: 'red',   text: t('overdue_days', { n: Math.abs(dd) }) };
@@ -3067,6 +3073,19 @@ function Topbar({ currentUser, darkMode, setDarkMode, isManager, viewLabel, sear
                         <div style={{ minWidth:0, flex:1 }}>
                           <div className="notif-item-title"><b>{cn.author}</b> {t('cmt_notif_commented')} · {cn.taskTitle}</div>
                           {cn.text && <div className="notif-item-meta">“{cn.text}”</div>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {assignNotifs.length > 0 && (
+                  <div className="notif-list" style={{ borderBottom:'1px solid var(--border)' }}>
+                    <div style={{ fontSize:'0.74rem', fontWeight:700, color:'var(--text-muted)', padding:'6px 10px 4px' }}>{t('assign_notif_section')}</div>
+                    {assignNotifs.map(an => (
+                      <div key={an.id} className="notif-item" onClick={() => { onOpenAssignNotif(an); setNotifOpen(false); }}>
+                        <div className="notif-dot-ind amber" />
+                        <div style={{ minWidth:0, flex:1 }}>
+                          <div className="notif-item-title">📌 <b>{an.by}</b> · {an.title}</div>
                         </div>
                       </div>
                     ))}
@@ -5361,6 +5380,7 @@ function UnassignedView({ cfg, currentUser, onConvert }) {
     setItems(ns => ns.map(n => n.id === id ? { ...n, ...fields, updated_by: currentUser, updated_at: nowISO() } : n));
     sb.updateUnassigned(cfg, id, fields, currentUser).catch(() => setErr(t('unassigned_save_fail')));
   }
+  function assignTo(id, name) { saveFields(id, { assigned_to: name }); }
   function del(id) {
     setItems(ns => ns.filter(n => n.id !== id));
     sb.deleteUnassigned(cfg, id).catch(() => {});
@@ -5382,59 +5402,114 @@ function UnassignedView({ cfg, currentUser, onConvert }) {
         <div className="card"><div className="empty-state"><div className="empty-icon">📌</div><div className="empty-text">{t('unassigned_empty')}</div></div></div>
       )}
       <div className="notes-list">
-        {items.map(n => (
-          <div key={n.id} className="note-row" onClick={() => setOpenId(n.id)}>
-            <div className="note-row-main">
-              <div className={'note-row-title' + (!n.title ? ' untitled' : '')}>{n.title || t('unassigned_untitled')}</div>
-              {n.body && <div className="note-row-preview">{n.body.replace(/\s+/g, ' ').slice(0, 120)}</div>}
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 2 }}>{t('unassigned_by', { name: n.created_by || '—' })}</div>
+        {items.map(n => {
+          const assignedToMe    = n.assigned_to && n.assigned_to === currentUser;
+          const assignedToOther = n.assigned_to && n.assigned_to !== currentUser;
+          return (
+            <div key={n.id} className="note-row" onClick={() => setOpenId(n.id)}>
+              <div className="note-row-main">
+                <div className={'note-row-title' + (!n.title ? ' untitled' : '')}>{n.title || t('unassigned_untitled')}</div>
+                {n.body && <div className="note-row-preview">{n.body.replace(/\s+/g, ' ').slice(0, 120)}</div>}
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: 2 }}>{t('unassigned_by', { name: n.created_by || '—' })}</div>
+                {assignedToOther && <div style={{ fontSize: '0.72rem', color: 'var(--warning)', fontWeight: 600, marginTop: 2 }}>{t('unassigned_assigned_badge', { name: n.assigned_to })}</div>}
+              </div>
+              <div className="note-row-meta">
+                <span className="note-row-time">{formatDateTime(n.updated_at, lang)}</span>
+                {!assignedToOther && (
+                  <button className="btn btn-outline" style={{ fontSize: '0.74rem', padding: '4px 10px', whiteSpace: 'nowrap' }}
+                    onClick={e => { e.stopPropagation(); onConvert(n); }}>{assignedToMe ? t('unassigned_accept') : t('unassigned_claim')}</button>
+                )}
+                <button className="btn-icon danger" title={t('delete')} onClick={e => { e.stopPropagation(); if (confirm(t('unassigned_del_confirm'))) del(n.id); }}>🗑️</button>
+              </div>
             </div>
-            <div className="note-row-meta">
-              <span className="note-row-time">{formatDateTime(n.updated_at, lang)}</span>
-              <button className="btn btn-outline" style={{ fontSize: '0.74rem', padding: '4px 10px', whiteSpace: 'nowrap' }}
-                onClick={e => { e.stopPropagation(); onConvert(n); }}>{t('unassigned_claim')}</button>
-              <button className="btn-icon danger" title={t('delete')} onClick={e => { e.stopPropagation(); if (confirm(t('unassigned_del_confirm'))) del(n.id); }}>🗑️</button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       {openItem && (
         <UnassignedDetailModal item={openItem} currentUser={currentUser}
-          onClose={() => setOpenId(null)} onSave={saveFields} onDelete={del} onConvert={onConvert} />
+          onClose={() => setOpenId(null)} onSave={saveFields} onDelete={del} onConvert={onConvert} onAssign={assignTo} />
       )}
     </div>
   );
 }
 
-function UnassignedDetailModal({ item, currentUser, onClose, onSave, onDelete, onConvert }) {
+function UnassignedDetailModal({ item, currentUser, onClose, onSave, onDelete, onConvert, onAssign }) {
   const { t, lang } = useT();
-  function saveField(fields) { onSave(item.id, fields); }
+  const [title, setTitle] = useState(item.title || '');
+  const [body,  setBody]  = useState(item.body || '');
+  const [showAssign, setShowAssign] = useState(false);
+
   function del() {
     if (!confirm(t('unassigned_del_confirm'))) return;
     onDelete(item.id);
     onClose();
   }
+  function handleSave() {
+    const fields = {};
+    if (title !== (item.title || '')) fields.title = title;
+    if (body  !== (item.body  || '')) fields.body  = body;
+    if (Object.keys(fields).length) onSave(item.id, fields);
+    setShowAssign(true);
+  }
+  function pick(target) {
+    if (target === 'mine') onConvert({ ...item, title, body });
+    else onAssign(item.id, target);
+    setShowAssign(false);
+    onClose();
+  }
+
   return (
-    <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="modal" style={{ maxWidth: 560 }}>
-        <div className="modal-header">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('unassigned_by', { name: item.created_by || '—' })}</span>
-            {item.updated_by && <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('unassigned_edited_by', { name: item.updated_by })} · {formatDateTime(item.updated_at, lang)}</span>}
+    <>
+      <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+        <div className="modal" style={{ maxWidth: 560 }}>
+          <div className="modal-header">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('unassigned_by', { name: item.created_by || '—' })}</span>
+              {item.updated_by && <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('unassigned_edited_by', { name: item.updated_by })} · {formatDateTime(item.updated_at, lang)}</span>}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <button className="btn-icon danger" title={t('delete')} onClick={del}>🗑️</button>
+              <button className="modal-close" onClick={onClose}>✕</button>
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <button className="btn-icon danger" title={t('delete')} onClick={del}>🗑️</button>
-            <button className="modal-close" onClick={onClose}>✕</button>
+          <div className="modal-body">
+            <input className="note-modal-title" value={title} placeholder={t('unassigned_title_ph')}
+              autoFocus={!item.title && !item.body}
+              onChange={e => setTitle(e.target.value)} />
+            <textarea className="note-textarea" value={body} placeholder={t('unassigned_body_ph')}
+              onChange={e => setBody(e.target.value)} />
+            <button className="btn btn-primary" style={{ width: '100%', marginTop: 12 }} onClick={handleSave}>{t('unassigned_save')}</button>
           </div>
         </div>
+      </div>
+      {showAssign && (
+        <AssignChoiceModal onClose={() => { setShowAssign(false); onClose(); }} onPick={pick} />
+      )}
+    </>
+  );
+}
+
+// ─── AssignChoiceModal: หลังบันทึกโน้ต ถามว่าจะสร้างเป็นงานของฉัน / มอบหมายให้ใคร / ไม่มอบหมาย ──
+function AssignChoiceModal({ onClose, onPick }) {
+  const { t } = useT();
+  const [target, setTarget] = useState('');
+  return (
+    <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal" style={{ maxWidth: 420 }}>
+        <div className="modal-header">
+          <div className="modal-title">{t('assign_choice_title')}</div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
         <div className="modal-body">
-          <input className="note-modal-title" defaultValue={item.title || ''} placeholder={t('unassigned_title_ph')}
-            autoFocus={!item.title && !item.body}
-            onBlur={e => { if (e.target.value !== (item.title || '')) saveField({ title: e.target.value }); }} />
-          <textarea className="note-textarea" defaultValue={item.body || ''} placeholder={t('unassigned_body_ph')}
-            onBlur={e => { if (e.target.value !== (item.body || '')) saveField({ body: e.target.value }); }} />
-          <button className="btn btn-primary" style={{ width: '100%', marginTop: 12 }}
-            onClick={() => { onConvert(item); onClose(); }}>{t('unassigned_claim')}</button>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: -4, marginBottom: 16 }}>{t('assign_choice_sub')}</p>
+          <button className="btn btn-primary" style={{ width: '100%', marginBottom: 14 }} onClick={() => onPick('mine')}>{t('unassigned_claim')}</button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <select className="form-input" value={target} onChange={e => setTarget(e.target.value)} style={{ flex: 1 }}>
+              <option value="">{t('assign_pick_ph')}</option>
+              {USERS.map(u => <option key={u.name} value={u.name}>{u.name}</option>)}
+            </select>
+            <button className="btn btn-outline" disabled={!target} onClick={() => onPick(target)}>{t('assign_confirm')}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -5671,6 +5746,55 @@ function App() {
     if (task) handleSelectTask(task);
     setCommentNotifs(list => list.filter(x => x.id !== notif.id));
   }
+
+  // ── กระดานงานที่ยังไม่มอบหมาย: แจ้งเตือนที่กระดิ่งเมื่อมีคนมอบหมายงานให้ "ฉัน" ──────────
+  const [unassignedItems, setUnassignedItems] = useState([]);
+  const [assignNotifs,    setAssignNotifs]    = useState([]);
+  useEffect(() => {
+    if (!isAuthed) { setUnassignedItems([]); return; }
+    let alive = true;
+    const load = () => sb.loadUnassigned(sbCfg).then(d => { if (alive) setUnassignedItems(d || []); }).catch(() => {});
+    load();
+    const unsub = sb.subscribeUnassigned(sbCfg, load);
+    return () => { alive = false; if (unsub) unsub(); };
+  }, [isAuthed, sbCfg.url, sbCfg.key]);
+  function detectNewAssignments(list) {
+    if (!currentUser) return;
+    const KEY = 'afflow_seen_assign_' + currentUser;
+    let raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) {}
+    const isBaseline = (raw === null);   // ครั้งแรกสุดของบัญชีนี้ = ตั้งฐาน (ไม่แจ้งย้อนหลัง)
+    const seen = new Set((raw || '').split(',').filter(Boolean));
+    const toNotify = [];
+    (list || []).forEach(item => {
+      if (item.assigned_to !== currentUser) return;
+      if (seen.has(item.id)) return;
+      seen.add(item.id);
+      if (!isBaseline) toNotify.push(item);
+    });
+    try { localStorage.setItem(KEY, Array.from(seen).slice(-500).join(',')); } catch (e) {}
+    toNotify.forEach(addAssignNotif);
+  }
+  useEffect(() => { detectNewAssignments(unassignedItems); }, [unassignedItems, currentUser]);
+  function addAssignNotif(item) {
+    setAssignNotifs(list => {
+      if (list.some(x => x.id === item.id)) return list;
+      return [{ id: item.id, title: item.title || tApp('unassigned_untitled'), by: item.updated_by || item.created_by || '—' }, ...list].slice(0, 30);
+    });
+    pushToast(tApp('assign_toast').replace('{by}', item.updated_by || item.created_by || '—').replace('{title}', item.title || tApp('unassigned_untitled')));
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const n = new Notification(tApp('assign_notif_title'), { body: item.title || '', icon: 'icon-192.png', tag: 'afflow-assign-' + item.id });
+        n.onclick = () => { try { window.focus(); } catch (e) {} setView('unassigned'); n.close(); };
+      } catch (e) {}
+    }
+  }
+  // คลิกแจ้งเตือนมอบหมายงาน → ไปหน้ากระดานงานค้าง + เอาแจ้งเตือนออก
+  function openAssignNotif(notif) {
+    setView('unassigned');
+    setAssignNotifs(list => list.filter(x => x.id !== notif.id));
+  }
+
   useEffect(() => {
     if (!isAuthed || !currentUser) { setOnlineUsers([]); return; }
     let ready = false;
@@ -6010,6 +6134,7 @@ function App() {
                 <span className="nav-icon">{n.icon}</span>
                 <span>{n.label}</span>
                 {n.id === 'inbox' && newReqCount > 0 && <span className="nav-badge">{newReqCount > 9 ? '9+' : newReqCount}</span>}
+                {n.id === 'unassigned' && unassignedItems.length > 0 && <span className="nav-badge">{unassignedItems.length > 9 ? '9+' : unassignedItems.length}</span>}
               </div>
             ))}
             {DRIVE_URL && (
@@ -6071,6 +6196,8 @@ function App() {
             onOpenCommentNotif={openCommentNotif}
             pendingCats={pendingCats}
             onOpenCategories={() => setCatModalOpen(true)}
+            assignNotifs={assignNotifs}
+            onOpenAssignNotif={openAssignNotif}
           />
 
           {/* Page content */}
