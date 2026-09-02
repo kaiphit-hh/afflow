@@ -1414,6 +1414,8 @@ const I18N = {
     unassigned_save:'บันทึก', unassigned_assigned_badge:'👤 มอบหมายให้ {name} · รอรับงาน', unassigned_accept:'🙋 รับงาน',
     assign_choice_title:'งานนี้เกี่ยวข้องกับใคร?', assign_choice_sub:'บันทึกโน้ตแล้ว — เลือกได้ว่าจะสร้างเป็นงานของตัวเองเลย มอบหมายให้คนอื่น หรือปล่อยไว้ในกระดานนี้ก่อนก็ได้ (กด ✕ ปิด)',
     assign_pick_ph:'— เลือกคน —', assign_confirm:'มอบหมาย', assign_toast:'📌 {by} มอบหมายงานนี้ให้คุณ: {title}', assign_notif_title:'📌 มีงานมอบหมายให้คุณ', assign_notif_section:'งานที่มอบหมายให้คุณ',
+    unassigned_assign_btn:'👤 มอบหมาย', assign_pick_title:'มอบหมายงานนี้ให้ใคร?',
+    accept_task_title:'รับงานนี้', accept_deadline_label:'วันครบกำหนด', accept_confirm:'ยืนยัน',
     notes_title:'โน้ตของฉัน', notes_sub:'โน้ตส่วนตัว เห็นเฉพาะคุณคนเดียว ซิงค์ทุกอุปกรณ์', notes_add:'เพิ่มโน้ต', notes_empty:'ยังไม่มีโน้ต — กด "เพิ่มโน้ต" เพื่อเริ่ม', notes_ph:'พิมพ์โน้ตที่นี่...', notes_pin:'ปักหมุด', notes_del_confirm:'ลบโน้ตนี้?', notes_save_fail:'บันทึกไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง', notes_load_fail:'โหลดโน้ตไม่สำเร็จ — ตรวจว่ารัน SQL ตาราง notes แล้วหรือยัง',
     notes_attach:'แนบไฟล์/รูปภาพ', notes_attach_uploading:'กำลังอัปโหลด...', notes_attach_fail:'แนบไฟล์ไม่สำเร็จ — ตรวจว่ารัน SQL bucket note-attachments แล้วหรือยัง', notes_attach_too_big:'ไฟล์ใหญ่เกิน 8MB', notes_attach_remove_confirm:'ลบไฟล์แนบนี้?', notes_attach_open_fail:'เปิดไฟล์ไม่สำเร็จ',
     notes_search_ph:'ค้นหาโน้ต (หัวข้อ/เนื้อหา)...', notes_search_none:'ไม่พบโน้ตที่ตรงกับ "{q}"', notes_title_ph:'หัวข้อโน้ต...', notes_untitled:'(ไม่มีหัวข้อ)',
@@ -1499,6 +1501,8 @@ const I18N = {
     unassigned_save:'Save', unassigned_assigned_badge:'👤 Assigned to {name} · awaiting acceptance', unassigned_accept:'🙋 Accept task',
     assign_choice_title:'Who is this for?', assign_choice_sub:'Note saved — you can make it your own task now, assign it to someone else, or just leave it on this board (tap ✕ to close).',
     assign_pick_ph:'— choose someone —', assign_confirm:'Assign', assign_toast:'📌 {by} assigned this to you: {title}', assign_notif_title:'📌 You were assigned a task', assign_notif_section:'Assigned to you',
+    unassigned_assign_btn:'👤 Assign', assign_pick_title:'Assign this to',
+    accept_task_title:'Accept task', accept_deadline_label:'Deadline', accept_confirm:'Confirm',
     notes_title:'My Notes', notes_sub:'Private notes — only you can see them, synced across devices', notes_add:'Add note', notes_empty:'No notes yet — tap "Add note" to start', notes_ph:'Type your note here...', notes_pin:'Pin', notes_del_confirm:'Delete this note?', notes_save_fail:'Save failed — did you run the notes table SQL?', notes_load_fail:'Could not load notes — did you run the notes table SQL?',
     notes_attach:'Attach file/image', notes_attach_uploading:'Uploading...', notes_attach_fail:'Attach failed — did you run the note-attachments bucket SQL?', notes_attach_too_big:'File is over 8MB', notes_attach_remove_confirm:'Remove this attachment?', notes_attach_open_fail:'Could not open file',
     notes_search_ph:'Search notes (title/body)...', notes_search_none:'No notes matching "{q}"', notes_title_ph:'Note title...', notes_untitled:'(Untitled)',
@@ -5352,13 +5356,15 @@ function NotesView({ cfg, currentUser, userId }) {
 }
 
 // ─── UnassignedView: กระดานงานที่ยังไม่มอบหมาย — ทีมเห็นร่วมกัน เพิ่ม/แก้/ลบได้ทุกคน ──
-function UnassignedView({ cfg, currentUser, onConvert }) {
+function UnassignedView({ cfg, currentUser, onAccept }) {
   const { t, lang } = useT();
   const [items,  setItems]  = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [busy,   setBusy]   = useState(false);
   const [err,    setErr]    = useState('');
   const [openId, setOpenId] = useState(null);
+  const [acceptItem,   setAcceptItem]   = useState(null);   // รายการที่กำลังจะรับ/สร้างเป็นงาน — รอใส่ deadline
+  const [assignPickId, setAssignPickId] = useState(null);   // รายการที่กำลังเปิด popover เลือกคนมอบหมายด่วน (จากปุ่มในลิสต์)
 
   useEffect(() => {
     let alive = true;
@@ -5386,7 +5392,8 @@ function UnassignedView({ cfg, currentUser, onConvert }) {
     sb.deleteUnassigned(cfg, id).catch(() => {});
   }
 
-  const openItem = items.find(n => n.id === openId) || null;
+  const openItem       = items.find(n => n.id === openId) || null;
+  const assignPickItem = items.find(n => n.id === assignPickId) || null;
 
   return (
     <div>
@@ -5417,7 +5424,11 @@ function UnassignedView({ cfg, currentUser, onConvert }) {
                 <span className="note-row-time">{formatDateTime(n.updated_at, lang)}</span>
                 {!assignedToOther && (
                   <button className="btn btn-outline" style={{ fontSize: '0.74rem', padding: '4px 10px', whiteSpace: 'nowrap' }}
-                    onClick={e => { e.stopPropagation(); onConvert(n); }}>{assignedToMe ? t('unassigned_accept') : t('unassigned_claim')}</button>
+                    onClick={e => { e.stopPropagation(); setAcceptItem(n); }}>{assignedToMe ? t('unassigned_accept') : t('unassigned_claim')}</button>
+                )}
+                {!n.assigned_to && (
+                  <button className="btn btn-outline" style={{ fontSize: '0.74rem', padding: '4px 10px', whiteSpace: 'nowrap' }}
+                    onClick={e => { e.stopPropagation(); setAssignPickId(n.id); }}>{t('unassigned_assign_btn')}</button>
                 )}
                 <button className="btn-icon danger" title={t('delete')} onClick={e => { e.stopPropagation(); if (confirm(t('unassigned_del_confirm'))) del(n.id); }}>🗑️</button>
               </div>
@@ -5427,13 +5438,22 @@ function UnassignedView({ cfg, currentUser, onConvert }) {
       </div>
       {openItem && (
         <UnassignedDetailModal item={openItem} currentUser={currentUser}
-          onClose={() => setOpenId(null)} onSave={saveFields} onDelete={del} onConvert={onConvert} onAssign={assignTo} />
+          onClose={() => setOpenId(null)} onSave={saveFields} onDelete={del} onAssign={assignTo}
+          onRequestAccept={(it) => { setOpenId(null); setAcceptItem(it); }} />
+      )}
+      {assignPickItem && (
+        <AssignChoiceModal hideMine onClose={() => setAssignPickId(null)}
+          onPick={(name) => { assignTo(assignPickItem.id, name); setAssignPickId(null); }} />
+      )}
+      {acceptItem && (
+        <AcceptTaskModal item={acceptItem} onClose={() => setAcceptItem(null)}
+          onConfirm={(deadline) => { onAccept(acceptItem, deadline); setAcceptItem(null); }} />
       )}
     </div>
   );
 }
 
-function UnassignedDetailModal({ item, currentUser, onClose, onSave, onDelete, onConvert, onAssign }) {
+function UnassignedDetailModal({ item, currentUser, onClose, onSave, onDelete, onAssign, onRequestAccept }) {
   const { t, lang } = useT();
   const [title, setTitle] = useState(item.title || '');
   const [body,  setBody]  = useState(item.body || '');
@@ -5452,10 +5472,9 @@ function UnassignedDetailModal({ item, currentUser, onClose, onSave, onDelete, o
     setShowAssign(true);
   }
   function pick(target) {
-    if (target === 'mine') onConvert({ ...item, title, body });
-    else onAssign(item.id, target);
     setShowAssign(false);
-    onClose();
+    if (target === 'mine') onRequestAccept({ ...item, title, body });
+    else { onAssign(item.id, target); onClose(); }
   }
 
   return (
@@ -5483,26 +5502,26 @@ function UnassignedDetailModal({ item, currentUser, onClose, onSave, onDelete, o
         </div>
       </div>
       {showAssign && (
-        <AssignChoiceModal onClose={() => { setShowAssign(false); onClose(); }} onPick={pick} />
+        <AssignChoiceModal onClose={() => setShowAssign(false)} onPick={pick} />
       )}
     </>
   );
 }
 
-// ─── AssignChoiceModal: หลังบันทึกโน้ต ถามว่าจะสร้างเป็นงานของฉัน / มอบหมายให้ใคร / ไม่มอบหมาย ──
-function AssignChoiceModal({ onClose, onPick }) {
+// ─── AssignChoiceModal: ถามว่าจะสร้างเป็นงานของฉัน / มอบหมายให้ใคร (hideMine = ปุ่มมอบหมายด่วนในลิสต์ ไม่ต้องมีตัวเลือก "ของฉัน") ──
+function AssignChoiceModal({ onClose, onPick, hideMine }) {
   const { t } = useT();
   const [target, setTarget] = useState('');
   return (
     <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="modal" style={{ maxWidth: 420 }}>
         <div className="modal-header">
-          <div className="modal-title">{t('assign_choice_title')}</div>
+          <div className="modal-title">{hideMine ? t('assign_pick_title') : t('assign_choice_title')}</div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
         <div className="modal-body">
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: -4, marginBottom: 16 }}>{t('assign_choice_sub')}</p>
-          <button className="btn btn-primary" style={{ width: '100%', marginBottom: 14 }} onClick={() => onPick('mine')}>{t('unassigned_claim')}</button>
+          {!hideMine && <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: -4, marginBottom: 16 }}>{t('assign_choice_sub')}</p>}
+          {!hideMine && <button className="btn btn-primary" style={{ width: '100%', marginBottom: 14 }} onClick={() => onPick('mine')}>{t('unassigned_claim')}</button>}
           <div style={{ display: 'flex', gap: 8 }}>
             <select className="form-input" value={target} onChange={e => setTarget(e.target.value)} style={{ flex: 1 }}>
               <option value="">{t('assign_pick_ph')}</option>
@@ -5510,6 +5529,31 @@ function AssignChoiceModal({ onClose, onPick }) {
             </select>
             <button className="btn btn-outline" disabled={!target} onClick={() => onPick(target)}>{t('assign_confirm')}</button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── AcceptTaskModal: ตอนจะรับงาน/สร้างเป็นงานของตัวเอง — ให้ระบุ deadline ก่อนยืนยัน ──
+function AcceptTaskModal({ item, onClose, onConfirm }) {
+  const { t } = useT();
+  const [deadline, setDeadline] = useState('');
+  return (
+    <div className="modal-overlay" onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal" style={{ maxWidth: 420 }}>
+        <div className="modal-header">
+          <div className="modal-title">{t('accept_task_title')}</div>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+        <div className="modal-body">
+          <div style={{ fontWeight: 700, marginBottom: 4 }}>{item.title || t('unassigned_untitled')}</div>
+          {item.body && <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: 14, whiteSpace: 'pre-wrap' }}>{item.body}</div>}
+          <div className="form-group">
+            <label className="form-label">{t('accept_deadline_label')}</label>
+            <input className="form-input" type="date" value={deadline} onChange={e => setDeadline(e.target.value)} />
+          </div>
+          <button className="btn btn-primary" style={{ width: '100%', marginTop: 10 }} disabled={!deadline} onClick={() => onConfirm(deadline)}>{t('accept_confirm')}</button>
         </div>
       </div>
     </div>
@@ -5525,7 +5569,6 @@ function App() {
   const [deletingTask, setDeletingTask] = useState(null);
   const [createOpen,   setCreateOpen]   = useState(false);
   const [convertReq,   setConvertReq]   = useState(null);   // คำขอจาก Inbox ที่กำลังแปลงเป็นงาน
-  const [convertUnassigned, setConvertUnassigned] = useState(null);   // รายการจากกระดานงานค้างที่กำลังแปลงเป็นงาน
   const [duplicateSrc, setDuplicateSrc] = useState(null);   // งานต้นฉบับที่กำลังทำซ้ำ
   const [commentNotifs, setCommentNotifs] = useState([]);   // #1: แจ้งเตือนคอมเมนต์ใหม่ในงานของฉัน
   const [autoBackup,   setAutoBackup]   = useState(() => localStorage.getItem('afflow_autobackup') !== 'off');
@@ -5883,16 +5926,21 @@ function App() {
     pushToast('✓ ' + tApp('task_created') + (t.assignee && t.assignee !== currentUser ? ' — ' + tApp('assigned_to') + ' ' + t.assignee : ''));
     // ถ้าสร้างจากคำขอ → ตั้งคำขอเป็น "กำลังทำ" (รอจนกว่างานจะเสร็จค่อยปิดเอง)
     if (convertReq) { sb.updateRequestStatus(sbCfg, convertReq.id, 'in_progress').catch(() => {}); setConvertReq(null); }
-    // ถ้าสร้างจากกระดานงานค้าง → ลบรายการนั้นออกจากกระดาน (ย้ายไปเป็นงานจริงแล้ว)
-    if (convertUnassigned) { sb.deleteUnassigned(sbCfg, convertUnassigned.id).catch(() => {}); setConvertUnassigned(null); }
     setCreateOpen(false);
   }
 
-  // แปลงรายการจากกระดานงานค้าง → เปิดหน้าสร้างงานพร้อมข้อมูลที่กรอกให้แล้ว (มอบให้ตัวเอง)
-  function handleConvertUnassigned(item) {
-    setConvertUnassigned(item);
-    setView('tasks');
-    setCreateOpen(true);
+  // รับ/สร้างงานจากกระดานงานค้าง (หลังระบุ deadline แล้ว) — สร้างงานให้ตัวเองทันที ไม่ผ่านฟอร์มเต็ม
+  // แล้วลบรายการนั้นออกจากกระดานกลาง เพราะย้ายไปเป็นงานจริงในระบบแล้ว
+  function handleAcceptUnassigned(item, deadline) {
+    const t = {
+      id: uid(), title: item.title || '', description: item.body || '',
+      assignee: currentUser, category: 'AR', priority: 'medium', deadline, status: 'pending',
+      recurrence: 'none', createdAt: nowISO(), createdBy: currentUser, comments: [],
+    };
+    setTasks(ts => [...ts, t]);
+    pushUpsert(t);
+    pushToast('✓ ' + tApp('task_created'));
+    sb.deleteUnassigned(sbCfg, item.id).catch(() => {});
   }
 
   // แปลงคำขอใน Inbox → เปิดหน้าสร้างงานพร้อมข้อมูลที่กรอกให้แล้ว
@@ -6209,7 +6257,7 @@ function App() {
               <InboxView cfg={sbCfg} onConvert={handleConvertRequest} />
             )}
             {view === 'unassigned' && (
-              <UnassignedView cfg={sbCfg} currentUser={currentUser} onConvert={handleConvertUnassigned} />
+              <UnassignedView cfg={sbCfg} currentUser={currentUser} onAccept={handleAcceptUnassigned} />
             )}
             {view === 'tasks' && (
               <TaskList
@@ -6262,7 +6310,7 @@ function App() {
       )}
       {(createOpen || editingTask) && (
         <CreateTaskModal
-          onClose={() => { setCreateOpen(false); setEditingTask(null); setConvertReq(null); setConvertUnassigned(null); setDuplicateSrc(null); }}
+          onClose={() => { setCreateOpen(false); setEditingTask(null); setConvertReq(null); setDuplicateSrc(null); }}
           onSave={editingTask ? handleEditSave : handleCreate}
           currentUser={currentUser}
           initialTask={editingTask || null}
@@ -6273,10 +6321,6 @@ function App() {
             title: convertReq.title,
             description: (convertReq.details || '') + '\n\n— ' + tApp('inbox_from') + ': ' + convertReq.requester_name + (convertReq.requester_contact ? ' (' + convertReq.requester_contact + ')' : ''),
             category: convertReq.category || undefined,
-          } : convertUnassigned ? {
-            title: convertUnassigned.title,
-            description: convertUnassigned.body || '',
-            assignee: currentUser,
           } : duplicateSrc ? {
             title: duplicateSrc.title,
             description: duplicateSrc.description || '',
