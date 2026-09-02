@@ -1284,6 +1284,10 @@
     }
     @media (max-width: 800px) { .report-grid { grid-template-columns: 1fr; } .form-grid-2 { grid-template-columns: 1fr; } }
     @media (max-width: 600px) {
+      /* แถวโน้ต/งานค้างบนมือถือ: ให้ขึ้นบรรทัดใหม่ได้ ไม่งั้นแถวปุ่มบีบชื่องานเหลือ 0px (มองไม่เห็นเลย) */
+      .note-row      { flex-wrap: wrap; row-gap: 8px; }
+      .note-row-main { flex: 1 1 100%; }
+      .note-row-meta { flex-wrap: wrap; flex-shrink: 1; width: 100%; justify-content: flex-end; gap: 8px; }
       /* keep search visible (it is now the only search box) but compact the topbar */
       .topbar { gap: 8px; padding: 0 12px; }
       .topbar-search { min-width: 0; flex: 1; }
@@ -1834,8 +1838,11 @@ function taskToRow(t) {
     created_at: t.createdAt || nowISO(), created_by: t.createdBy || '',
     comments: t.comments || [], updated_at: nowISO(),
   };
-  if (t.requestId) row.request_id = t.requestId;   // ใส่เฉพาะงานที่มาจากคำขอ (ต้อง migrate คอลัมน์ก่อน)
-  if (t.recurrence && t.recurrence !== 'none') row.recurrence = t.recurrence;   // งานประจำ (ต้อง migrate คอลัมน์ก่อน)
+  // ต้องส่งค่าลงคอลัมน์ "ทุกครั้ง" แม้เป็นค่าว่าง — ถ้าไม่ส่ง Supabase จะคงค่าเดิมใน DB ไว้
+  // (เคยเป็นบั๊ก: เปลี่ยนงานประจำเป็น "ไม่ทำซ้ำ" แล้วค่าเก่าค้าง งานเลยแตกลูกใหม่ต่อไปเรื่อยๆ)
+  // หมายเหตุ: ต้องรัน supabase/add_task_columns.sql แล้ว (สร้างคอลัมน์ request_id + recurrence)
+  row.request_id = t.requestId || null;
+  row.recurrence = t.recurrence || 'none';
   return row;
 }
 
@@ -2126,7 +2133,7 @@ const sb = {
   // ── กระดานงานที่ยังไม่มอบหมาย (ทีมเห็นร่วมกัน — ดู supabase/add_unassigned_notes.sql) ──
   async loadUnassigned(cfg) {
     const c = getSb(cfg); if (!c) return [];
-    const { data, error } = await c.from('unassigned_notes').select('*').order('created_at', { ascending: false });
+    const { data, error } = await c.from('unassigned_notes').select('*').order('created_at', { ascending: false }).limit(500);
     if (error) throw error;
     return data || [];
   },
@@ -2158,7 +2165,7 @@ const sb = {
   // ── โน้ตส่วนตัว (RLS เห็นเฉพาะของตัวเอง — ดู supabase/add_notes.sql) ──
   async loadNotes(cfg) {
     const c = getSb(cfg); if (!c) return [];
-    const { data, error } = await c.from('notes').select('*').order('pinned', { ascending: false }).order('updated_at', { ascending: false });
+    const { data, error } = await c.from('notes').select('*').order('pinned', { ascending: false }).order('updated_at', { ascending: false }).limit(500);
     if (error) throw error;
     return data || [];
   },
@@ -3451,7 +3458,8 @@ function Dashboard({ tasks, currentUser, onSelectTask }) {
     d.setDate(todayObj.getDate() + moOffset + i);
     return d;
   });
-  function isoDate(d) { return d.toISOString().slice(0, 10); }
+  // ใช้เวลาท้องถิ่น (ไม่ใช่ UTC) ให้ตรงกับ TODAY — เมืองไทย UTC+7 ถ้าใช้ toISOString ตรงๆ จะเพี้ยนไป 1 วัน
+  function isoDate(d) { return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
   const weekStart = isoDate(weekDays[0]);
   const weekEnd   = isoDate(weekDays[6]);
 
@@ -5575,6 +5583,10 @@ function App() {
   const [lastBackup,   setLastBackup]   = useState(() => localStorage.getItem('afflow_last_backup') || '');
   const tasksRef = React.useRef(tasks);
   useEffect(() => { tasksRef.current = tasks; }, [tasks]);
+  // ชื่อผู้ใช้แบบ ref — effect โหลดงาน/realtime ไม่ได้ผูกกับ currentUser (จะ subscribe ใหม่ทุกครั้ง)
+  // แต่ detectNewComments ต้องใช้ชื่อ "ล่าสุด" ไม่ใช่ค่าที่ค้างอยู่ตอน effect รันครั้งแรก
+  const currentUserRef = React.useRef(currentUser);
+  useEffect(() => { currentUserRef.current = currentUser; }, [currentUser]);
   const [darkMode,     setDarkMode]     = useState(() => localStorage.getItem('afflow_dark') === 'true');
   const [search,       setSearch]       = useState('');
   const [sidebarOpen,  setSidebarOpen]  = useState(false);
@@ -5746,24 +5758,25 @@ function App() {
   // #1: แจ้งเตือนคอมเมนต์ในงานของฉัน (เจ้าของ/ผู้รับผิดชอบ) — จับคอมเมนต์ที่ "ยังไม่เคยเห็น"
   // ครบทุกกรณี: เด้งสด (realtime) + คอมเมนต์ที่เข้ามาตอนปิดแอป (แจ้งตอนเปิด) + ไม่แจ้งคอมเมนต์ของตัวเอง
   function detectNewComments(list) {
-    if (!currentUser) return;
-    const KEY = 'afflow_seen_cmts_' + currentUser;
+    const me = currentUserRef.current;   // อ่านจาก ref — กันชื่อค้างจากตอน effect รันครั้งแรก (ยังไม่รู้ชื่อ)
+    if (!me) return;
+    const KEY = 'afflow_seen_cmts_' + me;
     let raw = null;
     try { raw = localStorage.getItem(KEY); } catch (e) {}
     const isBaseline = (raw === null);   // ครั้งแรกสุดของบัญชีนี้ = ตั้งฐาน (ไม่แจ้งย้อนหลัง)
     const seen = new Set((raw || '').split(',').filter(Boolean));
     const toNotify = [];
     (list || []).forEach(t => {
-      const isMine = t.assignee === currentUser || t.createdBy === currentUser;
-      if (!isMine) return;
+      const isMine = t.assignee === me || t.createdBy === me;
       (t.comments || []).forEach(c => {
         const cid = c.id || (t.id + '_' + (c.createdAt || ''));
         if (seen.has(cid)) return;
-        seen.add(cid);
-        if (c.author && c.author !== currentUser && !isBaseline) toNotify.push({ task: t, comment: c });
+        seen.add(cid);   // จดว่า "เคยเห็น" ทุกคอมเมนต์ แม้ยังไม่ใช่งานของเรา — กันกรณีงานถูกโอนมาให้เรา
+                         // แล้วคอมเมนต์เก่าทั้งหมดเด้งเป็นแจ้งเตือนใหม่พร้อมกัน
+        if (isMine && c.author && c.author !== me && !isBaseline) toNotify.push({ task: t, comment: c });
       });
     });
-    try { localStorage.setItem(KEY, Array.from(seen).slice(-800).join(',')); } catch (e) {}
+    try { localStorage.setItem(KEY, Array.from(seen).slice(-2000).join(',')); } catch (e) {}
     toNotify.forEach(x => addCommentNotif(x.task, x.comment));
   }
   function addCommentNotif(task, comment) {
